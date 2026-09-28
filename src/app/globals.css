@@ -1,0 +1,918 @@
+@import "tailwindcss";
+
+/* ============================================================
+   AURAVEX DESIGN SYSTEM
+   Token layer: every visual value resolves to a CSS variable so
+   the runtime theme engine (src/themes) can repaint the entire
+   product by swapping a single [data-theme] attribute.
+   ============================================================ */
+
+@theme inline {
+  --color-bg: var(--ax-bg);
+  --color-bg-elevated: var(--ax-bg-elevated);
+  --color-surface: var(--ax-surface);
+  --color-surface-strong: var(--ax-surface-strong);
+  --color-line: var(--ax-line);
+  --color-line-strong: var(--ax-line-strong);
+
+  --color-ink: var(--ax-ink);
+  --color-ink-muted: var(--ax-ink-muted);
+  --color-ink-dim: var(--ax-ink-dim);
+
+  --color-accent: var(--ax-accent);
+  --color-accent-soft: var(--ax-accent-soft);
+  --color-accent-deep: var(--ax-accent-deep);
+  --color-violet: var(--ax-violet);
+  --color-cyan: var(--ax-cyan);
+  --color-success: var(--ax-success);
+  --color-warning: var(--ax-warning);
+  --color-danger: var(--ax-danger);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
+
+  --radius-card: 16px;
+  --radius-panel: 20px;
+
+  --animate-shimmer: shimmer 2.4s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.6s ease-out infinite;
+  --animate-scan: scan 3.2s ease-in-out infinite;
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-grid-drift: grid-drift 24s linear infinite;
+}
+
+/* ---------- DARK THEMES ---------- */
+
+:root,
+[data-theme="futuristic-enterprise"] {
+  --ax-bg: #04070f;
+  --ax-bg-elevated: #070d1c;
+  --ax-surface: rgba(14, 22, 42, 0.62);
+  --ax-surface-strong: rgba(17, 27, 50, 0.9);
+  --ax-line: rgba(92, 132, 214, 0.16);
+  --ax-line-strong: rgba(96, 141, 235, 0.34);
+  --ax-ink: #f2f6ff;
+  --ax-ink-muted: #9db0d4;
+  --ax-ink-dim: #6c7fa4;
+  --ax-accent: #3b82f6;
+  --ax-accent-soft: #60a5fa;
+  --ax-accent-deep: #1d4ed8;
+  --ax-violet: #7c6cff;
+  --ax-cyan: #38bdf8;
+  --ax-success: #34d399;
+  --ax-warning: #fbbf24;
+  --ax-danger: #f87171;
+  --ax-glow: 59, 130, 246;
+  --ax-halo-a: rgba(37, 99, 235, 0.3);
+  --ax-halo-b: rgba(124, 108, 255, 0.22);
+  --ax-art-solid: #0b1224;
+  --ax-art-deep: #060a14;
+  --ax-card-scrim: linear-gradient(112deg, rgba(4, 7, 15, 0.92) 0%, rgba(4, 7, 15, 0.7) 38%, rgba(4, 7, 15, 0.18) 72%, transparent 100%);
+  --ax-scheme: dark;
+}
+
+[data-theme="cyber-city"] {
+  --ax-bg: #05060f;
+  --ax-bg-elevated: #0a0b1d;
+  --ax-surface: rgba(20, 16, 44, 0.62);
+  --ax-surface-strong: rgba(26, 20, 55, 0.9);
+  --ax-line: rgba(196, 92, 233, 0.18);
+  --ax-line-strong: rgba(214, 104, 255, 0.36);
+  --ax-ink: #f7f2ff;
+  --ax-ink-muted: #b9a6d8;
+  --ax-ink-dim: #8272a6;
+  --ax-accent: #d946ef;
+  --ax-accent-soft: #f0abfc;
+  --ax-accent-deep: #a21caf;
+  --ax-violet: #8b5cf6;
+  --ax-cyan: #22d3ee;
+  --ax-success: #34d399;
+  --ax-warning: #fbbf24;
+  --ax-danger: #fb7185;
+  --ax-glow: 217, 70, 239;
+  --ax-halo-a: rgba(217, 70, 239, 0.28);
+  --ax-halo-b: rgba(34, 211, 238, 0.2);
+  --ax-art-solid: #0b1224;
+  --ax-art-deep: #060a14;
+  --ax-card-scrim: linear-gradient(112deg, rgba(4, 7, 15, 0.92) 0%, rgba(4, 7, 15, 0.7) 38%, rgba(4, 7, 15, 0.18) 72%, transparent 100%);
+  --ax-scheme: dark;
+}
+
+[data-theme="space-universe"] {
+  --ax-bg: #030512;
+  --ax-bg-elevated: #060a1f;
+  --ax-surface: rgba(13, 19, 48, 0.62);
+  --ax-surface-strong: rgba(16, 24, 58, 0.9);
+  --ax-line: rgba(129, 140, 248, 0.18);
+  --ax-line-strong: rgba(139, 152, 255, 0.36);
+  --ax-ink: #f4f4ff;
+  --ax-ink-muted: #a8aede;
+  --ax-ink-dim: #7278ab;
+  --ax-accent: #6366f1;
+  --ax-accent-soft: #a5b4fc;
+  --ax-accent-deep: #4338ca;
+  --ax-violet: #a855f7;
+  --ax-cyan: #38bdf8;
+  --ax-success: #34d399;
+  --ax-warning: #fbbf24;
+  --ax-danger: #f87171;
+  --ax-glow: 99, 102, 241;
+  --ax-halo-a: rgba(99, 102, 241, 0.3);
+  --ax-halo-b: rgba(168, 85, 247, 0.22);
+  --ax-art-solid: #0b1224;
+  --ax-art-deep: #060a14;
+  --ax-card-scrim: linear-gradient(112deg, rgba(4, 7, 15, 0.92) 0%, rgba(4, 7, 15, 0.7) 38%, rgba(4, 7, 15, 0.18) 72%, transparent 100%);
+  --ax-scheme: dark;
+}
+
+[data-theme="neon-mountains"] {
+  --ax-bg: #04090d;
+  --ax-bg-elevated: #06131a;
+  --ax-surface: rgba(10, 32, 40, 0.62);
+  --ax-surface-strong: rgba(12, 40, 48, 0.9);
+  --ax-line: rgba(45, 212, 191, 0.18);
+  --ax-line-strong: rgba(45, 212, 191, 0.38);
+  --ax-ink: #eefcff;
+  --ax-ink-muted: #94c4c8;
+  --ax-ink-dim: #648b90;
+  --ax-accent: #2dd4bf;
+  --ax-accent-soft: #5eead4;
+  --ax-accent-deep: #0d9488;
+  --ax-violet: #22d3ee;
+  --ax-cyan: #67e8f9;
+  --ax-success: #4ade80;
+  --ax-warning: #fbbf24;
+  --ax-danger: #fb7185;
+  --ax-glow: 45, 212, 191;
+  --ax-halo-a: rgba(45, 212, 191, 0.26);
+  --ax-halo-b: rgba(56, 189, 248, 0.2);
+  --ax-art-solid: #0b1224;
+  --ax-art-deep: #060a14;
+  --ax-card-scrim: linear-gradient(112deg, rgba(4, 7, 15, 0.92) 0%, rgba(4, 7, 15, 0.7) 38%, rgba(4, 7, 15, 0.18) 72%, transparent 100%);
+  --ax-scheme: dark;
+}
+
+[data-theme="ai-world"] {
+  --ax-bg: #070410;
+  --ax-bg-elevated: #0d0722;
+  --ax-surface: rgba(28, 16, 52, 0.62);
+  --ax-surface-strong: rgba(34, 19, 63, 0.9);
+  --ax-line: rgba(167, 139, 250, 0.18);
+  --ax-line-strong: rgba(167, 139, 250, 0.38);
+  --ax-ink: #f9f5ff;
+  --ax-ink-muted: #bcaae0;
+  --ax-ink-dim: #8674ad;
+  --ax-accent: #a855f7;
+  --ax-accent-soft: #c4b5fd;
+  --ax-accent-deep: #7e22ce;
+  --ax-violet: #e879f9;
+  --ax-cyan: #38bdf8;
+  --ax-success: #34d399;
+  --ax-warning: #fbbf24;
+  --ax-danger: #fb7185;
+  --ax-glow: 168, 85, 247;
+  --ax-halo-a: rgba(168, 85, 247, 0.28);
+  --ax-halo-b: rgba(232, 121, 249, 0.2);
+  --ax-art-solid: #0b1224;
+  --ax-art-deep: #060a14;
+  --ax-card-scrim: linear-gradient(112deg, rgba(4, 7, 15, 0.92) 0%, rgba(4, 7, 15, 0.7) 38%, rgba(4, 7, 15, 0.18) 72%, transparent 100%);
+  --ax-scheme: dark;
+}
+
+/* ---------- LIGHT THEMES ---------- */
+
+[data-theme="clean-enterprise"] {
+  --ax-bg: #f6f8fd;
+  --ax-bg-elevated: #ffffff;
+  --ax-surface: rgba(255, 255, 255, 0.78);
+  --ax-surface-strong: rgba(255, 255, 255, 0.96);
+  --ax-line: rgba(37, 99, 235, 0.14);
+  --ax-line-strong: rgba(37, 99, 235, 0.28);
+  --ax-ink: #0b1524;
+  --ax-ink-muted: #4a5b78;
+  --ax-ink-dim: #7387a5;
+  --ax-accent: #2563eb;
+  --ax-accent-soft: #3b82f6;
+  --ax-accent-deep: #1e40af;
+  --ax-violet: #6d5cf0;
+  --ax-cyan: #0ea5e9;
+  --ax-success: #059669;
+  --ax-warning: #d97706;
+  --ax-danger: #dc2626;
+  --ax-glow: 37, 99, 235;
+  --ax-halo-a: rgba(37, 99, 235, 0.16);
+  --ax-halo-b: rgba(109, 92, 240, 0.12);
+  /* Dark themes lift panels with glow; light themes need real shadow. */
+  --ax-panel-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.14);
+  --ax-panel-shadow-strong: 0 2px 4px rgba(15, 23, 42, 0.05), 0 22px 60px -22px rgba(15, 23, 42, 0.26);
+  --ax-art-solid: #94a7c4;
+  --ax-art-deep: #cbd6e8;
+  --ax-card-scrim: linear-gradient(112deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(255, 255, 255, 0.3) 72%, transparent 100%);
+  --ax-scheme: light;
+}
+
+[data-theme="white-future-city"] {
+  --ax-bg: #f4f7fb;
+  --ax-bg-elevated: #ffffff;
+  --ax-surface: rgba(255, 255, 255, 0.76);
+  --ax-surface-strong: rgba(255, 255, 255, 0.95);
+  --ax-line: rgba(15, 118, 178, 0.14);
+  --ax-line-strong: rgba(15, 118, 178, 0.3);
+  --ax-ink: #06131f;
+  --ax-ink-muted: #45607a;
+  --ax-ink-dim: #6f8aa3;
+  --ax-accent: #0284c7;
+  --ax-accent-soft: #38bdf8;
+  --ax-accent-deep: #075985;
+  --ax-violet: #4f46e5;
+  --ax-cyan: #06b6d4;
+  --ax-success: #059669;
+  --ax-warning: #d97706;
+  --ax-danger: #dc2626;
+  --ax-glow: 2, 132, 199;
+  --ax-halo-a: rgba(2, 132, 199, 0.16);
+  --ax-halo-b: rgba(6, 182, 212, 0.12);
+  /* Dark themes lift panels with glow; light themes need real shadow. */
+  --ax-panel-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.14);
+  --ax-panel-shadow-strong: 0 2px 4px rgba(15, 23, 42, 0.05), 0 22px 60px -22px rgba(15, 23, 42, 0.26);
+  --ax-art-solid: #94a7c4;
+  --ax-art-deep: #cbd6e8;
+  --ax-card-scrim: linear-gradient(112deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(255, 255, 255, 0.3) 72%, transparent 100%);
+  --ax-scheme: light;
+}
+
+[data-theme="crystal-world"] {
+  --ax-bg: #f5f4fd;
+  --ax-bg-elevated: #ffffff;
+  --ax-surface: rgba(255, 255, 255, 0.74);
+  --ax-surface-strong: rgba(255, 255, 255, 0.95);
+  --ax-line: rgba(124, 92, 255, 0.16);
+  --ax-line-strong: rgba(124, 92, 255, 0.32);
+  --ax-ink: #120c24;
+  --ax-ink-muted: #56507a;
+  --ax-ink-dim: #7d78a0;
+  --ax-accent: #7c5cff;
+  --ax-accent-soft: #a78bfa;
+  --ax-accent-deep: #5b21b6;
+  --ax-violet: #c084fc;
+  --ax-cyan: #22d3ee;
+  --ax-success: #059669;
+  --ax-warning: #d97706;
+  --ax-danger: #dc2626;
+  --ax-glow: 124, 92, 255;
+  --ax-halo-a: rgba(124, 92, 255, 0.16);
+  --ax-halo-b: rgba(192, 132, 252, 0.12);
+  /* Dark themes lift panels with glow; light themes need real shadow. */
+  --ax-panel-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.14);
+  --ax-panel-shadow-strong: 0 2px 4px rgba(15, 23, 42, 0.05), 0 22px 60px -22px rgba(15, 23, 42, 0.26);
+  --ax-art-solid: #94a7c4;
+  --ax-art-deep: #cbd6e8;
+  --ax-card-scrim: linear-gradient(112deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(255, 255, 255, 0.3) 72%, transparent 100%);
+  --ax-scheme: light;
+}
+
+[data-theme="ai-landscape"] {
+  --ax-bg: #f3faf8;
+  --ax-bg-elevated: #ffffff;
+  --ax-surface: rgba(255, 255, 255, 0.76);
+  --ax-surface-strong: rgba(255, 255, 255, 0.95);
+  --ax-line: rgba(13, 148, 136, 0.16);
+  --ax-line-strong: rgba(13, 148, 136, 0.32);
+  --ax-ink: #052420;
+  --ax-ink-muted: #3f6560;
+  --ax-ink-dim: #6b8e89;
+  --ax-accent: #0d9488;
+  --ax-accent-soft: #2dd4bf;
+  --ax-accent-deep: #115e59;
+  --ax-violet: #0ea5e9;
+  --ax-cyan: #06b6d4;
+  --ax-success: #059669;
+  --ax-warning: #d97706;
+  --ax-danger: #dc2626;
+  --ax-glow: 13, 148, 136;
+  --ax-halo-a: rgba(13, 148, 136, 0.16);
+  --ax-halo-b: rgba(14, 165, 233, 0.12);
+  /* Dark themes lift panels with glow; light themes need real shadow. */
+  --ax-panel-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.14);
+  --ax-panel-shadow-strong: 0 2px 4px rgba(15, 23, 42, 0.05), 0 22px 60px -22px rgba(15, 23, 42, 0.26);
+  --ax-art-solid: #94a7c4;
+  --ax-art-deep: #cbd6e8;
+  --ax-card-scrim: linear-gradient(112deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(255, 255, 255, 0.3) 72%, transparent 100%);
+  --ax-scheme: light;
+}
+
+/* ---------- ANIMATION INTENSITY ---------- */
+:root {
+  --ax-motion: 1;
+}
+[data-motion="subtle"] {
+  --ax-motion: 0.45;
+}
+[data-motion="balanced"] {
+  --ax-motion: 1;
+}
+[data-motion="cinematic"] {
+  --ax-motion: 1.55;
+}
+
+/* ---------- ADDITIONAL PRESETS ---------- */
+
+[data-theme="midnight-gold"] {
+  --ax-bg: #0a0805;
+  --ax-bg-elevated: #12100a;
+  --ax-surface: rgba(212, 162, 76, 0.07);
+  --ax-surface-strong: rgba(212, 162, 76, 0.12);
+  --ax-line: rgba(212, 162, 76, 0.16);
+  --ax-line-strong: rgba(212, 162, 76, 0.34);
+  --ax-ink: #fbf7ee;
+  --ax-ink-muted: #c5b391;
+  --ax-ink-dim: #8c7e64;
+  --ax-accent: #d4a24c;
+  --ax-accent-soft: #f0c67d;
+  --ax-accent-deep: #96702c;
+  --ax-violet: #c2703f;
+  --ax-cyan: #e0b872;
+  --ax-success: #34d399;
+  --ax-warning: #fbbf24;
+  --ax-danger: #f87171;
+  --ax-glow: 212, 162, 76;
+  --ax-halo-a: rgba(212, 162, 76, 0.28);
+  --ax-halo-b: rgba(212, 162, 76, 0.18);
+  --ax-art-solid: #0b1224;
+  --ax-art-deep: #060a14;
+  --ax-card-scrim: linear-gradient(112deg, rgba(4, 7, 15, 0.92) 0%, rgba(4, 7, 15, 0.7) 38%, rgba(4, 7, 15, 0.18) 72%, transparent 100%);
+  --ax-scheme: dark;
+}
+
+[data-theme="emerald-vault"] {
+  --ax-bg: #04100c;
+  --ax-bg-elevated: #071a14;
+  --ax-surface: rgba(16, 185, 129, 0.07);
+  --ax-surface-strong: rgba(16, 185, 129, 0.12);
+  --ax-line: rgba(16, 185, 129, 0.16);
+  --ax-line-strong: rgba(16, 185, 129, 0.34);
+  --ax-ink: #effaf5;
+  --ax-ink-muted: #8fbdab;
+  --ax-ink-dim: #5f8a79;
+  --ax-accent: #10b981;
+  --ax-accent-soft: #34d399;
+  --ax-accent-deep: #047857;
+  --ax-violet: #0ea5e9;
+  --ax-cyan: #22d3ee;
+  --ax-success: #34d399;
+  --ax-warning: #fbbf24;
+  --ax-danger: #f87171;
+  --ax-glow: 16, 185, 129;
+  --ax-halo-a: rgba(16, 185, 129, 0.28);
+  --ax-halo-b: rgba(16, 185, 129, 0.18);
+  --ax-art-solid: #0b1224;
+  --ax-art-deep: #060a14;
+  --ax-card-scrim: linear-gradient(112deg, rgba(4, 7, 15, 0.92) 0%, rgba(4, 7, 15, 0.7) 38%, rgba(4, 7, 15, 0.18) 72%, transparent 100%);
+  --ax-scheme: dark;
+}
+
+[data-theme="crimson-atlas"] {
+  --ax-bg: #0b0709;
+  --ax-bg-elevated: #150c10;
+  --ax-surface: rgba(225, 29, 72, 0.07);
+  --ax-surface-strong: rgba(225, 29, 72, 0.12);
+  --ax-line: rgba(225, 29, 72, 0.16);
+  --ax-line-strong: rgba(225, 29, 72, 0.34);
+  --ax-ink: #fff1f3;
+  --ax-ink-muted: #c99aa4;
+  --ax-ink-dim: #8f6b74;
+  --ax-accent: #e11d48;
+  --ax-accent-soft: #fb7185;
+  --ax-accent-deep: #9f1239;
+  --ax-violet: #f97316;
+  --ax-cyan: #38bdf8;
+  --ax-success: #34d399;
+  --ax-warning: #fbbf24;
+  --ax-danger: #f87171;
+  --ax-glow: 225, 29, 72;
+  --ax-halo-a: rgba(225, 29, 72, 0.28);
+  --ax-halo-b: rgba(225, 29, 72, 0.18);
+  --ax-art-solid: #0b1224;
+  --ax-art-deep: #060a14;
+  --ax-card-scrim: linear-gradient(112deg, rgba(4, 7, 15, 0.92) 0%, rgba(4, 7, 15, 0.7) 38%, rgba(4, 7, 15, 0.18) 72%, transparent 100%);
+  --ax-scheme: dark;
+}
+
+[data-theme="arctic-steel"] {
+  --ax-bg: #07090c;
+  --ax-bg-elevated: #0d1117;
+  --ax-surface: rgba(56, 189, 248, 0.07);
+  --ax-surface-strong: rgba(56, 189, 248, 0.12);
+  --ax-line: rgba(56, 189, 248, 0.16);
+  --ax-line-strong: rgba(56, 189, 248, 0.34);
+  --ax-ink: #f0f6fb;
+  --ax-ink-muted: #93a7b8;
+  --ax-ink-dim: #66788a;
+  --ax-accent: #38bdf8;
+  --ax-accent-soft: #7dd3fc;
+  --ax-accent-deep: #0369a1;
+  --ax-violet: #818cf8;
+  --ax-cyan: #22d3ee;
+  --ax-success: #34d399;
+  --ax-warning: #fbbf24;
+  --ax-danger: #f87171;
+  --ax-glow: 56, 189, 248;
+  --ax-halo-a: rgba(56, 189, 248, 0.28);
+  --ax-halo-b: rgba(56, 189, 248, 0.18);
+  --ax-art-solid: #0b1224;
+  --ax-art-deep: #060a14;
+  --ax-card-scrim: linear-gradient(112deg, rgba(4, 7, 15, 0.92) 0%, rgba(4, 7, 15, 0.7) 38%, rgba(4, 7, 15, 0.18) 72%, transparent 100%);
+  --ax-scheme: dark;
+}
+
+[data-theme="warm-linen"] {
+  --ax-bg: #faf7f2;
+  --ax-bg-elevated: #ffffff;
+  --ax-surface: rgba(255, 255, 255, 0.78);
+  --ax-surface-strong: rgba(255, 255, 255, 0.96);
+  --ax-line: rgba(180, 83, 42, 0.16);
+  --ax-line-strong: rgba(180, 83, 42, 0.3);
+  --ax-ink: #1c1512;
+  --ax-ink-muted: #5f5147;
+  --ax-ink-dim: #8d7f74;
+  --ax-accent: #b4532a;
+  --ax-accent-soft: #d97757;
+  --ax-accent-deep: #7c3a1d;
+  --ax-violet: #9a6b3f;
+  --ax-cyan: #0891b2;
+  --ax-success: #059669;
+  --ax-warning: #d97706;
+  --ax-danger: #dc2626;
+  --ax-glow: 180, 83, 42;
+  --ax-halo-a: rgba(180, 83, 42, 0.16);
+  --ax-halo-b: rgba(180, 83, 42, 0.1);
+  --ax-panel-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.14);
+  --ax-panel-shadow-strong: 0 2px 4px rgba(15, 23, 42, 0.05), 0 22px 60px -22px rgba(15, 23, 42, 0.26);
+  --ax-art-solid: #94a7c4;
+  --ax-art-deep: #cbd6e8;
+  --ax-card-scrim: linear-gradient(112deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(255, 255, 255, 0.3) 72%, transparent 100%);
+  --ax-scheme: light;
+}
+
+[data-theme="sage-studio"] {
+  --ax-bg: #f4f7f4;
+  --ax-bg-elevated: #ffffff;
+  --ax-surface: rgba(255, 255, 255, 0.78);
+  --ax-surface-strong: rgba(255, 255, 255, 0.96);
+  --ax-line: rgba(63, 125, 88, 0.16);
+  --ax-line-strong: rgba(63, 125, 88, 0.3);
+  --ax-ink: #14201a;
+  --ax-ink-muted: #4b6357;
+  --ax-ink-dim: #7d938a;
+  --ax-accent: #3f7d58;
+  --ax-accent-soft: #5fa37a;
+  --ax-accent-deep: #2b5a3e;
+  --ax-violet: #7c8f4f;
+  --ax-cyan: #0891b2;
+  --ax-success: #059669;
+  --ax-warning: #d97706;
+  --ax-danger: #dc2626;
+  --ax-glow: 63, 125, 88;
+  --ax-halo-a: rgba(63, 125, 88, 0.16);
+  --ax-halo-b: rgba(63, 125, 88, 0.1);
+  --ax-panel-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.14);
+  --ax-panel-shadow-strong: 0 2px 4px rgba(15, 23, 42, 0.05), 0 22px 60px -22px rgba(15, 23, 42, 0.26);
+  --ax-art-solid: #94a7c4;
+  --ax-art-deep: #cbd6e8;
+  --ax-card-scrim: linear-gradient(112deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(255, 255, 255, 0.3) 72%, transparent 100%);
+  --ax-scheme: light;
+}
+
+[data-theme="porcelain-navy"] {
+  --ax-bg: #f7f8fb;
+  --ax-bg-elevated: #ffffff;
+  --ax-surface: rgba(255, 255, 255, 0.78);
+  --ax-surface-strong: rgba(255, 255, 255, 0.96);
+  --ax-line: rgba(30, 58, 138, 0.16);
+  --ax-line-strong: rgba(30, 58, 138, 0.3);
+  --ax-ink: #0a1020;
+  --ax-ink-muted: #41506b;
+  --ax-ink-dim: #7784a0;
+  --ax-accent: #1e3a8a;
+  --ax-accent-soft: #3b5bb5;
+  --ax-accent-deep: #172554;
+  --ax-violet: #4c1d95;
+  --ax-cyan: #0284c7;
+  --ax-success: #059669;
+  --ax-warning: #d97706;
+  --ax-danger: #dc2626;
+  --ax-glow: 30, 58, 138;
+  --ax-halo-a: rgba(30, 58, 138, 0.16);
+  --ax-halo-b: rgba(30, 58, 138, 0.1);
+  --ax-panel-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.14);
+  --ax-panel-shadow-strong: 0 2px 4px rgba(15, 23, 42, 0.05), 0 22px 60px -22px rgba(15, 23, 42, 0.26);
+  --ax-art-solid: #94a7c4;
+  --ax-art-deep: #cbd6e8;
+  --ax-card-scrim: linear-gradient(112deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(255, 255, 255, 0.3) 72%, transparent 100%);
+  --ax-scheme: light;
+}
+
+[data-theme="blush-quartz"] {
+  --ax-bg: #fbf6f8;
+  --ax-bg-elevated: #ffffff;
+  --ax-surface: rgba(255, 255, 255, 0.78);
+  --ax-surface-strong: rgba(255, 255, 255, 0.96);
+  --ax-line: rgba(157, 53, 109, 0.16);
+  --ax-line-strong: rgba(157, 53, 109, 0.3);
+  --ax-ink: #1f0f19;
+  --ax-ink-muted: #6a4a5a;
+  --ax-ink-dim: #9a7e8b;
+  --ax-accent: #9d356d;
+  --ax-accent-soft: #c2568f;
+  --ax-accent-deep: #6f2149;
+  --ax-violet: #7c3aed;
+  --ax-cyan: #0ea5e9;
+  --ax-success: #059669;
+  --ax-warning: #d97706;
+  --ax-danger: #dc2626;
+  --ax-glow: 157, 53, 109;
+  --ax-halo-a: rgba(157, 53, 109, 0.16);
+  --ax-halo-b: rgba(157, 53, 109, 0.1);
+  --ax-panel-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.14);
+  --ax-panel-shadow-strong: 0 2px 4px rgba(15, 23, 42, 0.05), 0 22px 60px -22px rgba(15, 23, 42, 0.26);
+  --ax-art-solid: #94a7c4;
+  --ax-art-deep: #cbd6e8;
+  --ax-card-scrim: linear-gradient(112deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.82) 38%, rgba(255, 255, 255, 0.3) 72%, transparent 100%);
+  --ax-scheme: light;
+}
+
+/* ---------- BASE ---------- */
+
+* {
+  border-color: var(--ax-line);
+}
+
+html {
+  color-scheme: var(--ax-scheme, dark);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--ax-bg);
+  color: var(--ax-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(var(--ax-glow), 0.3);
+  color: var(--ax-ink);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ax-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(var(--ax-glow), 0.55), rgba(var(--ax-glow), 0.22));
+  border-radius: 999px;
+  border: 2px solid var(--ax-bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--ax-glow), 0.8);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ============================================================
+   COMPONENT PRIMITIVES
+   ============================================================ */
+
+@layer components {
+  /*
+   * Content column. Widened from 1440px: on a 1080p display the old width
+   * left a dead band down both sides and the page read as a narrow strip in
+   * the middle of the screen.
+   */
+  .ax-container {
+    width: 100%;
+    max-width: 1680px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+  @media (min-width: 768px) {
+    .ax-container {
+      padding-inline: 44px;
+    }
+  }
+  @media (min-width: 1280px) {
+    .ax-container {
+      padding-inline: 64px;
+    }
+  }
+
+  /*
+   * Chrome column — the navbar and footer. Wider still, so the wordmark sits
+   * near the left edge and the demo button near the right, instead of both
+   * floating inside the content column.
+   */
+  .ax-container-wide {
+    width: 100%;
+    max-width: 1920px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+  @media (min-width: 768px) {
+    .ax-container-wide {
+      padding-inline: 40px;
+    }
+  }
+  @media (min-width: 1536px) {
+    .ax-container-wide {
+      padding-inline: 60px;
+    }
+  }
+
+  /* Glass panel — the core surface of the whole system */
+  .ax-glass {
+    background: linear-gradient(160deg, rgba(var(--ax-glow), 0.06), transparent 42%), var(--ax-surface);
+    border: 1px solid var(--ax-line);
+    backdrop-filter: blur(9px) saturate(118%);
+    -webkit-backdrop-filter: blur(9px) saturate(118%);
+    box-shadow: var(--ax-panel-shadow, none);
+  }
+
+  .ax-glass-strong {
+    background: linear-gradient(160deg, rgba(var(--ax-glow), 0.1), transparent 46%), var(--ax-surface-strong);
+    border: 1px solid var(--ax-line-strong);
+    backdrop-filter: blur(14px) saturate(124%);
+    -webkit-backdrop-filter: blur(14px) saturate(124%);
+    box-shadow: var(--ax-panel-shadow-strong, none);
+  }
+
+  /* Top edge highlight — the detail that sells the glass read */
+  .ax-edge-light {
+    position: relative;
+  }
+  .ax-edge-light::before {
+    content: "";
+    position: absolute;
+    inset-inline: 12%;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(var(--ax-glow), 0.65), transparent);
+    opacity: 0.8;
+    pointer-events: none;
+  }
+
+  .ax-hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ax-line-strong), transparent);
+  }
+
+  .ax-gradient-text {
+    background: linear-gradient(120deg, var(--ax-accent-soft) 0%, var(--ax-accent) 45%, var(--ax-violet) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .ax-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+  }
+
+  .ax-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ax-ink-muted);
+  }
+
+  .ax-halo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 55% at 15% 0%, var(--ax-halo-a), transparent 62%),
+      radial-gradient(50% 50% at 85% 20%, var(--ax-halo-b), transparent 60%);
+  }
+
+  .ax-grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(var(--ax-glow), 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--ax-glow), 0.07) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .ax-focus:focus-visible {
+    outline: 2px solid var(--ax-accent);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+}
+
+@layer utilities {
+  .ax-glow-sm {
+    box-shadow:
+      0 0 0 1px rgba(var(--ax-glow), 0.18),
+      0 8px 30px -12px rgba(var(--ax-glow), 0.55);
+  }
+  .ax-glow-md {
+    box-shadow:
+      0 0 0 1px rgba(var(--ax-glow), 0.22),
+      0 18px 60px -20px rgba(var(--ax-glow), 0.7);
+  }
+  .ax-glow-lg {
+    box-shadow:
+      0 0 0 1px rgba(var(--ax-glow), 0.26),
+      0 30px 110px -30px rgba(var(--ax-glow), 0.85);
+  }
+  .ax-text-balance {
+    text-wrap: balance;
+  }
+  .ax-text-pretty {
+    text-wrap: pretty;
+  }
+  .ax-mask-fade-r {
+    mask-image: linear-gradient(90deg, #000 72%, transparent 100%);
+  }
+  .ax-mask-edges {
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  /* ============================================================
+     ENTRANCE SYSTEM
+
+     Pure CSS, deliberately. Driving entrances from JS meant the server
+     shipped `opacity: 0` on every block, so the background photograph
+     painted instantly and the content only appeared once React had
+     hydrated — the page arrived in two stages. These animations start
+     the moment the stylesheet is parsed, so copy and environment land
+     together.
+
+     `.ax-rv` plays on load (above the fold). `.ax-rv-scroll` waits for
+     the shared observer in <RevealWatcher> to add `.is-in`.
+     ============================================================ */
+  .ax-rv,
+  .ax-rv-scroll {
+    --ax-rv-x: 0px;
+    --ax-rv-y: 22px;
+    --ax-rv-scale: 1;
+    --ax-rv-dur: 0.68s;
+    --ax-rv-delay: 0s;
+  }
+
+  .ax-rv {
+    animation: ax-rise calc(var(--ax-rv-dur) * var(--ax-motion, 1))
+      cubic-bezier(0.22, 1, 0.36, 1) var(--ax-rv-delay) both;
+  }
+
+  .ax-rv-scroll {
+    opacity: 0;
+  }
+  .ax-rv-scroll.is-in {
+    animation: ax-rise calc(var(--ax-rv-dur) * var(--ax-motion, 1))
+      cubic-bezier(0.22, 1, 0.36, 1) var(--ax-rv-delay) both;
+  }
+
+  .ax-rv-up {
+    --ax-rv-y: calc(22px * var(--ax-motion, 1));
+  }
+  .ax-rv-down {
+    --ax-rv-y: calc(-22px * var(--ax-motion, 1));
+  }
+  .ax-rv-left {
+    --ax-rv-x: calc(22px * var(--ax-motion, 1));
+    --ax-rv-y: 0px;
+  }
+  .ax-rv-right {
+    --ax-rv-x: calc(-22px * var(--ax-motion, 1));
+    --ax-rv-y: 0px;
+  }
+  .ax-rv-fade {
+    --ax-rv-x: 0px;
+    --ax-rv-y: 0px;
+  }
+  .ax-rv-scale {
+    --ax-rv-x: 0px;
+    --ax-rv-y: 0px;
+    --ax-rv-scale: 0.96;
+  }
+
+  /* Snap rails carry their own dots and arrows, so the track is redundant. */
+  .ax-no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .ax-no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+
+@keyframes ax-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--ax-rv-x), var(--ax-rv-y), 0) scale(var(--ax-rv-scale));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(-14px * var(--ax-motion)));
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.75;
+  }
+  70% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+@keyframes scan {
+  0%,
+  100% {
+    transform: translateY(-110%);
+  }
+  50% {
+    transform: translateY(110%);
+  }
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes grid-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 64px 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ax-rv,
+  .ax-rv-scroll,
+  .ax-rv-scroll.is-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

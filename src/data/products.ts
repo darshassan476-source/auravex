@@ -1,0 +1,516 @@
+import type { Product, ProductCategory, ProductStatus } from "@/lib/types";
+
+export const CATEGORY_LABELS: Record<ProductCategory, string> = {
+  ai: "AI",
+  saas: "SaaS",
+  "web-apps": "Web Apps",
+  automation: "Automation",
+  "developer-tools": "Developer Tools",
+  enterprise: "Enterprise Solutions",
+};
+
+export const STATUS_LABELS: Record<ProductStatus, string> = {
+  live: "Live",
+  beta: "Beta",
+  development: "Development",
+  "coming-soon": "Coming Soon",
+};
+
+export const PRODUCTS: Product[] = [
+  {
+    id: "p-001",
+    slug: "real-estate-os",
+    name: "Real Estate OS",
+    tagline: "The Operating System for Modern Real Estate",
+    category: "enterprise",
+    sector: "Real Estate & Property Tech",
+    status: "live",
+    summary:
+      "End-to-end platform for property management, leasing, sales and investment operations.",
+    description:
+      "Unify your portfolio, people, and performance. AURAVEX Real Estate OS combines AI, automation, and real-time intelligence to help developers, investors, and operators build smarter, more profitable, and more sustainable assets.",
+    icon: "building",
+    accent: "#3b82f6",
+    tags: ["Title Platform", "AI-Powered", "Enterprise"],
+    featured: true,
+    year: "2024",
+    views: 8200,
+    features: [
+      {
+        title: "Unify Your Portfolio",
+        description: "All assets, data, and stakeholders in one intelligent platform.",
+        icon: "box",
+      },
+      {
+        title: "Make Smarter Decisions",
+        description: "AI-powered analytics and predictive intelligence.",
+        icon: "sparkles",
+      },
+      {
+        title: "Operate More Efficiently",
+        description: "Automate workflows and reduce manual work across teams.",
+        icon: "settings",
+      },
+      {
+        title: "Build a Sustainable Future",
+        description: "Track ESG impact and create long-term value.",
+        icon: "leaf",
+      },
+    ],
+    stack: ["Next.js", "TypeScript", "Python", "FastAPI", "PostgreSQL", "PostGIS", "Redis", "AWS"],
+    metrics: [
+      { label: "Total Assets Managed", value: "AED 50B+", trend: "up" },
+      { label: "Properties Worldwide", value: "320+", trend: "up" },
+      { label: "Sq. Ft. Under Management", value: "1.2M+", trend: "up" },
+      { label: "Average Occupancy Rate", value: "98%", delta: "+3%", trend: "up" },
+    ],
+    architecture: [
+      {
+        layer: "Experience Layer",
+        description: "Role-aware dashboards for owners, operators, tenants and investors.",
+        tech: ["Next.js 15", "React Server Components", "Tailwind CSS"],
+      },
+      {
+        layer: "Intelligence Layer",
+        description: "Occupancy forecasting, valuation models and anomaly detection.",
+        tech: ["PyTorch", "Feature Store", "Vector Search"],
+      },
+      {
+        layer: "Service Layer",
+        description: "Domain services for leasing, finance, maintenance and compliance.",
+        tech: ["FastAPI", "Celery", "GraphQL Gateway"],
+      },
+      {
+        layer: "Data Layer",
+        description: "Single source of truth with geospatial and time-series support.",
+        tech: ["PostgreSQL", "PostGIS", "TimescaleDB", "S3"],
+      },
+    ],
+    timeline: [
+      { phase: "Discovery", duration: "2 weeks", detail: "Portfolio audit and data mapping" },
+      { phase: "Implementation", duration: "8 weeks", detail: "Core modules and migrations" },
+      { phase: "Company-wide Rollout", duration: "12 weeks", detail: "Training and adoption" },
+      { phase: "Full impact", duration: "6 months", detail: "Measured outcomes" },
+    ],
+    gallery: [
+      { id: "g1", type: "image", src: "/media/real-estate-os/portfolio.svg", alt: "Portfolio overview dashboard" },
+      { id: "g2", type: "image", src: "/media/real-estate-os/map.svg", alt: "Geospatial asset map" },
+      { id: "g3", type: "image", src: "/media/real-estate-os/insights.svg", alt: "AI insights panel" },
+    ],
+    video: {
+      id: "v1",
+      type: "video",
+      src: "/media/real-estate-os/tour.mp4",
+      poster: "/media/real-estate-os/portfolio.svg",
+      alt: "Discover AURAVEX Real Estate OS",
+      caption: "Discover AURAVEX Real Estate OS",
+    },
+    links: { demo: "/contact", caseStudy: "/our-work/manual-work-reduction" },
+  },
+  {
+    id: "p-002",
+    slug: "operations-suite",
+    name: "Operations Suite",
+    tagline: "Every Workflow, Connected and Automated",
+    category: "automation",
+    sector: "Enterprise Operations",
+    status: "live",
+    summary:
+      "Automate workflows, streamline approvals and connect your entire business.",
+    description:
+      "Operations Suite replaces email chains and spreadsheets with a single automated backbone. Design approval flows visually, connect every system you already run, and give leadership real-time visibility into what is moving and what is stuck.",
+    icon: "settings",
+    accent: "#60a5fa",
+    tags: ["Automation", "Workflow", "Integration"],
+    featured: true,
+    year: "2024",
+    views: 4800,
+    features: [
+      { title: "Workflow Automation", description: "Visual builder for any multi-step business process.", icon: "workflow" },
+      { title: "Approvals & Compliance", description: "Policy-aware routing with a full audit trail.", icon: "shield" },
+      { title: "Multi-Entity Operations", description: "Run many companies and regions from one console.", icon: "network" },
+      { title: "System Integration", description: "Connect ERP, finance and field tools without rebuilds.", icon: "link" },
+    ],
+    stack: ["Next.js", "TypeScript", "Python", "Temporal", "PostgreSQL", "Kafka", "Kubernetes"],
+    metrics: [
+      { label: "Faster Decision-Making", value: "40%", trend: "up" },
+      { label: "Lower Operational Costs", value: "28%", trend: "down" },
+      { label: "Active Sites Connected", value: "12+", trend: "up" },
+      { label: "Manual Steps Removed", value: "1.4K", trend: "up" },
+    ],
+    architecture: [
+      { layer: "Designer", description: "Drag-and-drop workflow canvas with versioning.", tech: ["React Flow", "Zod", "Next.js"] },
+      { layer: "Orchestration", description: "Durable execution with retries and compensation.", tech: ["Temporal", "Celery"] },
+      { layer: "Integration", description: "Connector framework for ERP, CRM and finance systems.", tech: ["Kafka", "Webhooks", "REST"] },
+      { layer: "Governance", description: "Immutable audit log and policy engine.", tech: ["PostgreSQL", "OPA"] },
+    ],
+    timeline: [
+      { phase: "Assessment", duration: "3 weeks", detail: "Process mapping" },
+      { phase: "Integration", duration: "10 weeks", detail: "Systems connected" },
+      { phase: "Training & Adoption", duration: "4 weeks", detail: "Team enablement" },
+      { phase: "Full impact", duration: "8 months", detail: "Sustained gains" },
+    ],
+    gallery: [
+      { id: "g1", type: "image", src: "/media/operations-suite/flow.svg", alt: "Workflow canvas" },
+      { id: "g2", type: "image", src: "/media/operations-suite/approvals.svg", alt: "Approval queue" },
+    ],
+    links: { demo: "/contact", caseStudy: "/our-work/unified-operations" },
+  },
+  {
+    id: "p-003",
+    slug: "business-intelligence",
+    name: "Business Intelligence",
+    tagline: "Turn Data Into Decisions",
+    category: "ai",
+    sector: "Data & Analytics",
+    status: "live",
+    summary:
+      "Turn your data into clear insights with powerful analytics and interactive dashboards.",
+    description:
+      "A analytics platform that speaks the language of your business. Business Intelligence models your portfolio, forecasts performance, and surfaces the handful of numbers that actually change a decision — with AI narration that explains the why behind every move.",
+    icon: "chart",
+    accent: "#7c6cff",
+    tags: ["Analytics", "Real-time", "Data Platform"],
+    featured: true,
+    year: "2024",
+    views: 7100,
+    features: [
+      { title: "Real-time Dashboards", description: "Live metrics with sub-second refresh.", icon: "activity" },
+      { title: "Predictive Analytics", description: "Forecast revenue, occupancy and risk.", icon: "trending" },
+      { title: "Custom Reports", description: "Board-ready output in a few clicks.", icon: "file" },
+      { title: "AI Narration", description: "Plain-language explanations of every shift.", icon: "sparkles" },
+    ],
+    stack: ["Next.js", "TypeScript", "Python", "dbt", "Snowflake", "DuckDB", "LangChain"],
+    metrics: [
+      { label: "Higher Portfolio Performance", value: "35%", trend: "up" },
+      { label: "Faster Risk Assessment", value: "50%", trend: "up" },
+      { label: "Data Accuracy", value: "90%", trend: "up" },
+      { label: "Reporting Time Saved", value: "3.5x", trend: "up" },
+    ],
+    architecture: [
+      { layer: "Semantic Layer", description: "Governed metric definitions shared across teams.", tech: ["dbt", "Cube"] },
+      { layer: "Query Engine", description: "Columnar execution for interactive exploration.", tech: ["DuckDB", "Snowflake"] },
+      { layer: "AI Layer", description: "Natural-language querying and insight summarisation.", tech: ["LangChain", "Vector DB"] },
+      { layer: "Delivery", description: "Dashboards, scheduled reports and alerts.", tech: ["Next.js", "WebSockets"] },
+    ],
+    timeline: [
+      { phase: "Strategy", duration: "2 weeks", detail: "Metric definition" },
+      { phase: "AI Model Setup", duration: "8 weeks", detail: "Training and validation" },
+      { phase: "Portfolio Rollout", duration: "6 weeks", detail: "Team onboarding" },
+      { phase: "Full impact", duration: "4 months", detail: "Decision velocity" },
+    ],
+    gallery: [
+      { id: "g1", type: "image", src: "/media/business-intelligence/dashboard.svg", alt: "Analytics dashboard" },
+      { id: "g2", type: "image", src: "/media/business-intelligence/forecast.svg", alt: "Forecast view" },
+    ],
+    links: { demo: "/contact", caseStudy: "/our-work/ai-portfolio-performance" },
+  },
+  {
+    id: "p-004",
+    slug: "visitor-experience",
+    name: "Visitor Experience",
+    tagline: "Premium Experiences for Iconic Destinations",
+    category: "saas",
+    sector: "Hospitality & Experience Tech",
+    status: "live",
+    summary:
+      "Seamless digital experiences for visitors, residents and guests across iconic destinations.",
+    description:
+      "From the first scan at the gate to the last recommendation of the evening, Visitor Experience runs the guest journey. Smart access, digital concierge and community services in one branded app your venue actually owns.",
+    icon: "user",
+    accent: "#38bdf8",
+    tags: ["Digital Experience", "Smart Venues", "AI"],
+    featured: false,
+    year: "2023",
+    views: 3400,
+    features: [
+      { title: "Smart Check-in & Access", description: "QR, NFC and face-based entry in one flow.", icon: "scan" },
+      { title: "Digital Concierge", description: "AI assistant for services, wayfinding and bookings.", icon: "sparkles" },
+      { title: "Integrated Community Services", description: "Amenities, events and requests in one place.", icon: "network" },
+      { title: "Experience Analytics", description: "Understand flow, dwell time and satisfaction.", icon: "activity" },
+    ],
+    stack: ["Next.js", "React Native", "TypeScript", "Python", "Redis", "WebRTC", "AWS"],
+    metrics: [
+      { label: "Faster Check-in", value: "72%", trend: "up" },
+      { label: "Guest Satisfaction", value: "4.8/5", trend: "up" },
+      { label: "Venues Live", value: "24", trend: "up" },
+      { label: "Monthly Visitors", value: "410K", trend: "up" },
+    ],
+    architecture: [
+      { layer: "Guest Apps", description: "Web and native clients with offline support.", tech: ["Next.js", "React Native"] },
+      { layer: "Access Control", description: "Credential issuance and device integration.", tech: ["NFC", "BLE", "Gateways"] },
+      { layer: "Concierge AI", description: "Retrieval-grounded assistant per venue.", tech: ["LangChain", "Vector DB"] },
+      { layer: "Operations", description: "Staff console for requests and incidents.", tech: ["FastAPI", "WebSockets"] },
+    ],
+    timeline: [
+      { phase: "Design", duration: "3 weeks", detail: "Journey mapping" },
+      { phase: "Build", duration: "9 weeks", detail: "Apps and access layer" },
+      { phase: "Venue Pilot", duration: "4 weeks", detail: "Live operations" },
+      { phase: "Full impact", duration: "5 months", detail: "Portfolio rollout" },
+    ],
+    gallery: [
+      { id: "g1", type: "image", src: "/media/visitor-experience/checkin.svg", alt: "Check-in screen" },
+      { id: "g2", type: "image", src: "/media/visitor-experience/concierge.svg", alt: "Concierge assistant" },
+    ],
+    links: { demo: "/contact" },
+  },
+  {
+    id: "p-005",
+    slug: "crm-lead-flow",
+    name: "CRM & Lead Flow",
+    tagline: "Capture, Nurture, Convert",
+    category: "saas",
+    sector: "Sales & Customer Experience",
+    status: "live",
+    summary:
+      "Capture, nurture and convert leads with an intelligent, automated sales pipeline.",
+    description:
+      "A CRM built for high-velocity sales teams. Every lead scored the moment it lands, every follow-up sequenced automatically, and a pipeline view that tells leadership exactly where revenue is going to land this quarter.",
+    icon: "users",
+    accent: "#2dd4bf",
+    tags: ["CRM", "Lead Management", "Automation"],
+    featured: false,
+    year: "2024",
+    views: 2900,
+    features: [
+      { title: "Lead Capture & Scoring", description: "Every source unified and ranked by intent.", icon: "target" },
+      { title: "Automated Follow-ups", description: "Multi-channel sequences that never drop a lead.", icon: "workflow" },
+      { title: "Sales Pipeline Management", description: "Forecast-grade visibility by stage and owner.", icon: "trending" },
+      { title: "Conversation Intelligence", description: "Call and message insight fed back into scoring.", icon: "sparkles" },
+    ],
+    stack: ["Next.js", "TypeScript", "Python", "PostgreSQL", "Redis", "Twilio", "SendGrid"],
+    metrics: [
+      { label: "Qualified Leads", value: "2,428", delta: "+24%", trend: "up" },
+      { label: "Conversion Rate", value: "6.4%", delta: "+12%", trend: "up" },
+      { label: "Pipeline Value", value: "$420.5M", trend: "up" },
+      { label: "Response Time", value: "-68%", trend: "down" },
+    ],
+    architecture: [
+      { layer: "Capture", description: "Forms, ads, portals and inbound calls unified.", tech: ["Edge Functions", "Webhooks"] },
+      { layer: "Scoring", description: "Behavioural and firmographic intent models.", tech: ["Python", "scikit-learn"] },
+      { layer: "Engagement", description: "Email, SMS and WhatsApp orchestration.", tech: ["Twilio", "SendGrid"] },
+      { layer: "Pipeline", description: "Deal management with forecast rollups.", tech: ["PostgreSQL", "FastAPI"] },
+    ],
+    timeline: [
+      { phase: "Setup", duration: "2 weeks", detail: "Source integration" },
+      { phase: "Automation", duration: "6 weeks", detail: "Sequences and scoring" },
+      { phase: "Team Rollout", duration: "3 weeks", detail: "Sales enablement" },
+      { phase: "Full impact", duration: "4 months", detail: "Conversion lift" },
+    ],
+    gallery: [
+      { id: "g1", type: "image", src: "/media/crm-lead-flow/pipeline.svg", alt: "Pipeline board" },
+      { id: "g2", type: "image", src: "/media/crm-lead-flow/scoring.svg", alt: "Lead scoring" },
+    ],
+    links: { demo: "/contact" },
+  },
+  {
+    id: "p-006",
+    slug: "custom-platforms",
+    name: "Custom Platforms",
+    tagline: "Built Around Your Business Model",
+    category: "enterprise",
+    sector: "Custom Software Solutions",
+    status: "live",
+    summary:
+      "Unique software solutions designed for your business model, industry and vision.",
+    description:
+      "When the off-the-shelf answer does not fit, we build the platform that does. Custom Platforms is our end-to-end engagement — architecture, design, engineering and handover — delivered by the same team that builds our own products.",
+    icon: "package",
+    accent: "#a855f7",
+    tags: ["Tailored Build", "Integration", "Scalable"],
+    featured: false,
+    year: "2024",
+    views: 980,
+    features: [
+      { title: "Bespoke Web & Mobile Apps", description: "Designed and engineered around your model.", icon: "layers" },
+      { title: "System Integrations", description: "Connect everything you already depend on.", icon: "link" },
+      { title: "Scalable Architecture", description: "Built to survive the next order of magnitude.", icon: "network" },
+      { title: "Full Handover", description: "Documentation, training and source ownership.", icon: "file" },
+    ],
+    stack: ["Next.js", "TypeScript", "Python", "Go", "PostgreSQL", "Kubernetes", "Terraform"],
+    metrics: [
+      { label: "Platforms Delivered", value: "38", trend: "up" },
+      { label: "On-time Delivery", value: "96%", trend: "up" },
+      { label: "Avg. Time to Launch", value: "14 wks", trend: "down" },
+      { label: "Client Retention", value: "92%", trend: "up" },
+    ],
+    architecture: [
+      { layer: "Discovery", description: "Domain modelling and technical due diligence.", tech: ["Workshops", "Event Storming"] },
+      { layer: "Foundation", description: "Infrastructure, CI/CD and observability from day one.", tech: ["Terraform", "Kubernetes"] },
+      { layer: "Product", description: "Iterative delivery with production releases every sprint.", tech: ["Next.js", "FastAPI"] },
+      { layer: "Handover", description: "Runbooks, training and knowledge transfer.", tech: ["Docs", "Playbooks"] },
+    ],
+    timeline: [
+      { phase: "Discovery", duration: "3 weeks", detail: "Scope and architecture" },
+      { phase: "Foundation", duration: "4 weeks", detail: "Infra and design system" },
+      { phase: "Delivery", duration: "10 weeks", detail: "Iterative build" },
+      { phase: "Handover", duration: "2 weeks", detail: "Training and transfer" },
+    ],
+    gallery: [
+      { id: "g1", type: "image", src: "/media/custom-platforms/architecture.svg", alt: "Architecture diagram" },
+    ],
+    links: { demo: "/contact" },
+  },
+  {
+    id: "p-007",
+    slug: "aurora-ai-engine",
+    name: "Aurora AI Engine",
+    tagline: "Private Intelligence for Enterprise Data",
+    category: "ai",
+    sector: "Applied AI",
+    status: "beta",
+    summary:
+      "Retrieval-grounded AI assistants trained on your documents, running inside your perimeter.",
+    description:
+      "Aurora turns an organisation's scattered knowledge into a single assistant that answers with citations. It indexes contracts, drawings, reports and tickets, runs entirely within your cloud boundary, and refuses to answer what it cannot source.",
+    icon: "brain",
+    accent: "#e879f9",
+    tags: ["RAG", "Private Cloud", "LLM Ops"],
+    featured: false,
+    year: "2025",
+    views: 1560,
+    features: [
+      { title: "Grounded Answers", description: "Every response cites the source document.", icon: "file" },
+      { title: "In-Perimeter Deployment", description: "Runs in your VPC. Data never leaves.", icon: "shield" },
+      { title: "Multi-Format Ingestion", description: "PDFs, drawings, spreadsheets and email.", icon: "box" },
+      { title: "Evaluation Harness", description: "Continuous accuracy scoring against golden sets.", icon: "activity" },
+    ],
+    stack: ["Python", "LangChain", "PyTorch", "pgvector", "FastAPI", "Kubernetes"],
+    metrics: [
+      { label: "Answer Accuracy", value: "94%", trend: "up" },
+      { label: "Documents Indexed", value: "2.1M", trend: "up" },
+      { label: "Median Latency", value: "780ms", trend: "down" },
+      { label: "Hours Saved / Month", value: "3.2K", trend: "up" },
+    ],
+    architecture: [
+      { layer: "Ingestion", description: "Parsing, chunking and OCR for mixed-format archives.", tech: ["Unstructured", "Tesseract"] },
+      { layer: "Retrieval", description: "Hybrid dense and keyword search with reranking.", tech: ["pgvector", "BM25"] },
+      { layer: "Reasoning", description: "Tool-using agent with strict citation policy.", tech: ["LangChain", "Claude"] },
+      { layer: "Evaluation", description: "Regression testing on curated question sets.", tech: ["Ragas", "MLflow"] },
+    ],
+    timeline: [
+      { phase: "Corpus Audit", duration: "2 weeks", detail: "Source inventory" },
+      { phase: "Pipeline Build", duration: "6 weeks", detail: "Ingestion and retrieval" },
+      { phase: "Pilot", duration: "4 weeks", detail: "Department rollout" },
+      { phase: "Full impact", duration: "3 months", detail: "Org-wide adoption" },
+    ],
+    gallery: [
+      { id: "g1", type: "image", src: "/media/aurora-ai-engine/assistant.svg", alt: "Assistant interface" },
+    ],
+    links: { demo: "/contact", github: "https://github.com" },
+  },
+  {
+    id: "p-008",
+    slug: "forge-devkit",
+    name: "Forge DevKit",
+    tagline: "The Internal Platform Toolchain",
+    category: "developer-tools",
+    sector: "Developer Experience",
+    status: "development",
+    summary:
+      "Opinionated scaffolding, CI templates and observability defaults for enterprise engineering teams.",
+    description:
+      "Forge is the toolchain we use to start every AURAVEX build. One command produces a production-shaped service with auth, logging, tracing, CI and deploy pipelines already wired — so teams ship features on day one instead of week three.",
+    icon: "terminal",
+    accent: "#5eead4",
+    tags: ["CLI", "Platform Engineering", "DX"],
+    featured: false,
+    year: "2025",
+    views: 640,
+    features: [
+      { title: "One-Command Scaffolds", description: "Production-shaped services in seconds.", icon: "terminal" },
+      { title: "Golden CI Pipelines", description: "Test, scan, build and deploy out of the box.", icon: "workflow" },
+      { title: "Observability Defaults", description: "Tracing and structured logs pre-wired.", icon: "activity" },
+      { title: "Policy as Code", description: "Security and compliance gates enforced in CI.", icon: "shield" },
+    ],
+    stack: ["Go", "TypeScript", "Terraform", "GitHub Actions", "OpenTelemetry"],
+    metrics: [
+      { label: "Setup Time Saved", value: "18 days", trend: "down" },
+      { label: "Services Scaffolded", value: "140+", trend: "up" },
+      { label: "CI Pass Rate", value: "97%", trend: "up" },
+      { label: "Internal Adoption", value: "100%", trend: "up" },
+    ],
+    architecture: [
+      { layer: "CLI", description: "Template engine with interactive prompts.", tech: ["Go", "Cobra"] },
+      { layer: "Templates", description: "Versioned service and frontend blueprints.", tech: ["Next.js", "FastAPI"] },
+      { layer: "Pipelines", description: "Reusable workflows with policy gates.", tech: ["GitHub Actions", "OPA"] },
+      { layer: "Telemetry", description: "Standardised traces, metrics and logs.", tech: ["OpenTelemetry", "Grafana"] },
+    ],
+    timeline: [
+      { phase: "Internal Alpha", duration: "4 weeks", detail: "Core templates" },
+      { phase: "Team Rollout", duration: "6 weeks", detail: "Migration support" },
+      { phase: "Hardening", duration: "4 weeks", detail: "Policy and scanning" },
+      { phase: "Public Beta", duration: "Q3 2025", detail: "External release" },
+    ],
+    gallery: [
+      { id: "g1", type: "image", src: "/media/forge-devkit/cli.svg", alt: "CLI output" },
+    ],
+    links: { github: "https://github.com" },
+  },
+  {
+    id: "p-009",
+    slug: "atlas-site-builder",
+    name: "Atlas Site Builder",
+    tagline: "Enterprise Websites Without the Rebuild Cycle",
+    category: "web-apps",
+    sector: "Digital Presence",
+    status: "coming-soon",
+    summary:
+      "Composable, design-system-driven website platform with visual editing and instant publishing.",
+    description:
+      "Atlas lets marketing teams ship pages without engineering tickets, while keeping every component inside the design system engineering owns. Visual editing on top of typed content models, with preview, approval and instant rollback.",
+    icon: "globe",
+    accent: "#60a5fa",
+    tags: ["CMS", "Design System", "Edge"],
+    featured: false,
+    year: "2025",
+    views: 420,
+    features: [
+      { title: "Visual Page Composition", description: "Marketing-owned pages from governed blocks.", icon: "layers" },
+      { title: "Typed Content Models", description: "Schema-validated content with previews.", icon: "file" },
+      { title: "Instant Publish & Rollback", description: "Atomic deploys at the edge.", icon: "workflow" },
+      { title: "Built-in Analytics", description: "Page performance without extra tooling.", icon: "chart" },
+    ],
+    stack: ["Next.js", "TypeScript", "Edge Runtime", "PostgreSQL", "Cloudflare"],
+    metrics: [
+      { label: "Time to Publish", value: "-85%", trend: "down" },
+      { label: "Lighthouse Score", value: "99", trend: "up" },
+      { label: "Edge Regions", value: "310", trend: "up" },
+      { label: "Launch", value: "Q4 2025", trend: "flat" },
+    ],
+    architecture: [
+      { layer: "Editor", description: "Block-based visual composition with live preview.", tech: ["React", "Next.js"] },
+      { layer: "Content API", description: "Typed schemas with validation and versioning.", tech: ["PostgreSQL", "Zod"] },
+      { layer: "Delivery", description: "Edge-rendered pages with atomic deploys.", tech: ["Cloudflare", "ISR"] },
+      { layer: "Insights", description: "First-party analytics without third-party scripts.", tech: ["ClickHouse"] },
+    ],
+    timeline: [
+      { phase: "Design", duration: "4 weeks", detail: "Block system" },
+      { phase: "Build", duration: "12 weeks", detail: "Editor and API" },
+      { phase: "Private Beta", duration: "6 weeks", detail: "Selected clients" },
+      { phase: "Launch", duration: "Q4 2025", detail: "General availability" },
+    ],
+    gallery: [
+      { id: "g1", type: "image", src: "/media/atlas-site-builder/editor.svg", alt: "Visual editor" },
+    ],
+    links: {},
+  },
+];
+
+export function getProduct(slug: string) {
+  return PRODUCTS.find((p) => p.slug === slug);
+}
+
+export function getFeaturedProducts() {
+  return PRODUCTS.filter((p) => p.featured);
+}
+
+export const PRODUCT_FILTERS: { id: ProductCategory | "all"; label: string; icon: string }[] = [
+  { id: "all", label: "All Products", icon: "grid" },
+  { id: "ai", label: "AI", icon: "brain" },
+  { id: "saas", label: "SaaS", icon: "box" },
+  { id: "web-apps", label: "Web Apps", icon: "globe" },
+  { id: "automation", label: "Automation", icon: "workflow" },
+  { id: "developer-tools", label: "Developer Tools", icon: "terminal" },
+  { id: "enterprise", label: "Enterprise Solutions", icon: "shield" },
+];
