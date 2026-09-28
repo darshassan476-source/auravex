@@ -29,6 +29,9 @@ services:
         value: "1"
       - key: AURAVEX_PROXY_HOPS
         value: "2"
-      # The Netlify site's address, e.g. https://auravex.netlify.app
+      # The Netlify site that proxies /api and /go here.
       - key: AURAVEX_ALLOWED_ORIGINS
+        value: https://auravex-site.netlify.app
+      # The site agent's model key; entered in the Render dashboard.
+      - key: ANTHROPIC_API_KEY
         sync: false
