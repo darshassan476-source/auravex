@@ -36,7 +36,7 @@ export function isVideo(file: File) {
 }
 
 /** The public site's proxy refuses requests over 8 MB; anything near that goes up in pieces. */
-const SINGLE_REQUEST_LIMIT = 4 * 1024 * 1024;
+const SINGLE_REQUEST_LIMIT = 2 * 1024 * 1024;
 
 /**
  * Stores a video or audio file as it is. Small files go in one request;

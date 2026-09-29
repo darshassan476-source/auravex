@@ -16,7 +16,8 @@ import { saveMediaFile, sniffImage } from "./site";
  * An upload left unfinished is swept after a day.
  */
 
-export const CHUNK_BYTES = 4 * 1024 * 1024;
+/** Small enough that one piece lands quickly even on a slow uplink. */
+export const CHUNK_BYTES = 2 * 1024 * 1024;
 export const MAX_UPLOAD = 120 * 1024 * 1024;
 /** Chunked uploads are for films and music beds; images go through the ordinary route. */
 const ALLOWED = new Set(["video/mp4", "audio/mpeg", "audio/wav", "audio/mp4"]);
