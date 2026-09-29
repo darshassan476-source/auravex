@@ -7,6 +7,10 @@
  * means adding one entry here and reading it through `useText`.
  */
 import { SITE } from "@/data/site";
+import { ABOUT_CONTACT_GROUPS } from "./content/aboutContact";
+import { CHROME_GROUPS } from "./content/chrome";
+import { PRODUCTS_LEGAL_GROUPS } from "./content/productsLegal";
+import { SECTORS_WORK_GROUPS } from "./content/sectorsWork";
 
 export interface ContentField {
   id: string;
@@ -24,7 +28,7 @@ export interface ContentGroup {
   fields: ContentField[];
 }
 
-export const CONTENT_GROUPS: ContentGroup[] = [
+const CORE_GROUPS: ContentGroup[] = [
   {
     id: "brand",
     label: "Brand",
@@ -159,6 +163,15 @@ export const CONTENT_GROUPS: ContentGroup[] = [
       { id: "mobile.cta.button", label: "Button", value: "Set a meeting" },
     ],
   },
+];
+
+/** Every group, in the order the Content screen lists them. Each page's copy lives in `./content/`. */
+export const CONTENT_GROUPS: ContentGroup[] = [
+  ...CORE_GROUPS,
+  ...CHROME_GROUPS,
+  ...ABOUT_CONTACT_GROUPS,
+  ...SECTORS_WORK_GROUPS,
+  ...PRODUCTS_LEGAL_GROUPS,
 ];
 
 /** Flat id -> default, for `useText` lookups. */
