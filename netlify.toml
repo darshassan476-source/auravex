@@ -7,3 +7,18 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# The API and tracked links are proxied to the backend by Netlify's CDN,
+# ahead of the Next.js server function: a function caps request and response
+# bodies at about 6 MB, which video uploads and playback go well past.
+[[redirects]]
+  from = "/api/*"
+  to = "https://auravex-api.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/go/*"
+  to = "https://auravex-api.onrender.com/go/:splat"
+  status = 200
+  force = true
