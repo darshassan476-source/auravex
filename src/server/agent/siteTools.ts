@@ -185,13 +185,13 @@ export async function siteOverview(): Promise<string> {
     lines.push(`- ${p.slug}: ${String(o.name ?? p.name)} · ${String(o.status ?? p.status)}${o.hidden ? " · HIDDEN" : ""}`);
   }
   lines.push("");
-  lines.push("TEXT FIELDS (id = current value):");
+  // Only an index: every group's fields together run to hundreds of lines, and
+  // the overview rides along on every turn. find_text / get_text_group fetch
+  // the ones a request is about.
+  lines.push("TEXT GROUPS (group id: label — fields; open with get_text_group, or search with find_text):");
   for (const group of CONTENT_GROUPS) {
-    lines.push(`[${group.label}] ${group.description}`);
-    for (const field of group.fields) {
-      const value = text[field.id] ?? CONTENT_DEFAULTS[field.id] ?? "";
-      lines.push(`  ${field.id} = "${trunc(value.replace(/\s+/g, " "))}"${text[field.id] !== undefined ? " (edited)" : ""}`);
-    }
+    const edited = group.fields.filter((f) => text[f.id] !== undefined).length;
+    lines.push(`- ${group.id}: ${group.label} — ${group.fields.length}${edited ? ` (${edited} edited)` : ""}`);
   }
   lines.push("");
   const blockCount = Object.values(blocks).reduce((a, l) => a + (l?.length ?? 0), 0);
@@ -208,8 +208,23 @@ export function siteTools(ledger: Ledger): { tools: Tool[]; run: (name: string, 
       input_schema: { type: "object", properties: {} },
     },
     {
+      name: "find_text",
+      description: "Search the site's editable text by what it says or what it is (e.g. 'contact heading', 'Request a Demo'). Returns matching field ids with their current values.",
+      input_schema: { type: "object", properties: { query: { type: "string" } }, required: ["query"] },
+    },
+    {
+      name: "get_text_group",
+      description: "Every text field in one group from the overview's TEXT GROUPS, with ids and current values.",
+      input_schema: { type: "object", properties: { group: { type: "string" } }, required: ["group"] },
+    },
+    {
+      name: "get_product",
+      description: "One product's full current copy and facts by slug: name, tagline, summary, description, sector, category, tags, stack, figures, links, status. Read it before writing or rewriting product copy.",
+      input_schema: { type: "object", properties: { slug: { type: "string" } }, required: ["slug"] },
+    },
+    {
       name: "set_text",
-      description: "Replace the copy of one text field. `id` must be one of the TEXT FIELD ids from the overview. Keep meaning and length in step with the original unless asked otherwise; never invent facts, names or numbers.",
+      description: "Replace the copy of one text field. `id` must be a field id from find_text or get_text_group. Keep meaning and length in step with the original unless asked otherwise; never invent facts, names or numbers.",
       input_schema: { type: "object", properties: { id: { type: "string" }, value: { type: "string" } }, required: ["id", "value"] },
     },
     {
@@ -273,6 +288,54 @@ export function siteTools(ledger: Ledger): { tools: Tool[]; run: (name: string, 
     switch (name) {
       case "get_site_overview":
         return siteOverview();
+
+      case "find_text": {
+        const words = String(input.query ?? "").toLowerCase().split(/\s+/).filter(Boolean);
+        if (!words.length) return "Say what to look for.";
+        const text = await getSetting<Record<string, string>>("text", {});
+        const hits: string[] = [];
+        for (const group of CONTENT_GROUPS) {
+          for (const field of group.fields) {
+            const value = text[field.id] ?? CONTENT_DEFAULTS[field.id] ?? "";
+            const hay = `${group.label} ${field.label} ${field.id} ${value}`.toLowerCase();
+            if (words.every((w) => hay.includes(w))) {
+              hits.push(`${field.id} [${group.label} · ${field.label}] = "${trunc(value.replace(/\s+/g, " "), 160)}"`);
+            }
+          }
+        }
+        if (!hits.length) return `Nothing matches "${input.query}". Try fewer or different words, or open a group.`;
+        return hits.slice(0, 25).join("\n") + (hits.length > 25 ? `\n… ${hits.length - 25} more; be more specific.` : "");
+      }
+
+      case "get_text_group": {
+        const group = CONTENT_GROUPS.find((g) => g.id === String(input.group ?? ""));
+        if (!group) return `No group "${input.group}". Groups: ${CONTENT_GROUPS.map((g) => g.id).join(", ")}.`;
+        const text = await getSetting<Record<string, string>>("text", {});
+        return [
+          `[${group.label}] ${group.description}`,
+          ...group.fields.map((field) => {
+            const value = text[field.id] ?? CONTENT_DEFAULTS[field.id] ?? "";
+            return `${field.id} (${field.label}) = "${trunc(value.replace(/\s+/g, " "), 400)}"${text[field.id] !== undefined ? " (edited)" : ""}`;
+          }),
+        ].join("\n");
+      }
+
+      case "get_product": {
+        const slug = String(input.slug ?? "");
+        const base = (await catalogue()).find((p) => p.slug === slug);
+        if (!base) return `No product with slug "${slug}".`;
+        const patch = (await getSetting<Record<string, Record<string, unknown>>>("products", {}))[slug] ?? {};
+        const p = { ...base, ...patch } as Product & Record<string, unknown>;
+        return JSON.stringify(
+          {
+            slug, name: p.name, tagline: p.tagline, summary: p.summary, description: p.description,
+            status: p.status, sector: p.sector, category: p.category, tags: p.tags, stack: p.stack,
+            year: p.year, metrics: p.metrics, links: p.links, demoNote: p.demoNote,
+          },
+          null,
+          1,
+        );
+      }
 
       case "set_text": {
         const id = String(input.id ?? "");
