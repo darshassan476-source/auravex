@@ -7,6 +7,7 @@ import {
   resolveBackground,
   type BackgroundId,
 } from "@/data/backgrounds";
+import { BACKGROUND_BLUR } from "@/data/backgroundBlur";
 import type { PageKey } from "@/lib/cms";
 import { useTheme } from "@/themes/ThemeProvider";
 import { cn } from "@/lib/utils";
@@ -63,6 +64,10 @@ export function HeroBackdrop({
   // and centre it rather than using the plate's framing.
   const tint = uploaded ? (mode === "dark" ? "#0a0e18" : "#eef2f9") : plate.tint;
   const position = uploaded ? "50% 50%" : plate.position;
+  // A plate's tiny blurred copy ships inside the page, so the room is there the
+  // instant the page is, and sharpens when the full image lands. An image
+  // passed by path has none; it falls back to the tint.
+  const blur = image || uploaded ? undefined : BACKGROUND_BLUR[plate.id];
 
   return (
     <div
@@ -76,7 +81,11 @@ export function HeroBackdrop({
         fill
         priority={priority}
         sizes="100vw"
-        quality={82}
+        // The plate sits under dark scrims; this is indistinguishable from
+        // higher settings there and a good deal lighter on a slow connection.
+        quality={70}
+        placeholder={blur ? "blur" : "empty"}
+        blurDataURL={blur}
         // Uploaded images are data URLs; the optimiser cannot touch those.
         unoptimized={Boolean(uploaded)}
         className="object-cover"

@@ -23,7 +23,11 @@ import {
 } from "@/components/ui/Primitives";
 import { CASE_STUDIES } from "@/data/caseStudies";
 import { PRODUCTS, getProduct } from "@/data/products";
-import { getCatalogue } from "@/server/cache";
+import { findProduct } from "@/server/cache";
+
+// Pages refresh at least this often, so a product edited or published in the
+// portal never stays stale (or missing) on a cached page.
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return PRODUCTS.map((product) => ({ slug: product.slug }));
@@ -35,7 +39,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProduct(slug) ?? (await getCatalogue()).find((p) => p.slug === slug);
+  const product = getProduct(slug) ?? (await findProduct(slug));
   if (!product) return { title: "Product not found" };
 
   return {
@@ -50,8 +54,8 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  // Bundled products are known at build time; ones created in the portal come from the tagged cache.
-  const product = getProduct(slug) ?? (await getCatalogue()).find((p) => p.slug === slug);
+  // Bundled products are known at build time; ones created in the portal come from the store.
+  const product = getProduct(slug) ?? (await findProduct(slug));
   if (!product) notFound();
 
   const related = PRODUCTS.filter(

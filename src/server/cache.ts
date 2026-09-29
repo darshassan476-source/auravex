@@ -84,3 +84,18 @@ export const getCatalogue = unstable_cache(
   ["site-catalogue"],
   cacheOptions,
 );
+
+/**
+ * A product by slug, found even when it was published after the cached
+ * catalogue was read: a miss in the cache is checked against the live store
+ * before the page gives up with a 404, so a new product's page works at once.
+ */
+export async function findProduct(slug: string): Promise<Product | undefined> {
+  const cached = (await getCatalogue()).find((p) => p.slug === slug);
+  if (cached) return cached;
+  try {
+    return (await readCatalogue()).find((p) => p.slug === slug);
+  } catch {
+    return undefined;
+  }
+}

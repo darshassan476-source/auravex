@@ -376,11 +376,15 @@ export function CmsProvider({ children, initial }: { children: ReactNode; initia
    */
   const update = useCallback(
     (fn: (prev: CmsState) => CmsState, keys?: readonly SyncKey[]) => {
-      setState((prev) => {
-        const next = { ...fn(prev), updatedAt: new Date().toISOString() };
-        cache(next);
-        return next;
-      });
+      // The ref moves now, not on the next render: a save issued straight after
+      // an edit (Publish → flushNow) must send the edit, not the state before it.
+      const at = new Date().toISOString();
+      const base = stateRef.current;
+      const next = { ...fn(base), updatedAt: at };
+      stateRef.current = next;
+      cache(next);
+      // Another update may already be queued for this render; build on it if so.
+      setState((prev) => (prev === base ? next : { ...fn(prev), updatedAt: at }));
       if (keys?.length) queue(keys);
     },
     [queue],

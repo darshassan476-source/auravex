@@ -69,9 +69,10 @@ export function LaptopFrame({
         }}
       />
 
-      {/* On a phone the machine is turned less, so its near corner stays inside
-          the screen; the pointer still moves it from there. */}
-      <div className="relative [transform-style:preserve-3d] max-md:[transform:rotateY(8deg)]">
+      {/* On a phone the machine sits square to the viewer: the resting turn is
+          cancelled, so the base lines up under the screen and no side edge
+          shows. The pointer (or the phone's tilt) still moves it from there. */}
+      <div className="relative [transform-style:preserve-3d] max-md:[transform:rotateY(15deg)]">
         <motion.div
           style={style}
           className="relative [transform-style:preserve-3d]"
@@ -162,13 +163,15 @@ export function LaptopFrame({
               the lid. */}
           <div
             aria-hidden
-            className="relative aspect-[100/20] [transform-style:preserve-3d] md:aspect-[100/24]"
+            className="relative aspect-[100/30] [transform-style:preserve-3d] md:aspect-[100/24]"
           >
             {/* The deck's true footprint, hinged along its back edge and lying
-                away from the viewer: about half as deep as it is wide. */}
+                away from the viewer: about half as deep as it is wide. On a
+                phone it lies back less, so the keyboard reads at a useful size
+                instead of a sliver under the screen. */}
             <div
-              className="absolute inset-x-0 top-0 aspect-[100/42] origin-top [transform-style:preserve-3d] md:aspect-[100/48]"
-              style={{ transform: "rotateX(70deg)" }}
+              className="absolute inset-x-0 top-0 aspect-[100/54] origin-top [--ax-deck-tilt:58deg] [transform-style:preserve-3d] md:aspect-[100/48] md:[--ax-deck-tilt:70deg]"
+              style={{ transform: "rotateX(var(--ax-deck-tilt))" }}
             >
               {/* ----- Floor: a plane one base-thickness below the deck ----- */}
               <div

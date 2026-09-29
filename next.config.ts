@@ -7,8 +7,8 @@ const backend = process.env.AURAVEX_BACKEND_URL?.replace(/\/+$/, "");
 
 const nextConfig: NextConfig = {
   images: {
-    // Hero plates are large and soft; one quality level is enough.
-    qualities: [82],
+    // Hero plates sit under scrims and load at 70; other images keep 82.
+    qualities: [70, 82],
     formats: ["image/avif", "image/webp"],
   },
   // No floating dev badge or dev overlay on the page.
