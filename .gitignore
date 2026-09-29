@@ -48,3 +48,6 @@ next-env.d.ts
 
 # netlify cli
 /.netlify/
+
+# headless Chrome fetched by the Render build
+/.chrome/

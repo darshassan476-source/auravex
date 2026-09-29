@@ -6,7 +6,13 @@ services:
     runtime: node
     plan: free
     region: singapore
-    buildCommand: npm ci && npm run build
+    # The agents drive a headless Chrome; the native runtime has none, so the
+    # build fetches Chrome's headless shell into the project and links it.
+    buildCommand: >-
+      npm ci &&
+      npx -y @puppeteer/browsers install chrome-headless-shell@stable --path .chrome &&
+      ln -sf "$(ls -d "$PWD"/.chrome/chrome-headless-shell/linux-*/chrome-headless-shell-linux64 | head -1)/chrome-headless-shell" .chrome/chrome &&
+      npm run build
     startCommand: npm start
     healthCheckPath: /api/site
     autoDeploy: true
@@ -32,6 +38,11 @@ services:
       # The Netlify site that proxies /api and /go here.
       - key: AURAVEX_ALLOWED_ORIGINS
         value: https://auravex-site.netlify.app
+      # The Chrome the build fetched (Render checks out to /opt/render/project/src).
+      - key: CHROME_PATH
+        value: /opt/render/project/src/.chrome/chrome
+      - key: CHROME_FLAGS
+        value: --no-sandbox --disable-dev-shm-usage
       # The site agent's model key; entered in the Render dashboard.
       - key: ANTHROPIC_API_KEY
         sync: false

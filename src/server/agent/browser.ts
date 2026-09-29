@@ -142,6 +142,8 @@ export class Browser {
         `--remote-debugging-port=${port}`,
         `--window-size=${this.width},${this.height}`,
         `--user-data-dir=${this.profile}`,
+        // Hosts that run Chrome in a container (Render) need e.g. "--no-sandbox".
+        ...(process.env.CHROME_FLAGS?.split(/\s+/).filter(Boolean) ?? []),
         "about:blank",
       ],
       { stdio: "ignore" },
