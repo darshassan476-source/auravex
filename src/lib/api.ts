@@ -25,6 +25,8 @@ interface Options {
   body?: unknown;
   /** Multipart body; wins over `body`. */
   form?: FormData;
+  /** Raw bytes, e.g. one piece of a chunked upload; wins over both. */
+  raw?: Blob;
   signal?: AbortSignal;
 }
 
@@ -32,7 +34,10 @@ export async function api<T = unknown>(path: string, options: Options = {}): Pro
   const headers: Record<string, string> = {};
   let body: BodyInit | undefined;
 
-  if (options.form) {
+  if (options.raw) {
+    headers["Content-Type"] = "application/octet-stream";
+    body = options.raw;
+  } else if (options.form) {
     body = options.form;
   } else if (options.body !== undefined) {
     headers["Content-Type"] = "application/json";

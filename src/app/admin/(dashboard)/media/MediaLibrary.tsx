@@ -22,13 +22,22 @@ export function MediaLibrary() {
   const [dragging, setDragging] = useState(false);
   const [confirming, setConfirming] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [progress, setProgress] = useState<{ name: string; percent: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const totalBytes = state.media.reduce((a, m) => a + m.size, 0);
   const used = new Set<string>();
   Object.values(state.backgrounds).forEach((c) => c?.kind === "media" && used.add(c.mediaId));
-  Object.values(state.products).forEach((p) => p.imageId && used.add(p.imageId));
-  Object.values(state.blocks).forEach((list) => list?.forEach((b) => b.mediaId && used.add(b.mediaId)));
+  Object.values(state.products).forEach((p) =>
+    [p.imageId, ...(p.imageIds ?? []), p.videoId, p.posterId].forEach((id) => id && used.add(id)),
+  );
+  Object.values(state.blocks).forEach((list) =>
+    list?.forEach((b) => {
+      if (b.mediaId) used.add(b.mediaId);
+      const uploaded = /^\/api\/media\/([\w-]+)$/.exec(b.url ?? "");
+      if (uploaded) used.add(uploaded[1]);
+    }),
+  );
   if (state.logoId) used.add(state.logoId);
   if (state.heroImageId) used.add(state.heroImageId);
 
@@ -45,13 +54,18 @@ export function MediaLibrary() {
         continue;
       }
       try {
-        addMedia(image ? await fileToMedia(file) : await uploadRaw(file));
+        addMedia(
+          image
+            ? await fileToMedia(file)
+            : await uploadRaw(file, (f) => setProgress({ name: file.name, percent: Math.round(f * 100) })),
+        );
       } catch (error) {
         setErrors((e) => [
           ...e,
           { file: file.name, reason: error instanceof Error ? error.message : "Upload failed." },
         ]);
       } finally {
+        setProgress(null);
         setBusy((n) => n - 1);
       }
     }
@@ -112,7 +126,11 @@ export function MediaLibrary() {
           <Icon name="upload" className="size-5" strokeWidth={1.8} />
         </span>
         <span className="text-[14px] font-medium text-[var(--ax-ink)]">
-          {busy > 0 ? `Uploading ${busy}…` : "Drop images here, or click to choose"}
+          {progress
+            ? `Uploading ${progress.name} — ${progress.percent}%`
+            : busy > 0
+              ? `Uploading ${busy}…`
+              : "Drop images, videos or music here, or click to choose"}
         </span>
         <span className="max-w-sm text-[12px] leading-relaxed text-[var(--ax-ink-dim)]">
           Images up to 15 MB (large photos are downscaled to 2000px; logos keep their

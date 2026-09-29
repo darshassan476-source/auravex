@@ -17,7 +17,7 @@ import {
   type BlockType,
   type PageKey,
 } from "@/lib/cms";
-import { fileToMedia, isSupported } from "@/lib/imageUpload";
+import { fileToMedia, isSupported, isVideo, uploadRaw } from "@/lib/imageUpload";
 import { cn } from "@/lib/utils";
 
 /** Pages that can carry blocks, and where the preview should open them. */
@@ -227,19 +227,24 @@ function BlockCard({
   onChange: (patch: Partial<Block>) => void;
   onRemove: () => void;
   onMove: (direction: -1 | 1) => void;
-  media: { id: string; name: string; src: string }[];
+  media: { id: string; name: string; src: string; mime?: string }[];
   addMedia: (item: Awaited<ReturnType<typeof fileToMedia>>) => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const [videoProgress, setVideoProgress] = useState<number | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const chosen = block.mediaId ? media.find((m) => m.id === block.mediaId) : undefined;
+  const images = media.filter((m) => !m.mime || m.mime.startsWith("image/"));
+  const videos = media.filter((m) => m.mime?.startsWith("video/"));
+  const chosenVideo = videos.find((m) => m.src === block.url);
 
   const summary =
     block.type === "image"
       ? chosen?.name ?? "No image chosen"
       : block.type === "video"
-        ? block.url || "No video URL"
+        ? chosenVideo?.name ?? (block.url || "No video yet")
         : block.type === "stats"
           ? `${(block.items ?? []).filter((i) => i.value).length} figures`
           : (block.title || block.body || "Empty").slice(0, 60);
@@ -259,6 +264,27 @@ function BlockCard({
     } finally {
       setBusy(false);
       if (fileRef.current) fileRef.current.value = "";
+    }
+  }
+
+  async function onVideo(files: FileList | null) {
+    const file = files?.[0];
+    if (videoRef.current) videoRef.current.value = "";
+    if (!file) return;
+    if (!isVideo(file)) {
+      setUploadError(`${file.name} is not an MP4 video.`);
+      return;
+    }
+    setUploadError(null);
+    setVideoProgress(0);
+    try {
+      const item = await uploadRaw(file, setVideoProgress);
+      addMedia(item);
+      onChange({ url: item.src });
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : "That upload failed.");
+    } finally {
+      setVideoProgress(null);
     }
   }
 
@@ -367,14 +393,39 @@ function BlockCard({
           )}
 
           {block.type === "video" && (
-            <Field label="Video URL" hint="YouTube, Vimeo, or a direct .mp4 link">
-              <input
-                className={cn(INPUT, "font-mono text-[12px]")}
-                placeholder="https://youtu.be/…"
-                value={block.url ?? ""}
-                onChange={(e) => onChange({ url: e.target.value })}
-              />
-            </Field>
+            <div className="flex flex-col gap-2">
+              <span className="text-[12px] font-medium text-[var(--ax-ink-muted)]">Video</span>
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => videoRef.current?.click()}
+                  disabled={videoProgress !== null}
+                  className="ax-focus inline-flex items-center gap-2 rounded-full border border-[var(--ax-line-strong)] px-3.5 py-2 text-[12.5px] font-medium text-[var(--ax-ink)] transition-colors hover:bg-[rgba(var(--ax-glow),0.10)] disabled:opacity-50"
+                >
+                  <Icon name={videoProgress !== null ? "clock" : "upload"} className="size-3.5" strokeWidth={2} />
+                  {videoProgress !== null ? `Uploading… ${Math.round(videoProgress * 100)}%` : "Upload a video (MP4)"}
+                </button>
+                {videos.length > 0 && (
+                  <Select
+                    label="Pick a video from the library"
+                    size="sm"
+                    className="w-[220px]"
+                    value={chosenVideo?.src ?? ""}
+                    onChange={(v) => onChange({ url: v || undefined })}
+                    options={[{ value: "", label: "— your videos —" }, ...videos.map((m) => ({ value: m.src, label: m.name }))]}
+                  />
+                )}
+                <input ref={videoRef} type="file" accept="video/mp4" hidden onChange={(e) => onVideo(e.target.files)} />
+              </div>
+              <Field label="…or paste a link" hint="YouTube, Vimeo, or a direct .mp4 link">
+                <input
+                  className={cn(INPUT, "font-mono text-[12px]")}
+                  placeholder="https://youtu.be/…"
+                  value={chosenVideo ? "" : (block.url ?? "")}
+                  onChange={(e) => onChange({ url: e.target.value })}
+                />
+              </Field>
+            </div>
           )}
 
           {(block.type === "image" || block.type === "video") && (
@@ -400,14 +451,14 @@ function BlockCard({
                   <Icon name={busy ? "clock" : "upload"} className="size-3.5" strokeWidth={2} />
                   {busy ? "Processing…" : "Upload"}
                 </button>
-                {media.length > 0 && (
+                {images.length > 0 && (
                   <Select
                     label="Pick from library"
                     size="sm"
                     className="w-[200px]"
                     value={block.mediaId ?? ""}
                     onChange={(v) => onChange({ mediaId: v || undefined })}
-                    options={[{ value: "", label: "— from library —" }, ...media.map((m) => ({ value: m.id, label: m.name }))]}
+                    options={[{ value: "", label: "— from library —" }, ...images.map((m) => ({ value: m.id, label: m.name }))]}
                   />
                 )}
                 <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => onFile(e.target.files)} />

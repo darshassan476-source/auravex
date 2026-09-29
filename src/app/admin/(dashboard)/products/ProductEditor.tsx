@@ -11,7 +11,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { PRODUCTS, STATUS_LABELS } from "@/data/products";
 import type { Product } from "@/lib/types";
 import { formatBytes, type MediaItem } from "@/lib/cms";
-import { fileToMedia, isSupported } from "@/lib/imageUpload";
+import { fileToMedia, isSupported, isVideo, uploadRaw } from "@/lib/imageUpload";
 import type { ProductMetric, ProductStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -19,8 +19,8 @@ const STATUSES = Object.keys(STATUS_LABELS) as ProductStatus[];
 
 /**
  * Quick edits for any product in the catalogue: copy, accent colour, status,
- * the image the card and hero use, and whether the product appears on the
- * site at all.
+ * sector, the screens and film the product page shows, and whether the
+ * product appears on the site at all.
  *
  * Only changed fields are stored, so "Revert" genuinely restores the
  * original record rather than a copy of it.
@@ -52,6 +52,7 @@ export function ProductEditor() {
     metrics: patch.metrics ?? base.metrics,
     links: patch.links ? { ...base.links, ...patch.links } : base.links,
     demoNote: patch.demoNote ?? base.demoNote ?? "",
+    sector: patch.sector ?? base.sector ?? "",
   };
 
   function setMetric(i: number, field: keyof ProductMetric, v: string) {
@@ -263,6 +264,15 @@ export function ProductEditor() {
               </Field>
             </div>
 
+            <Field label="Sector" hint="The industry it serves, shown with the product">
+              <input
+                className={inputClass}
+                placeholder="Real estate"
+                value={value.sector}
+                onChange={(e) => setProduct(slug, { sector: e.target.value })}
+              />
+            </Field>
+
             <label className="flex items-center gap-3 rounded-xl border border-[var(--ax-line)] p-3.5">
               <Toggle
                 checked={!value.hidden}
@@ -285,6 +295,8 @@ export function ProductEditor() {
 
         <ScreensPanel slug={slug} accent={value.accent} />
       </div>
+
+      <FilmPanel slug={slug} />
 
       <Panel
         title="Headline figures"
@@ -583,6 +595,165 @@ function ScreensPanel({ slug, accent }: { slug: string; accent: string }) {
             </div>
           </div>
         )}
+      </div>
+    </Panel>
+  );
+}
+
+/**
+ * The film on the product page: an MP4 uploaded here or picked from the
+ * library, with an optional poster frame. The same slot a film made in AI
+ * Studio fills, so either can replace the other.
+ */
+function FilmPanel({ slug }: { slug: string }) {
+  const { state, setProduct, addMedia } = useCms();
+  const videoRef = useRef<HTMLInputElement>(null);
+  const posterRef = useRef<HTMLInputElement>(null);
+  const [progress, setProgress] = useState<number | null>(null);
+  const [posterBusy, setPosterBusy] = useState(false);
+  const [problem, setProblem] = useState<string | null>(null);
+
+  const patch = state.products[slug] ?? {};
+  const videos = state.media.filter((m) => m.mime?.startsWith("video/"));
+  const images = state.media.filter((m) => !m.mime || m.mime.startsWith("image/"));
+  const video = patch.videoId ? state.media.find((m) => m.id === patch.videoId) : undefined;
+  const poster = patch.posterId ? state.media.find((m) => m.id === patch.posterId) : undefined;
+
+  async function onVideo(files: FileList | null) {
+    const file = files?.[0];
+    if (videoRef.current) videoRef.current.value = "";
+    if (!file) return;
+    if (!isVideo(file)) {
+      setProblem(`${file.name} is not an MP4 video.`);
+      return;
+    }
+    setProblem(null);
+    setProgress(0);
+    try {
+      const item = await uploadRaw(file, setProgress);
+      addMedia(item);
+      setProduct(slug, { videoId: item.id });
+    } catch (e) {
+      setProblem(e instanceof Error ? e.message : `${file.name} could not be uploaded.`);
+    } finally {
+      setProgress(null);
+    }
+  }
+
+  async function onPoster(files: FileList | null) {
+    const file = files?.[0];
+    if (posterRef.current) posterRef.current.value = "";
+    if (!file) return;
+    if (!isSupported(file)) {
+      setProblem(`${file.name} is not an image file.`);
+      return;
+    }
+    setProblem(null);
+    setPosterBusy(true);
+    try {
+      const item = await fileToMedia(file);
+      addMedia(item);
+      setProduct(slug, { posterId: item.id });
+    } catch (e) {
+      setProblem(e instanceof Error ? e.message : `${file.name} could not be uploaded.`);
+    } finally {
+      setPosterBusy(false);
+    }
+  }
+
+  const button =
+    "ax-focus inline-flex items-center gap-2 rounded-full border border-[var(--ax-line-strong)] px-3.5 py-2 text-[12.5px] font-medium text-[var(--ax-ink)] transition-colors hover:bg-[rgba(var(--ax-glow),0.10)] disabled:opacity-50";
+
+  return (
+    <Panel
+      title="Product video"
+      description="A film on the product page. Upload an MP4 (up to 120 MB) or pick one you have uploaded before."
+    >
+      <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
+        <div className="flex flex-col gap-3">
+          {video ? (
+            <video
+              key={video.id}
+              src={video.src}
+              poster={poster?.src}
+              controls
+              preload="metadata"
+              className="aspect-video w-full rounded-xl border border-[var(--ax-line)] bg-black object-contain"
+            />
+          ) : (
+            <div className="grid aspect-video w-full place-items-center rounded-xl border border-dashed border-[var(--ax-line-strong)] text-[12.5px] text-[var(--ax-ink-dim)]">
+              No video on this product yet
+            </div>
+          )}
+          {video && (
+            <span className="text-[11.5px] text-[var(--ax-ink-dim)]">
+              {video.name} · {formatBytes(video.size)}
+            </span>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {problem && (
+            <p className="rounded-xl border border-[var(--ax-warning)]/35 bg-[var(--ax-warning)]/10 px-3.5 py-2.5 text-[12px] text-[var(--ax-warning)]">
+              {problem}
+            </p>
+          )}
+
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={() => videoRef.current?.click()} disabled={progress !== null} className={button}>
+              <Icon name={progress !== null ? "clock" : "upload"} className="size-3.5" strokeWidth={2} />
+              {progress !== null ? `Uploading… ${Math.round(progress * 100)}%` : video ? "Replace video" : "Upload a video"}
+            </button>
+            {video && (
+              <button
+                type="button"
+                onClick={() => setProduct(slug, { videoId: undefined, posterId: undefined })}
+                className="ax-focus inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-[12.5px] font-medium text-[var(--ax-ink-muted)] transition-colors hover:bg-[rgba(var(--ax-glow),0.10)] hover:text-[var(--ax-ink)]"
+              >
+                <Icon name="x" className="size-3.5" strokeWidth={2.4} />
+                Remove video
+              </button>
+            )}
+          </div>
+          <input ref={videoRef} type="file" accept="video/mp4" hidden onChange={(e) => onVideo(e.target.files)} />
+
+          {videos.length > 0 && (
+            <Field label="Or pick a video you uploaded">
+              <Select
+                label="Video from the library"
+                value={patch.videoId ?? ""}
+                onChange={(v) => setProduct(slug, { videoId: v || undefined })}
+                options={[{ value: "", label: "— none —" }, ...videos.map((m) => ({ value: m.id, label: m.name }))]}
+              />
+            </Field>
+          )}
+
+          {video && (
+            <div className="flex flex-col gap-2">
+              <span className="text-[12.5px] font-medium text-[var(--ax-ink-muted)]">
+                Poster image{" "}
+                <span className="text-[11px] text-[var(--ax-ink-dim)]">— shown before it plays (optional)</span>
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" onClick={() => posterRef.current?.click()} disabled={posterBusy} className={button}>
+                  <Icon name={posterBusy ? "clock" : "upload"} className="size-3.5" strokeWidth={2} />
+                  {posterBusy ? "Processing…" : "Upload a poster"}
+                </button>
+                {images.length > 0 && (
+                  <Select
+                    label="Poster from the library"
+                    size="sm"
+                    className="w-[200px]"
+                    value={patch.posterId ?? ""}
+                    onChange={(v) => setProduct(slug, { posterId: v || undefined })}
+                    options={[{ value: "", label: "— no poster —" }, ...images.map((m) => ({ value: m.id, label: m.name }))]}
+                  />
+                )}
+              </div>
+              <input ref={posterRef} type="file" accept="image/*" hidden onChange={(e) => onPoster(e.target.files)} />
+            </div>
+          )}
+        </div>
       </div>
     </Panel>
   );

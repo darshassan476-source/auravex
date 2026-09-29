@@ -1,8 +1,9 @@
 import "server-only";
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { createReadStream, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { Readable } from "node:stream";
+import type { GridFSBucketWriteStream } from "mongodb";
 import { PRODUCTS } from "@/data/products";
 import {
   EMPTY_CMS,
@@ -311,6 +312,39 @@ export async function saveMedia(input: {
   width: number;
   height: number;
 }): Promise<MediaItem> {
+  return storeMedia({ ...input, size: input.bytes.length, write: (upload) => upload.end(input.bytes) });
+}
+
+/**
+ * The same, for a file already on disk (a video assembled from chunks): it is
+ * piped into GridFS rather than read into memory first.
+ */
+export async function saveMediaFile(input: {
+  name: string;
+  mime: string;
+  path: string;
+  size: number;
+  width: number;
+  height: number;
+}): Promise<MediaItem> {
+  return storeMedia({
+    ...input,
+    write: (upload) => {
+      const source = createReadStream(input.path);
+      source.once("error", (error) => upload.destroy(error));
+      source.pipe(upload);
+    },
+  });
+}
+
+async function storeMedia(input: {
+  name: string;
+  mime: string;
+  size: number;
+  width: number;
+  height: number;
+  write: (upload: GridFSBucketWriteStream) => void;
+}): Promise<MediaItem> {
   const ext = EXT[input.mime] ?? "bin";
   const id = uid("m");
   const file = `${id}.${ext}`;
@@ -321,7 +355,7 @@ export async function saveMedia(input: {
     const upload = bucket.openUploadStream(file, { metadata: { mediaId: id, mime: input.mime } });
     upload.once("finish", () => resolve());
     upload.once("error", reject);
-    upload.end(input.bytes);
+    input.write(upload);
   });
 
   await (await col("media")).insertOne({
@@ -331,7 +365,7 @@ export async function saveMedia(input: {
     mime: input.mime,
     width: input.width,
     height: input.height,
-    size: input.bytes.length,
+    size: input.size,
     file,
     created_at: addedAt,
   });
@@ -343,7 +377,7 @@ export async function saveMedia(input: {
     mime: input.mime,
     width: input.width,
     height: input.height,
-    size: input.bytes.length,
+    size: input.size,
     addedAt,
   };
 }

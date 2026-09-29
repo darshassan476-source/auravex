@@ -42,6 +42,8 @@ function embedUrl(url: string): { kind: "iframe" | "video"; src: string } | null
   if (vimeo) return { kind: "iframe", src: `https://player.vimeo.com/video/${vimeo[1]}` };
 
   if (/\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(trimmed)) return { kind: "video", src: trimmed };
+  // A video uploaded to the media library.
+  if (/^\/api\/media\/[\w-]+$/.test(trimmed)) return { kind: "video", src: trimmed };
 
   // Anything else is trusted as an embeddable page.
   return { kind: "iframe", src: trimmed };

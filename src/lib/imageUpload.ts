@@ -8,7 +8,7 @@
  * The server stores the bytes and answers with the `MediaItem` the store
  * keeps.
  */
-import { api } from "./api";
+import { api, ApiError } from "./api";
 import type { MediaItem } from "./cms";
 
 /** Longest edge kept, in pixels. Hero plates render at 1600 wide. */
@@ -31,13 +31,49 @@ export function isMediaSupported(file: File) {
   return /^(video\/mp4|audio\/(mpeg|mp3|wav|x-wav|mp4|x-m4a))$/i.test(file.type);
 }
 
-export async function uploadRaw(file: File): Promise<MediaItem> {
-  const form = new FormData();
-  form.append("file", file, file.name);
-  form.append("name", file.name.replace(/\.[^.]+$/, ""));
-  form.append("width", "0");
-  form.append("height", "0");
-  return api<MediaItem>("/api/admin/media", { form });
+export function isVideo(file: File) {
+  return /^video\/mp4$/i.test(file.type);
+}
+
+/** The public site's proxy refuses requests over 8 MB; anything near that goes up in pieces. */
+const SINGLE_REQUEST_LIMIT = 4 * 1024 * 1024;
+
+/**
+ * Stores a video or audio file as it is. Small files go in one request;
+ * larger ones in pieces, reporting progress (0–1) as each piece lands.
+ */
+export async function uploadRaw(file: File, onProgress?: (fraction: number) => void): Promise<MediaItem> {
+  const name = file.name.replace(/\.[^.]+$/, "");
+  if (file.size <= SINGLE_REQUEST_LIMIT) {
+    const form = new FormData();
+    form.append("file", file, file.name);
+    form.append("name", name);
+    form.append("width", "0");
+    form.append("height", "0");
+    const item = await api<MediaItem>("/api/admin/media", { form });
+    onProgress?.(1);
+    return item;
+  }
+
+  const { id, chunkSize } = await api<{ id: string; chunkSize: number }>("/api/admin/media/uploads", {
+    body: { name, size: file.size },
+  });
+  const pieces = Math.ceil(file.size / chunkSize);
+  for (let index = 0; index < pieces; index++) {
+    const piece = file.slice(index * chunkSize, Math.min(file.size, (index + 1) * chunkSize));
+    // A dropped connection costs one retry of one piece, not the whole file.
+    for (let attempt = 0; ; attempt++) {
+      try {
+        await api(`/api/admin/media/uploads/${id}?index=${index}`, { method: "PUT", raw: piece });
+        break;
+      } catch (error) {
+        const retryable = !(error instanceof ApiError) || error.status >= 500;
+        if (!retryable || attempt >= 2) throw error;
+      }
+    }
+    onProgress?.((index + 1) / pieces);
+  }
+  return api<MediaItem>(`/api/admin/media/uploads/${id}`, { method: "POST" });
 }
 
 export async function fileToMedia(file: File): Promise<MediaItem> {
