@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useCms } from "@/cms/CmsProvider";
+import { useCms, useText } from "@/cms/CmsProvider";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
@@ -29,12 +29,25 @@ export function BookingPanel({
   const [month, setMonth] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const [selected, setSelected] = useState<number | null>(null);
   const [slot, setSlot] = useState<string | null>(null);
-  const [booked, setBooked] = useState<string | null>(null);
+  const [booked, setBooked] = useState<{ date: string; time: string } | null>(null);
   const [failure, setFailure] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   // The calendar depends on the visitor's clock, so it is drawn only in the browser.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  const t = {
+    heading: useText("contact.booking.heading"),
+    intro: useText("contact.booking.intro"),
+    button: useText("contact.booking.button"),
+    buttonPicked: useText("contact.booking.buttonPicked"),
+    holding: useText("contact.booking.holding"),
+    needDetails: useText("contact.booking.needDetails"),
+    held: useText("contact.booking.held"),
+  };
+  /** Fills `{date}`-style placeholders in an edited sentence. */
+  const fill = (template: string, values: Record<string, string>) =>
+    template.replace(/\{(\w+)\}/g, (whole, key: string) => values[key] ?? whole);
 
   const canBook =
     Boolean(contact?.name?.trim()) && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(contact?.email?.trim() ?? "");
@@ -75,7 +88,7 @@ export function BookingPanel({
       setFailure(result.reason);
       return;
     }
-    setBooked(`${MONTHS[month.getMonth()]} ${selected} at ${slot}`);
+    setBooked({ date: `${MONTHS[month.getMonth()]} ${selected}`, time: slot });
     setSelected(null);
     setSlot(null);
   }
@@ -105,10 +118,10 @@ export function BookingPanel({
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-1.5">
         <h3 className="text-[20px] font-semibold tracking-[-0.01em] text-[var(--ax-ink)]">
-          Or Book a Time Directly
+          {t.heading}
         </h3>
         <p className="text-[13px] text-[var(--ax-ink-muted)]">
-          Choose a time that works for you.
+          {t.intro}
         </p>
       </div>
 
@@ -207,15 +220,15 @@ export function BookingPanel({
       >
         <Icon name="calendar" className="size-4" strokeWidth={1.9} />
         {busy
-          ? "Holding the slot…"
+          ? t.holding
           : selected && slot
-            ? `Book ${MONTHS[month.getMonth()].slice(0, 3)} ${selected}, ${slot}`
-            : "Book Demo Call"}
+            ? fill(t.buttonPicked, { date: `${MONTHS[month.getMonth()].slice(0, 3)} ${selected}`, time: slot })
+            : t.button}
       </button>
 
       {selected && slot && !canBook && (
         <p className="text-[12px] leading-relaxed text-[var(--ax-ink-dim)]">
-          Add your name and email in the form first, so we know who the slot is for.
+          {t.needDetails}
         </p>
       )}
 
@@ -229,7 +242,7 @@ export function BookingPanel({
       {booked && (
         <p className="flex items-start gap-2 rounded-xl border border-[var(--ax-success)]/35 bg-[var(--ax-success)]/10 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-[var(--ax-success)]">
           <Icon name="check-circle" className="mt-0.5 size-4 shrink-0" strokeWidth={2} />
-          Held for {booked}. We will confirm to {contact?.email?.trim()}.
+          {fill(t.held, { ...booked, email: contact?.email?.trim() ?? "" })}
         </p>
       )}
     </div>

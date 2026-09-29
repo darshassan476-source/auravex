@@ -6,9 +6,9 @@ import type { BackgroundId } from "@/data/backgrounds";
 import { AmbientField } from "./AmbientField";
 
 interface PageHeroProps {
-  eyebrow?: string;
+  eyebrow?: ReactNode;
   title: ReactNode;
-  accent?: string;
+  accent?: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
   /** Rendered below the copy — stat strips, filter rails, breadcrumb rows. */

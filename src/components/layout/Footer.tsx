@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { Text } from "@/cms/Text";
 import { FOOTER_COLUMNS, SITE } from "@/data/site";
 import { Icon } from "../ui/Icon";
 import { BrandName } from "./BrandName";
 import { Logo } from "./Logo";
+import { SiteEmailLink } from "./SiteEmail";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export function Footer() {
@@ -23,26 +25,21 @@ export function Footer() {
           <div className="flex flex-col gap-6">
             <Logo size="md" />
             <p className="ax-text-pretty max-w-sm text-[14px] leading-relaxed text-[var(--ax-ink-muted)]">
-              {SITE.description} We partner with visionary enterprises to design, build
-              and scale the platforms their next decade depends on.
+              <Text id="site.description" /> <Text id="footer.description" />
             </p>
 
             <div className="flex flex-col gap-2 text-[13px] text-[var(--ax-ink-muted)]">
-              <a
-                href={`mailto:${SITE.email}`}
-                className="ax-focus inline-flex w-fit items-center gap-2 transition-colors hover:text-[var(--ax-accent-soft)]"
-              >
+              <SiteEmailLink className="ax-focus inline-flex w-fit items-center gap-2 transition-colors hover:text-[var(--ax-accent-soft)]">
                 <Icon name="mail" className="size-4" strokeWidth={1.8} />
-                {SITE.email}
-              </a>
+              </SiteEmailLink>
               <span className="inline-flex items-center gap-2">
                 <Icon name="globe" className="size-4" strokeWidth={1.8} />
-                {SITE.location}
+                <Text id="site.location" />
               </span>
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5">
-              {SITE.socials.map((social) => (
+              {SITE.socials.map((social, i) => (
                 <a
                   key={social.label}
                   href={social.href}
@@ -50,24 +47,26 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="ax-glass ax-focus rounded-full px-4 py-2 text-[12px] font-medium text-[var(--ax-ink-muted)] transition-all duration-300 hover:border-[var(--ax-line-strong)] hover:text-[var(--ax-ink)]"
                 >
-                  {social.label}
+                  <Text id={`footer.social.${i + 1}`} />
                 </a>
               ))}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
-            {FOOTER_COLUMNS.map((column) => (
+            {FOOTER_COLUMNS.map((column, c) => (
               <div key={column.title} className="flex flex-col gap-4">
-                <h3 className="ax-eyebrow text-[var(--ax-ink)]">{column.title}</h3>
+                <h3 className="ax-eyebrow text-[var(--ax-ink)]">
+                  <Text id={`footer.col.${c + 1}.title`} />
+                </h3>
                 <ul className="flex flex-col gap-2.5">
-                  {column.links.map((link) => (
+                  {column.links.map((link, l) => (
                     <li key={link.href}>
                       <Link
                         href={link.href}
                         className="ax-focus group inline-flex items-center gap-1.5 text-[13.5px] text-[var(--ax-ink-muted)] transition-colors duration-300 hover:text-[var(--ax-ink)]"
                       >
-                        {link.label}
+                        <Text id={`footer.col.${c + 1}.link.${l + 1}`} />
                         <Icon
                           name="arrow-right"
                           className="size-3 -translate-x-1 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
@@ -87,21 +86,21 @@ export function Footer() {
         {/* Bottom band */}
         <div className="flex flex-col items-center justify-between gap-5 py-7 md:flex-row">
           <p className="text-[12px] text-[var(--ax-ink-dim)]">
-            © {year} <BrandName />. All rights reserved.
+            © {year} <BrandName />. <Text id="footer.rights" />
           </p>
 
           <ThemeSwitcher />
 
           <div className="flex items-center gap-5 text-[12px] text-[var(--ax-ink-dim)]">
             <Link href="/privacy" className="ax-focus transition-colors hover:text-[var(--ax-ink-muted)]">
-              Privacy
+              <Text id="footer.privacy" />
             </Link>
             <Link href="/terms" className="ax-focus transition-colors hover:text-[var(--ax-ink-muted)]">
-              Terms
+              <Text id="footer.terms" />
             </Link>
             <span className="inline-flex items-center gap-1.5">
               <span className="size-1.5 rounded-full bg-[var(--ax-success)]" />
-              All systems operational
+              <Text id="footer.status" />
             </span>
           </div>
         </div>

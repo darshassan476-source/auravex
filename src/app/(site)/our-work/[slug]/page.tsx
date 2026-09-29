@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { Reveal, RevealGroup, RevealItem } from "@/components/fx/Reveal";
 import { AmbientField } from "@/components/sections/AmbientField";
 import { HeroBackdrop } from "@/components/showcase/HeroBackdrop";
-import { FloatingCard } from "@/components/showcase/FloatingCard";
 import { CTASection } from "@/components/sections/CTASection";
 import { Button } from "@/components/ui/Button";
 import { EyebrowPill } from "@/components/ui/EyebrowPill";
@@ -25,6 +24,10 @@ import {
 } from "@/components/ui/Primitives";
 import { CASE_STUDIES, getCaseStudy } from "@/data/caseStudies";
 import { getProduct } from "@/data/products";
+import { CONTENT_DEFAULTS } from "@/cms/contentSchema";
+import { TemplateText, TextFloatingCard } from "@/cms/sectorsWorkClient";
+import { Text } from "@/cms/Text";
+import { getSiteBundle } from "@/server/cache";
 
 export function generateStaticParams() {
   return CASE_STUDIES.map((study) => ({ slug: study.slug }));
@@ -37,7 +40,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const study = getCaseStudy(slug);
-  if (!study) return { title: "Case study not found" };
+  if (!study) {
+    const text = (await getSiteBundle()).text ?? {};
+    return { title: text["casestudy.meta.notfound"] || CONTENT_DEFAULTS["casestudy.meta.notfound"] };
+  }
 
   return {
     title: study.title,
@@ -79,7 +85,7 @@ export default async function CaseStudyPage({
                   className="size-3.5"
                   strokeWidth={2.2}
                 />
-                Our Work
+                <Text id="casestudy.breadcrumb" />
               </Link>
               <Icon
                 name="chevron-right"
@@ -114,7 +120,7 @@ export default async function CaseStudyPage({
               <Reveal trigger="load" delay={0.22}>
                 <div className="mt-9 flex flex-wrap items-center gap-3.5">
                   <Button href="/contact" size="lg" icon="arrow-right">
-                    Talk through your version
+                    <Text id="casestudy.hero.primary" />
                   </Button>
                   {product && (
                     <Button
@@ -123,7 +129,7 @@ export default async function CaseStudyPage({
                       variant="outline"
                       magnetic={false}
                     >
-                      See {product.name}
+                      <TemplateText id="casestudy.hero.product" vars={{ name: product.name }} />
                     </Button>
                   )}
                 </div>
@@ -137,16 +143,17 @@ export default async function CaseStudyPage({
 
             {/* Outcome callouts over the environment */}
             <div className="relative hidden min-h-[380px] lg:block">
-              <FloatingCard
+              <TextFloatingCard
                 icon="trending"
-                title={study.metrics[0]?.label ?? "Measured outcome"}
+                title={study.metrics[0]?.label}
+                titleId="casestudy.hero.card1"
                 body={study.metrics[0]?.value}
                 delay={0.3}
                 className="absolute left-0 top-4"
               />
-              <FloatingCard
+              <TextFloatingCard
                 icon="settings"
-                title="Smarter Operations"
+                titleId="casestudy.hero.card2"
                 body={
                   study.timeline[0]
                     ? `${study.timeline[0].phase} · ${study.timeline[0].duration}`
@@ -155,10 +162,12 @@ export default async function CaseStudyPage({
                 delay={0.42}
                 className="absolute left-24 top-[150px]"
               />
-              <FloatingCard
+              <TextFloatingCard
                 icon="users"
-                title="Stronger Business Outcomes"
-                body={product ? `Running on ${product.name}` : study.sector}
+                titleId="casestudy.hero.card3"
+                {...(product
+                  ? { bodyId: "casestudy.hero.card3body", vars: { name: product.name } }
+                  : { body: study.sector })}
                 delay={0.54}
                 className="absolute right-0 top-[280px]"
               />
@@ -174,10 +183,14 @@ export default async function CaseStudyPage({
         <div className="grid grid-cols-[minmax(0,1fr)] gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
           <Reveal direction="right">
             <div className="flex flex-col gap-6 lg:sticky lg:top-32 lg:self-start">
-              <Eyebrow withRule>The challenge</Eyebrow>
+              <Eyebrow withRule>
+                <Text id="casestudy.challenge.eyebrow" />
+              </Eyebrow>
               <h2 className="ax-display ax-text-balance text-[clamp(1.8rem,3.4vw,2.6rem)]">
-                What they were{" "}
-                <span className="ax-gradient-text">actually up against.</span>
+                <Text id="casestudy.challenge.title" />{" "}
+                <span className="ax-gradient-text">
+                  <Text id="casestudy.challenge.accent" />
+                </span>
               </h2>
               <p className="ax-text-pretty text-[15px] leading-relaxed text-[var(--ax-ink-muted)]">
                 {study.challenge}
@@ -195,7 +208,9 @@ export default async function CaseStudyPage({
           </Reveal>
 
           <div className="flex flex-col gap-6">
-            <Eyebrow withRule>The approach</Eyebrow>
+            <Eyebrow withRule>
+              <Text id="casestudy.approach.eyebrow" />
+            </Eyebrow>
 
             <RevealGroup className="flex flex-col gap-3" stagger={0.1}>
               {study.approach.map((step, i) => (
@@ -215,7 +230,9 @@ export default async function CaseStudyPage({
             {/* Timeline */}
             <Reveal delay={0.15}>
               <div className="ax-glass-strong ax-edge-light mt-6 flex flex-col gap-5 rounded-2xl p-7">
-                <span className="ax-eyebrow">Delivery timeline</span>
+                <span className="ax-eyebrow">
+                  <Text id="casestudy.timeline.label" />
+                </span>
                 <Hairline />
                 <div className="flex flex-col gap-4">
                   {study.timeline.map((phase, i) => (
@@ -268,16 +285,16 @@ export default async function CaseStudyPage({
       {product && (
         <Section className="pt-0">
           <SectionHeading
-            eyebrow="Built on"
-            title="The platform behind"
-            accent="these numbers."
+            eyebrow={<Text id="casestudy.platform.eyebrow" />}
+            title={<Text id="casestudy.platform.title" />}
+            accent={<Text id="casestudy.platform.accent" />}
             action={
               <Button
                 href={`/products/${product.slug}`}
                 variant="secondary"
                 icon="arrow-right"
               >
-                Explore {product.name}
+                <TemplateText id="casestudy.platform.button" vars={{ name: product.name }} />
               </Button>
             }
           />
@@ -332,7 +349,9 @@ export default async function CaseStudyPage({
               className="ax-focus group flex flex-col gap-5 md:flex-row md:items-center md:justify-between md:gap-12"
             >
               <div className="flex flex-col gap-3">
-                <span className="ax-eyebrow">Next case study</span>
+                <span className="ax-eyebrow">
+                  <Text id="casestudy.next.label" />
+                </span>
                 <h3 className="ax-display ax-text-balance max-w-2xl text-[clamp(1.5rem,3vw,2.4rem)] transition-colors duration-300 group-hover:text-[var(--ax-accent-soft)]">
                   {next.title}
                 </h3>
@@ -348,11 +367,11 @@ export default async function CaseStudyPage({
       <BlockSlot page="case-study" slot="before-cta" />
 
       <CTASection
-        eyebrow="Same problem?"
-        title="These numbers started with"
-        accent="a thirty-minute call."
-        primaryLabel="Book yours"
-        secondaryLabel="More case studies"
+        eyebrow={<Text id="casestudy.cta.eyebrow" />}
+        title={<Text id="casestudy.cta.title" />}
+        accent={<Text id="casestudy.cta.accent" />}
+        primaryLabel={<Text id="casestudy.cta.primary" />}
+        secondaryLabel={<Text id="casestudy.cta.secondary" />}
         secondaryHref="/our-work"
       />
     </>

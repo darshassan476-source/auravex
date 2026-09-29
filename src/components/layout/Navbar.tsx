@@ -4,10 +4,10 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { NAV_ITEMS } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { AX_EASE } from "../fx/Reveal";
 import { Text } from "@/cms/Text";
+import { useNavItems } from "@/cms/useSiteLists";
 import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { Logo } from "./Logo";
@@ -22,6 +22,7 @@ export function Navbar() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const navItems = useNavItems();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 24);
@@ -72,11 +73,11 @@ export function Navbar() {
 
             {/* Desktop navigation */}
             <nav className="hidden items-center gap-1 lg:flex">
-              {NAV_ITEMS.map((item) => (
+              {navItems.map((item) => (
                 <div
                   key={item.href}
                   className="relative"
-                  onMouseEnter={() => setOpenMenu(item.children ? item.label : null)}
+                  onMouseEnter={() => setOpenMenu(item.children ? item.href : null)}
                 >
                   <Link
                     href={item.href}
@@ -93,7 +94,7 @@ export function Navbar() {
                         name="chevron-down"
                         className={cn(
                           "size-3.5 transition-transform duration-300",
-                          openMenu === item.label && "rotate-180",
+                          openMenu === item.href && "rotate-180",
                         )}
                         strokeWidth={2.2}
                       />
@@ -109,7 +110,7 @@ export function Navbar() {
 
                   {/* Mega menu */}
                   <AnimatePresence>
-                    {item.children && openMenu === item.label && (
+                    {item.children && openMenu === item.href && (
                       <motion.div
                         initial={{ opacity: 0, y: 10, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}

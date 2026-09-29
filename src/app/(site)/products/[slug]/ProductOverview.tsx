@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useText } from "@/cms/CmsProvider";
+import { Text } from "@/cms/Text";
 import { useProduct } from "@/cms/useProduct";
 import { Reveal, RevealGroup, RevealItem } from "@/components/fx/Reveal";
 import { FilmPlate } from "@/components/sections/FilmPlate";
@@ -11,6 +13,7 @@ import { Icon } from "@/components/ui/Icon";
 import { resolveBackground } from "@/data/backgrounds";
 import type { Product } from "@/lib/types";
 import { useTheme } from "@/themes/ThemeProvider";
+import { fillTemplate } from "./TemplateText";
 
 /**
  * The Overview band from reference 3 — the section directly under the stat
@@ -36,7 +39,17 @@ export function ProductOverview({ product: source }: { product: Product }) {
 
   // "Real Estate & Property Tech" → "Real Estate"
   const domain = product.sector.split(/[&·,]/)[0].trim();
-  const caption = product.video?.caption ?? `Discover AURAVEX ${product.name}`;
+  const vars = { name: product.name, domain, summary: product.summary };
+  const fallbackCaption = fillTemplate(useText("product.overview.caption"), vars);
+  const caption = product.video?.caption ?? fallbackCaption;
+  const title = fillTemplate(useText("product.overview.title"), vars);
+  const body = fillTemplate(useText("product.overview.body"), vars);
+  const statement = fillTemplate(useText("product.overview.statement"), vars);
+  const values = [
+    useText("product.overview.values.1"),
+    useText("product.overview.values.2"),
+    useText("product.overview.values.3"),
+  ];
   const videoHref = product.links.caseStudy ?? product.links.demo ?? "/contact";
 
   return (
@@ -48,26 +61,21 @@ export function ProductOverview({ product: source }: { product: Product }) {
             <Reveal direction="fade" duration={0.6}>
               <span className="inline-flex items-center gap-3">
                 <span className="h-px w-7 bg-[var(--ax-line-strong)]" />
-                <span className="ax-eyebrow">Overview</span>
+                <span className="ax-eyebrow"><Text id="product.overview.eyebrow" /></span>
               </span>
             </Reveal>
 
             <Reveal delay={0.06}>
               <h2 className="ax-display ax-text-balance text-[clamp(1.7rem,2.5vw,2.25rem)] leading-[1.1]">
-                One Platform.
+                <span className="whitespace-pre-line">{title}</span>
                 <br />
-                The Entire {domain}
-                <br />
-                <span className="ax-gradient-text">Lifecycle.</span>
+                <span className="ax-gradient-text"><Text id="product.overview.accent" /></span>
               </h2>
             </Reveal>
 
             <Reveal delay={0.12}>
               <p className="ax-text-pretty text-[14.5px] leading-[1.75] text-[var(--ax-ink-muted)]">
-                {product.summary} From first touch to long-term value, AURAVEX{" "}
-                {product.name} gives you a unified view across your operation with
-                real-time data, AI-driven insight and automated workflows — so you move
-                faster, decide better and deliver lasting results.
+                {body}
               </p>
             </Reveal>
 
@@ -76,7 +84,7 @@ export function ProductOverview({ product: source }: { product: Product }) {
                 href={product.links.demo ?? "/contact"}
                 className="ax-focus group inline-flex items-center gap-2 text-[13.5px] font-medium text-[var(--ax-accent-soft)]"
               >
-                Explore the platform
+                <Text id="product.overview.link" />
                 <Icon
                   name="arrow-right"
                   className="size-4 transition-transform duration-500 group-hover:translate-x-1"
@@ -189,15 +197,15 @@ export function ProductOverview({ product: source }: { product: Product }) {
           <Reveal direction="left" delay={0.16} className="lg:col-span-2">
             <div className="ax-glass ax-edge-light flex h-full flex-col justify-center gap-6 rounded-2xl p-7">
               <h3 className="ax-display text-[clamp(1.15rem,1.5vw,1.4rem)] leading-[1.24]">
-                Transforming {domain} for a Smarter{" "}
-                <span className="ax-gradient-text">Tomorrow.</span>
+                {statement}{" "}
+                <span className="ax-gradient-text"><Text id="product.overview.statementAccent" /></span>
               </h3>
 
               <span className="h-px w-16 bg-[var(--ax-line-strong)]" />
 
               <ul className="flex flex-col gap-2.5 text-[13.5px] text-[var(--ax-ink-muted)]">
-                {["Technology.", "People.", "Sustainable Growth."].map((line) => (
-                  <li key={line}>{line}</li>
+                {values.map((line, i) => (
+                  <li key={i}>{line}</li>
                 ))}
               </ul>
             </div>

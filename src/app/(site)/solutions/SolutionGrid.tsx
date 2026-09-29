@@ -7,8 +7,8 @@ import { AX_EASE } from "@/components/fx/Reveal";
 import { MiniDevice } from "@/components/showcase/MiniDevice";
 import { FilterPills, type FilterOption } from "@/components/ui/FilterPills";
 import { Icon } from "@/components/ui/Icon";
-import { SOLUTION_FILTERS } from "@/data/solutions";
-import type { Solution } from "@/lib/types";
+import { Text } from "@/cms/Text";
+import { useSolutionFilters, useSolutions } from "@/cms/useSolutions";
 
 const DEVICE_VARIANT: Record<string, "dashboard" | "table" | "flow" | "map"> = {
   "Real Estate": "map",
@@ -22,28 +22,31 @@ const DEVICE_VARIANT: Record<string, "dashboard" | "table" | "flow" | "map"> = {
  * Solutions grid from reference 2: filter rail above two-column cards that
  * carry copy and a checklist on the left, a product shot on the right.
  */
-export function SolutionGrid({ solutions }: { solutions: Solution[] }) {
-  const [filter, setFilter] = useState<string>(SOLUTION_FILTERS[0]);
+export function SolutionGrid() {
+  const solutions = useSolutions();
+  const filters = useSolutionFilters();
+  const allId = filters[0].id;
+  const [filter, setFilter] = useState<string>(allId);
 
   const options: FilterOption[] = useMemo(
     () =>
-      SOLUTION_FILTERS.map((label) => ({
-        id: label,
+      filters.map(({ id, label }) => ({
+        id,
         label,
         count:
-          label === SOLUTION_FILTERS[0]
+          id === allId
             ? solutions.length
-            : solutions.filter((s) => s.category === label).length,
+            : solutions.filter((s) => s.categoryId === id).length,
       })).filter((o) => o.count > 0),
-    [solutions],
+    [solutions, filters, allId],
   );
 
   const results = useMemo(
     () =>
-      filter === SOLUTION_FILTERS[0]
+      filter === allId
         ? solutions
-        : solutions.filter((s) => s.category === filter),
-    [solutions, filter],
+        : solutions.filter((s) => s.categoryId === filter),
+    [solutions, filter, allId],
   );
 
   return (
@@ -99,9 +102,9 @@ export function SolutionGrid({ solutions }: { solutions: Solution[] }) {
                   </div>
 
                   <ul className="flex flex-col gap-2">
-                    {solution.bullets.map((bullet) => (
+                    {solution.bullets.map((bullet, i) => (
                       <li
-                        key={bullet}
+                        key={i}
                         className="flex items-center gap-2.5 text-[12.5px] text-[var(--ax-ink-muted)]"
                       >
                         <Icon
@@ -118,7 +121,7 @@ export function SolutionGrid({ solutions }: { solutions: Solution[] }) {
                     href={`/products/${solution.slug}`}
                     className="ax-focus mt-1 inline-flex w-fit items-center gap-2 rounded-full bg-[linear-gradient(110deg,var(--ax-accent),var(--ax-violet))] px-4 py-2 text-[12.5px] font-semibold text-white shadow-[0_10px_30px_-12px_rgba(var(--ax-glow),0.9)] transition-transform duration-300 hover:-translate-y-0.5"
                   >
-                    Explore Solution
+                    <Text id="solutions.card.button" />
                     <Icon name="arrow-right" className="size-3.5" strokeWidth={2.4} />
                   </Link>
                 </div>
@@ -127,13 +130,13 @@ export function SolutionGrid({ solutions }: { solutions: Solution[] }) {
                   <MiniDevice
                     accent="var(--ax-accent)"
                     seed={solution.slug}
-                    variant={DEVICE_VARIANT[solution.category] ?? "dashboard"}
+                    variant={DEVICE_VARIANT[solution.categoryId] ?? "dashboard"}
                   />
 
                   <div className="flex items-center gap-3">
-                    {solution.stats.map((stat) => (
+                    {solution.stats.map((stat, i) => (
                       <div
-                        key={stat.label}
+                        key={i}
                         className="flex min-w-0 flex-1 flex-col gap-0.5 rounded-lg border border-[var(--ax-line)] bg-[rgba(var(--ax-glow),0.05)] px-2.5 py-2"
                       >
                         <span className="truncate text-[9.5px] uppercase tracking-[0.1em] text-[var(--ax-ink-dim)]">

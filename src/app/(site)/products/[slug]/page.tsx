@@ -7,6 +7,9 @@ import { HeroBackdrop } from "@/components/showcase/HeroBackdrop";
 import { ProductVisual } from "@/components/showcase/ProductVisual";
 import { ProductActions } from "./ProductActions";
 import { ProductOverview } from "./ProductOverview";
+import { TemplateText } from "./TemplateText";
+import { Text } from "@/cms/Text";
+import { CONTENT_DEFAULTS } from "@/cms/contentSchema";
 import { BlockSlot } from "@/components/sections/BlockSlot";
 import { CaseStudyMetrics } from "@/components/sections/CaseStudyMetrics";
 import { ProductMetrics } from "@/components/sections/ProductMetrics";
@@ -23,7 +26,7 @@ import {
 } from "@/components/ui/Primitives";
 import { CASE_STUDIES } from "@/data/caseStudies";
 import { PRODUCTS, getProduct } from "@/data/products";
-import { findProduct } from "@/server/cache";
+import { findProduct, getSiteBundle } from "@/server/cache";
 
 // Pages refresh at least this often, so a product edited or published in the
 // portal never stays stale (or missing) on a cached page.
@@ -40,7 +43,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = getProduct(slug) ?? (await findProduct(slug));
-  if (!product) return { title: "Product not found" };
+  if (!product) {
+    const text = (await getSiteBundle()).text ?? {};
+    return { title: text["product.meta.notFound"] || CONTENT_DEFAULTS["product.meta.notFound"] };
+  }
 
   return {
     title: product.name,
@@ -82,7 +88,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 className="ax-focus inline-flex items-center gap-1.5 transition-colors hover:text-[var(--ax-ink-muted)]"
               >
                 <Icon name="arrow-left" className="size-3.5" strokeWidth={2.2} />
-                Products
+                <Text id="product.breadcrumb" />
               </Link>
               <Icon name="chevron-right" className="size-3.5" strokeWidth={2.2} />
               <span className="text-[var(--ax-ink-muted)]">{product.name}</span>
@@ -161,17 +167,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <Section className="relative overflow-hidden">
         <div className="grid grid-cols-[minmax(0,1fr)] gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
           <div className="flex flex-col gap-6 lg:sticky lg:top-32 lg:self-start">
-            <Eyebrow withRule>Architecture</Eyebrow>
+            <Eyebrow withRule><Text id="product.architecture.eyebrow" /></Eyebrow>
             <h2 className="ax-display ax-text-balance text-[clamp(1.9rem,3.8vw,3rem)]">
-              Four layers, <span className="ax-gradient-text">one contract.</span>
+              <Text id="product.architecture.title" />{" "}
+              <span className="ax-gradient-text"><Text id="product.architecture.accent" /></span>
             </h2>
             <p className="ax-text-pretty text-[15px] leading-relaxed text-[var(--ax-ink-muted)]">
-              Each layer is independently deployable and independently replaceable. You are
-              never locked into a vendor decision we made on your behalf.
+              <Text id="product.architecture.body" />
             </p>
 
             <div className="flex flex-col gap-3 pt-4">
-              <span className="ax-eyebrow">Stack</span>
+              <span className="ax-eyebrow"><Text id="product.architecture.stack" /></span>
               <div className="flex flex-wrap gap-2">
                 {product.stack.map((tech) => (
                   <Tag key={tech}>{tech}</Tag>
@@ -223,9 +229,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <Section>
         <SectionHeading
           align="center"
-          eyebrow="Delivery"
-          title="From first call to"
-          accent="measured impact."
+          eyebrow={<Text id="product.delivery.eyebrow" />}
+          title={<Text id="product.delivery.title" />}
+          accent={<Text id="product.delivery.accent" />}
         />
 
         <RevealGroup className="relative mt-16 grid gap-5 md:grid-cols-4" stagger={0.11}>
@@ -291,12 +297,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <Section className="pt-0">
           <Hairline className="mb-14" />
           <SectionHeading
-            eyebrow="Keep exploring"
-            title="Often deployed"
-            accent="alongside."
+            eyebrow={<Text id="product.related.eyebrow" />}
+            title={<Text id="product.related.title" />}
+            accent={<Text id="product.related.accent" />}
             action={
               <Button href="/products" variant="ghost" icon="arrow-right">
-                All products
+                <Text id="product.related.all" />
               </Button>
             }
           />
@@ -314,10 +320,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <BlockSlot page="product-detail" slot="before-cta" />
 
       <CTASection
-        title={`See ${product.name} running on`}
-        accent="your data."
-        description="We will walk through the platform with your workflows in it — not a generic sandbox. Thirty minutes, no slide deck."
-        secondaryLabel="Compare products"
+        title={<TemplateText id="product.cta.title" values={{ name: product.name }} />}
+        accent={<Text id="product.cta.accent" />}
+        description={<Text id="product.cta.body" />}
+        secondaryLabel={<Text id="product.cta.secondary" />}
         secondaryHref="/products"
       />
     </>

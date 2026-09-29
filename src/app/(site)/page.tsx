@@ -7,6 +7,7 @@ import { CTASection } from "@/components/sections/CTASection";
 import { HomeHero } from "@/components/sections/HomeHero";
 import { ProductCarousel } from "@/components/sections/ProductCarousel";
 import { SectionHead } from "@/components/sections/SectionHead";
+import { StackTags } from "@/components/sections/StackTags";
 import { TrustBar } from "@/components/sections/TrustBar";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -15,7 +16,7 @@ import { Hairline, Section, Tag } from "@/components/ui/Primitives";
 import { CASE_STUDIES } from "@/data/caseStudies";
 import { PRODUCTS } from "@/data/products";
 import { PROCESS_STEPS, TECH_STACK } from "@/data/site";
-import { SOLUTIONS } from "@/data/solutions";
+import { HomeSolutionCards } from "@/components/sections/HomeSolutionCards";
 
 export default function HomePage() {
   // The reference gallery shows these four, in this order.
@@ -45,7 +46,7 @@ export default function HomePage() {
           description={<Text id="home.portfolio.body" />}
           action={
             <Button href="/products" variant="outline" icon="arrow-right" magnetic={false}>
-              View All Products
+              <Text id="home.portfolio.button" />
             </Button>
           }
         />
@@ -63,72 +64,16 @@ export default function HomePage() {
           eyebrow={<Text id="home.solutions.eyebrow" />}
           title={<Text id="home.solutions.title" />}
           accent={<Text id="home.solutions.accent" />}
-          description="A powerful suite of enterprise software solutions designed for the real estate and urban economy — helping you automate, connect and grow with confidence."
+          description={<Text id="home.solutions.body" />}
           action={
             <Button href="/solutions" variant="outline" icon="arrow-right" magnetic={false}>
-              All Solutions
+              <Text id="home.solutions.button" />
             </Button>
           }
         />
 
         <RevealGroup className="mt-12 grid gap-4 lg:grid-cols-2" stagger={0.08}>
-          {SOLUTIONS.slice(0, 4).map((solution) => (
-            <RevealItem key={solution.id}>
-              <Link
-                href={`/solutions#${solution.slug}`}
-                className="ax-glass ax-focus group flex h-full items-start gap-5 rounded-2xl p-6 transition-all duration-500 hover:border-[var(--ax-line-strong)] md:p-7"
-              >
-                <span
-                  className="grid size-12 shrink-0 place-items-center rounded-xl text-[var(--ax-accent-soft)] transition-transform duration-500 group-hover:scale-110"
-                  style={{
-                    background:
-                      "linear-gradient(145deg, rgba(var(--ax-glow),0.24), rgba(var(--ax-glow),0.06))",
-                    boxShadow: "inset 0 0 0 1px rgba(var(--ax-glow),0.24)",
-                  }}
-                >
-                  <Icon name={solution.icon} className="size-5" strokeWidth={1.8} />
-                </span>
-
-                <span className="flex min-w-0 flex-1 flex-col gap-3">
-                  <span className="flex flex-wrap items-center gap-3">
-                    <span className="text-[18px] font-semibold text-[var(--ax-ink)]">
-                      {solution.name}
-                    </span>
-                    <Tag>{solution.category}</Tag>
-                  </span>
-
-                  <span className="ax-text-pretty text-[13.5px] leading-relaxed text-[var(--ax-ink-muted)]">
-                    {solution.description}
-                  </span>
-
-                  <span className="mt-1 flex flex-col gap-1.5">
-                    {solution.bullets.map((bullet) => (
-                      <span
-                        key={bullet}
-                        className="flex items-center gap-2 text-[12.5px] text-[var(--ax-ink-dim)]"
-                      >
-                        <Icon
-                          name="check-circle"
-                          className="size-3.5 shrink-0 text-[var(--ax-accent)]"
-                          strokeWidth={2.1}
-                        />
-                        {bullet}
-                      </span>
-                    ))}
-                  </span>
-
-                  <span className="mt-2 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[var(--ax-accent-soft)]">
-                    Explore Solution
-                    <Icon
-                      name="arrow-right"
-                      className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
-                      strokeWidth={2.3}
-                    />
-                  </span>
-                </span>
-              </Link>
-            </RevealItem>
-          ))}
+          <HomeSolutionCards />
         </RevealGroup>
       </Section>
 
@@ -138,10 +83,10 @@ export default function HomePage() {
           eyebrow={<Text id="home.work.eyebrow" />}
           title={<Text id="home.work.title" />}
           accent={<Text id="home.work.accent" />}
-          description="From complex developments to large-scale operations, explore how our customers turn challenges into measurable growth with AURAVEX."
+          description={<Text id="home.work.body" />}
           action={
             <Button href="/our-work" variant="outline" icon="arrow-right" magnetic={false}>
-              More Success Stories
+              <Text id="home.work.button" />
             </Button>
           }
         />
@@ -224,7 +169,7 @@ export default function HomePage() {
           eyebrow={<Text id="home.process.eyebrow" />}
           title={<Text id="home.process.title" />}
           accent={<Text id="home.process.accent" />}
-          description="Get from idea to implementation with a clear, streamlined journey — designed for enterprise teams."
+          description={<Text id="home.process.body" />}
         />
 
         <RevealGroup className="mt-14 grid gap-10 md:grid-cols-3" stagger={0.12}>
@@ -248,9 +193,11 @@ export default function HomePage() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-[18px] font-semibold text-[var(--ax-ink)]">{step.title}</h3>
+                  <h3 className="text-[18px] font-semibold text-[var(--ax-ink)]">
+                    <Text id={`process.${i + 1}.title`} />
+                  </h3>
                   <p className="ax-text-pretty max-w-[34ch] text-[13.5px] leading-relaxed text-[var(--ax-ink-muted)]">
-                    {step.body}
+                    <Text id={`process.${i + 1}.body`} />
                   </p>
                 </div>
               </div>
@@ -265,23 +212,19 @@ export default function HomePage() {
           eyebrow={<Text id="home.stack.eyebrow" />}
           title={<Text id="home.stack.title" />}
           accent={<Text id="home.stack.accent" />}
-          description="Typed end to end, observable in production, and yours to take over whenever you want it."
+          description={<Text id="home.stack.body" />}
         />
 
         <RevealGroup className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4" stagger={0.08}>
-          {TECH_STACK.map((group) => (
+          {TECH_STACK.map((group, i) => (
             <RevealItem key={group.group}>
               <div className="ax-glass flex h-full flex-col gap-4 rounded-2xl p-6">
                 <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--ax-ink)]">
-                  {group.group}
+                  <Text id={`stack.${i + 1}.title`} />
                 </h3>
                 <Hairline />
                 <ul className="flex flex-wrap gap-2">
-                  {group.items.map((item) => (
-                    <li key={item}>
-                      <Tag>{item}</Tag>
-                    </li>
-                  ))}
+                  <StackTags index={i + 1} />
                 </ul>
               </div>
             </RevealItem>

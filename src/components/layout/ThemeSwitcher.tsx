@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { useText } from "@/cms/CmsProvider";
 import { THEMES } from "@/themes/themes";
 import { describeCustom, useTheme } from "@/themes/ThemeProvider";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,10 @@ export function ThemeSwitcher({
   const [open, setOpen] = useState(false);
   const [up, setUp] = useState(direction !== "down");
   const ref = useRef<HTMLDivElement>(null);
+  const themeLabel = useText("theme.label");
+  const ownLabel = useText("theme.group.own");
+  const darkLabel = useText("theme.group.dark");
+  const lightLabel = useText("theme.group.light");
 
   useEffect(() => {
     if (!open) return;
@@ -71,7 +76,7 @@ export function ThemeSwitcher({
             />
           ))}
         </span>
-        {ready ? theme.name : "Theme"}
+        {ready ? theme.name : themeLabel}
         <Icon
           name="chevron-down"
           className={cn("size-3.5 transition-transform duration-300", open && "rotate-180")}
@@ -93,11 +98,11 @@ export function ThemeSwitcher({
             )}
           >
             {[
-              ...(own.length ? [{ label: "Your themes", items: own }] : []),
-              { label: "Dark", items: dark },
-              { label: "Light", items: light },
+              ...(own.length ? [{ id: "own", label: ownLabel, items: own }] : []),
+              { id: "dark", label: darkLabel, items: dark },
+              { id: "light", label: lightLabel, items: light },
             ].map((group) => (
-              <div key={group.label} className="mb-2 last:mb-0">
+              <div key={group.id} className="mb-2 last:mb-0">
                 <p className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--ax-ink-dim)]">
                   {group.label}
                 </p>

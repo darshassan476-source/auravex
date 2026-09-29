@@ -2,12 +2,14 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState, type FormEvent } from "react";
-import { useCms } from "@/cms/CmsProvider";
+import { useCms, useText } from "@/cms/CmsProvider";
+import { useTextList } from "@/cms/useTextList";
 import { useCatalogue } from "@/cms/useProduct";
 import { AX_EASE } from "@/components/fx/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Combobox } from "@/components/ui/Combobox";
 import { Icon } from "@/components/ui/Icon";
+import { CONTACT_BUDGETS } from "@/data/contactCopy";
 import { PRODUCTS } from "@/data/products";
 import { cn } from "@/lib/utils";
 
@@ -29,8 +31,6 @@ const EMPTY: FormState = {
   message: "",
 };
 
-const BUDGETS = ["Under $50K", "$50K – $150K", "$150K – $500K", "$500K+", "Not sure yet"];
-
 type Errors = Partial<Record<keyof FormState, string>>;
 
 /** The subset the booking calendar needs to attach a name to a slot. */
@@ -41,15 +41,23 @@ export interface ContactDetails {
   subject: string;
 }
 
-function validate(values: FormState): Errors {
+/** The five validation messages, as edited in the portal. */
+interface ErrorCopy {
+  name: string;
+  emailMissing: string;
+  emailInvalid: string;
+  company: string;
+  message: string;
+}
+
+function validate(values: FormState, copy: ErrorCopy): Errors {
   const errors: Errors = {};
-  if (!values.name.trim()) errors.name = "We need a name to address you by.";
-  if (!values.email.trim()) errors.email = "An email address is required.";
+  if (!values.name.trim()) errors.name = copy.name;
+  if (!values.email.trim()) errors.email = copy.emailMissing;
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim()))
-    errors.email = "That does not look like a valid email address.";
-  if (!values.company.trim()) errors.company = "Which organisation are you writing from?";
-  if (values.message.trim().length < 20)
-    errors.message = "A sentence or two about the problem helps us prepare properly.";
+    errors.email = copy.emailInvalid;
+  if (!values.company.trim()) errors.company = copy.company;
+  if (values.message.trim().length < 20) errors.message = copy.message;
   return errors;
 }
 
@@ -70,6 +78,38 @@ export function ContactForm({
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
 
+  const errorCopy: ErrorCopy = {
+    name: useText("contact.form.error.name"),
+    emailMissing: useText("contact.form.error.emailMissing"),
+    emailInvalid: useText("contact.form.error.emailInvalid"),
+    company: useText("contact.form.error.company"),
+    message: useText("contact.form.error.message"),
+  };
+  const budgets = useTextList("contact.form.budgets", CONTACT_BUDGETS.length, ["label"]).map((b) => b.label);
+  const otherOption = useText("contact.form.otherOption");
+  const sentBody = useText("contact.form.sent.body");
+  const t = {
+    heading: useText("contact.form.heading"),
+    intro: useText("contact.form.intro"),
+    sentTitle: useText("contact.form.sent.title"),
+    again: useText("contact.form.sent.again"),
+    nameLabel: useText("contact.form.label.name"),
+    namePlaceholder: useText("contact.form.placeholder.name"),
+    emailLabel: useText("contact.form.label.email"),
+    emailPlaceholder: useText("contact.form.placeholder.email"),
+    companyLabel: useText("contact.form.label.company"),
+    companyPlaceholder: useText("contact.form.placeholder.company"),
+    interestLabel: useText("contact.form.label.interest"),
+    interestPlaceholder: useText("contact.form.placeholder.interest"),
+    budgetLabel: useText("contact.form.label.budget"),
+    budgetPlaceholder: useText("contact.form.placeholder.budget"),
+    messageLabel: useText("contact.form.label.message"),
+    messagePlaceholder: useText("contact.form.placeholder.message"),
+    submit: useText("contact.form.submit"),
+    sending: useText("contact.form.sending"),
+    privacy: useText("contact.form.privacy"),
+  };
+
   // Mirror the identifying fields outward; the booking panel beside this one
   // uses them so a visitor does not type their name twice.
   useEffect(() => {
@@ -88,7 +128,7 @@ export function ContactForm({
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const found = validate(values);
+    const found = validate(values, errorCopy);
     setErrors(found);
     if (Object.keys(found).length > 0) return;
 
@@ -127,10 +167,10 @@ export function ContactForm({
     <div className="relative">
       <div className="mb-6 flex flex-col gap-1.5">
         <h3 className="text-[20px] font-semibold tracking-[-0.01em] text-[var(--ax-ink)]">
-          Request a Demo
+          {t.heading}
         </h3>
         <p className="text-[13px] leading-relaxed text-[var(--ax-ink-muted)]">
-          Tell us about your goals, and our team will tailor a personalised demo experience.
+          {t.intro}
         </p>
       </div>
 
@@ -146,10 +186,9 @@ export function ContactForm({
             <span className="grid size-14 place-items-center rounded-full border border-[var(--ax-success)]/40 bg-[var(--ax-success)]/10 text-[var(--ax-success)]">
               <Icon name="check" className="size-7" strokeWidth={2.4} />
             </span>
-            <h3 className="ax-display text-[26px]">Request received</h3>
+            <h3 className="ax-display text-[26px]">{t.sentTitle}</h3>
             <p className="max-w-sm text-[14px] leading-relaxed text-[var(--ax-ink-muted)]">
-              Thanks {values.name.split(" ")[0]} — we will come back to you within one working
-              day with a time and a short agenda, not a brochure.
+              {sentBody.replace(/\{name\}/g, values.name.split(" ")[0])}
             </p>
             <Button
               variant="secondary"
@@ -160,7 +199,7 @@ export function ContactForm({
                 setStatus("idle");
               }}
             >
-              Send another
+              {t.again}
             </Button>
           </motion.div>
         ) : (
@@ -174,64 +213,64 @@ export function ContactForm({
             className="flex flex-col gap-5"
           >
             <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Full name" error={errors.name}>
+              <Field label={t.nameLabel} error={errors.name}>
                 <input
                   value={values.name}
                   onChange={(e) => update("name", e.target.value)}
-                  placeholder="Amira Hassan"
+                  placeholder={t.namePlaceholder}
                   autoComplete="name"
                   className={fieldClass(errors.name)}
                 />
               </Field>
 
-              <Field label="Work email" error={errors.email}>
+              <Field label={t.emailLabel} error={errors.email}>
                 <input
                   type="email"
                   value={values.email}
                   onChange={(e) => update("email", e.target.value)}
-                  placeholder="you@company.com"
+                  placeholder={t.emailPlaceholder}
                   autoComplete="email"
                   className={fieldClass(errors.email)}
                 />
               </Field>
             </div>
 
-            <Field label="Company" error={errors.company}>
+            <Field label={t.companyLabel} error={errors.company}>
               <input
                 value={values.company}
                 onChange={(e) => update("company", e.target.value)}
-                placeholder="Organisation name"
+                placeholder={t.companyPlaceholder}
                 autoComplete="organization"
                 className={fieldClass(errors.company)}
               />
             </Field>
 
             <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Primary interest">
+              <Field label={t.interestLabel}>
                 <Combobox
                   value={values.interest}
                   onChange={(v) => update("interest", v)}
-                  options={[...catalogue.map((p) => p.name), "Something else entirely"]}
-                  placeholder="Pick one, or describe it"
+                  options={[...catalogue.map((p) => p.name), otherOption]}
+                  placeholder={t.interestPlaceholder}
                 />
               </Field>
 
-              <Field label="Indicative budget" optional>
+              <Field label={t.budgetLabel} optional>
                 <Combobox
                   value={values.budget}
                   onChange={(v) => update("budget", v)}
-                  options={BUDGETS}
-                  placeholder="Prefer not to say"
+                  options={budgets}
+                  placeholder={t.budgetPlaceholder}
                 />
               </Field>
             </div>
 
-            <Field label="What are you trying to solve?" error={errors.message}>
+            <Field label={t.messageLabel} error={errors.message}>
               <textarea
                 value={values.message}
                 onChange={(e) => update("message", e.target.value)}
                 rows={5}
-                placeholder="The workflow that is costing you the most time right now, and what it would be worth to fix it."
+                placeholder={t.messagePlaceholder}
                 className={cn(fieldClass(errors.message), "resize-none")}
               />
             </Field>
@@ -248,16 +287,16 @@ export function ContactForm({
                 {status === "sending" ? (
                   <span className="flex items-center gap-2.5">
                     <span className="size-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                    Sending
+                    {t.sending}
                   </span>
                 ) : (
-                  "Request a Demo"
+                  t.submit
                 )}
               </Button>
 
               <p className="flex items-center justify-center gap-1.5 text-[11.5px] text-[var(--ax-ink-dim)]">
                 <Icon name="lock" className="size-3" strokeWidth={2.2} />
-                Your information is secure and will never be shared.
+                {t.privacy}
               </p>
             </div>
           </motion.form>
@@ -278,11 +317,12 @@ function Field({
   optional?: boolean;
   children: React.ReactNode;
 }) {
+  const optionalLabel = useText("contact.form.optional");
   return (
     <label className="flex flex-col gap-2">
       <span className="flex items-center gap-2 text-[12.5px] font-medium text-[var(--ax-ink-muted)]">
         {label}
-        {optional && <span className="text-[11px] text-[var(--ax-ink-dim)]">optional</span>}
+        {optional && <span className="text-[11px] text-[var(--ax-ink-dim)]">{optionalLabel}</span>}
       </span>
       {children}
       <AnimatePresence>

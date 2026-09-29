@@ -4,37 +4,25 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/fx/Reveal";
 import { TiltCard } from "@/components/fx/TiltCard";
 import { AmbientField } from "@/components/sections/AmbientField";
 import { CTASection } from "@/components/sections/CTASection";
-import { ClientMarquee } from "@/components/sections/ClientMarquee";
 import { HeroBackdrop } from "@/components/showcase/HeroBackdrop";
 import { Button } from "@/components/ui/Button";
 import { EyebrowPill } from "@/components/ui/EyebrowPill";
 import { Icon } from "@/components/ui/Icon";
 import { Delta, Hairline, Section, SectionHeading } from "@/components/ui/Primitives";
+import { CONTENT_DEFAULTS } from "@/cms/contentSchema";
+import { TextMarquee } from "@/cms/sectorsWorkClient";
+import { Text } from "@/cms/Text";
+import { DEPTH_POINTS } from "@/data/industriesCopy";
 import { INDUSTRIES } from "@/data/solutions";
+import { getSiteBundle } from "@/server/cache";
 
-export const metadata: Metadata = {
-  title: "Industries",
-  description:
-    "Built for the sectors we know deeply — real estate development, construction, hospitality, asset management, retail and government.",
-};
-
-const DEPTH_POINTS = [
-  {
-    icon: "target",
-    title: "We already speak the language",
-    body: "No six-week onboarding to explain what a variation order or a handover snag list is. Domain fluency is the starting position, not the deliverable.",
-  },
-  {
-    icon: "shield",
-    title: "Compliance is designed in",
-    body: "Audit trails, role-based access and data residency are architectural decisions made before the first screen, not retrofitted after procurement asks.",
-  },
-  {
-    icon: "network",
-    title: "Your existing systems stay",
-    body: "We integrate with the ERP, the finance stack and the legacy tools your teams already trust. Replacement is a choice, never a prerequisite.",
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const text = (await getSiteBundle()).text ?? {};
+  return {
+    title: text["industries.meta.title"] || CONTENT_DEFAULTS["industries.meta.title"],
+    description: text["industries.meta.description"] || CONTENT_DEFAULTS["industries.meta.description"],
+  };
+}
 
 export default function IndustriesPage() {
   return (
@@ -47,32 +35,33 @@ export default function IndustriesPage() {
           <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
             <div className="flex flex-col items-start">
               <Reveal trigger="load" direction="fade" duration={0.6}>
-                <EyebrowPill>Industries</EyebrowPill>
+                <EyebrowPill>
+                  <Text id="industries.hero.eyebrow" />
+                </EyebrowPill>
               </Reveal>
 
               <Reveal trigger="load" delay={0.06}>
                 <h1 className="ax-display mt-7 text-[clamp(2.3rem,3.9vw,3.4rem)] leading-[1.05]">
-                  Deep in a Few Sectors,
-                  <br />
-                  Not Shallow in{" "}
-                  <span className="ax-gradient-text">All of Them.</span>
+                  <Text id="industries.hero.title" />{" "}
+                  <span className="ax-gradient-text">
+                    <Text id="industries.hero.accent" />
+                  </span>
                 </h1>
               </Reveal>
 
               <Reveal trigger="load" delay={0.14}>
                 <p className="ax-text-pretty mt-6 max-w-[34rem] text-[16px] leading-[1.75] text-[var(--ax-ink-muted)]">
-                  We have chosen to know a small number of industries properly. That is
-                  why our discovery phase takes two weeks instead of two quarters.
+                  <Text id="industries.hero.body" />
                 </p>
               </Reveal>
 
               <Reveal trigger="load" delay={0.22}>
                 <div className="mt-9 flex flex-wrap items-center gap-3.5">
                   <Button href="/contact" size="lg" icon="arrow-right">
-                    Talk to a specialist
+                    <Text id="industries.hero.primary" />
                   </Button>
                   <Button href="/our-work" size="lg" variant="outline" magnetic={false}>
-                    See sector results
+                    <Text id="industries.hero.secondary" />
                   </Button>
                 </div>
               </Reveal>
@@ -83,7 +72,7 @@ export default function IndustriesPage() {
               <div className="flex flex-col items-end gap-8">
                 <div className="ax-glass-strong ax-edge-light w-full max-w-[330px] rounded-2xl p-5">
                   <div className="flex flex-col gap-4">
-                    {INDUSTRIES.slice(0, 4).map((industry) => (
+                    {INDUSTRIES.slice(0, 4).map((industry, i) => (
                       <div key={industry.id} className="flex items-center gap-3.5">
                         <span
                           className="grid size-10 shrink-0 place-items-center rounded-xl text-[var(--ax-accent-soft)]"
@@ -97,13 +86,13 @@ export default function IndustriesPage() {
                         </span>
                         <span className="flex min-w-0 flex-col">
                           <span className="ax-display text-[21px] leading-none text-[var(--ax-ink)]">
-                            {industry.stat.value}
+                            <Text id={`industries.list.${i + 1}.stat.value`} />
                           </span>
                           <span className="mt-1 truncate text-[11.5px] text-[var(--ax-ink-muted)]">
-                            {industry.stat.label}
+                            <Text id={`industries.list.${i + 1}.stat.label`} />
                           </span>
                           <span className="truncate text-[10.5px] text-[var(--ax-ink-dim)]">
-                            {industry.name}
+                            <Text id={`industries.list.${i + 1}.name`} />
                           </span>
                         </span>
                       </div>
@@ -113,11 +102,7 @@ export default function IndustriesPage() {
 
                 <div className="hidden flex-col items-end gap-3 text-right xl:flex">
                   <p className="ax-display text-[20px] leading-tight text-[var(--ax-ink)]">
-                    Six Sectors.
-                    <br />
-                    One Standard
-                    <br />
-                    of Delivery.
+                    <Text id="industries.hero.note" />
                   </p>
                   <span className="h-px w-24 bg-[var(--ax-line-strong)]" />
                 </div>
@@ -150,17 +135,17 @@ export default function IndustriesPage() {
 
                   <div className="flex flex-col gap-2.5">
                     <h2 className="text-[19px] font-semibold leading-snug text-[var(--ax-ink)]">
-                      {industry.name}
+                      <Text id={`industries.list.${i + 1}.name`} />
                     </h2>
                     <p className="ax-text-pretty text-[13.5px] leading-relaxed text-[var(--ax-ink-muted)]">
-                      {industry.description}
+                      <Text id={`industries.list.${i + 1}.description`} />
                     </p>
                   </div>
 
                   <ul className="flex flex-col gap-2">
-                    {industry.outcomes.map((outcome) => (
+                    {industry.outcomes.map((_, j) => (
                       <li
-                        key={outcome}
+                        key={j}
                         className="flex items-center gap-2 text-[12.5px] text-[var(--ax-ink-dim)]"
                       >
                         <Icon
@@ -168,7 +153,7 @@ export default function IndustriesPage() {
                           className="size-3.5 shrink-0 text-[var(--ax-accent)]"
                           strokeWidth={2.6}
                         />
-                        {outcome}
+                        <Text id={`industries.list.${i + 1}.outcomes.${j + 1}.text`} />
                       </li>
                     ))}
                   </ul>
@@ -177,14 +162,14 @@ export default function IndustriesPage() {
                     <div className="flex flex-col gap-1">
                       <span className="flex items-baseline gap-2">
                         <span className="ax-display ax-gradient-text text-[26px]">
-                          {industry.stat.value}
+                          <Text id={`industries.list.${i + 1}.stat.value`} />
                         </span>
                         {industry.stat.delta && (
                           <Delta value={industry.stat.delta} trend={industry.stat.trend} />
                         )}
                       </span>
                       <span className="text-[11px] text-[var(--ax-ink-dim)]">
-                        {industry.stat.label}
+                        <Text id={`industries.list.${i + 1}.stat.label`} />
                       </span>
                     </div>
 
@@ -201,30 +186,32 @@ export default function IndustriesPage() {
         </RevealGroup>
       </Section>
 
-      <ClientMarquee label="Sectors we operate in every day" />
+      <TextMarquee id="industries.marquee.label" />
 
       {/* ============ Why depth matters ============ */}
       <Section className="ax-halo relative isolate overflow-hidden">
         <AmbientField background="dark-hero-01" />
 
         <SectionHeading
-          eyebrow="Why it matters"
-          title="Sector depth is what makes"
-          accent="the timeline believable."
-          description="Generalist vendors spend the first quarter learning your business. We spend it building."
+          eyebrow={<Text id="industries.why.eyebrow" />}
+          title={<Text id="industries.why.title" />}
+          accent={<Text id="industries.why.accent" />}
+          description={<Text id="industries.why.description" />}
         />
 
         <RevealGroup className="mt-14 grid gap-5 md:grid-cols-3" stagger={0.1}>
-          {DEPTH_POINTS.map((point) => (
-            <RevealItem key={point.title}>
+          {DEPTH_POINTS.map((point, i) => (
+            <RevealItem key={i}>
               <div className="ax-glass ax-edge-light flex h-full flex-col gap-4 rounded-2xl p-7">
                 <span className="grid size-11 place-items-center rounded-xl border border-[var(--ax-line-strong)] bg-[rgba(var(--ax-glow),0.12)] text-[var(--ax-accent-soft)]">
                   <Icon name={point.icon} className="size-5" strokeWidth={1.7} />
                 </span>
                 <Hairline />
-                <h3 className="text-[17px] font-semibold text-[var(--ax-ink)]">{point.title}</h3>
+                <h3 className="text-[17px] font-semibold text-[var(--ax-ink)]">
+                  <Text id={`industries.why.points.${i + 1}.title`} />
+                </h3>
                 <p className="ax-text-pretty text-[13.5px] leading-relaxed text-[var(--ax-ink-muted)]">
-                  {point.body}
+                  <Text id={`industries.why.points.${i + 1}.body`} />
                 </p>
               </div>
             </RevealItem>
@@ -235,12 +222,12 @@ export default function IndustriesPage() {
       <BlockSlot page="industries" slot="before-cta" />
 
       <CTASection
-        eyebrow="Your sector"
-        title="Not seeing your industry"
-        accent="on the list?"
-        description="The pattern underneath is usually the same: fragmented data, manual coordination and decisions made on stale numbers. Tell us how it shows up in your world."
-        primaryLabel="Start a conversation"
-        secondaryLabel="Browse solutions"
+        eyebrow={<Text id="industries.cta.eyebrow" />}
+        title={<Text id="industries.cta.title" />}
+        accent={<Text id="industries.cta.accent" />}
+        description={<Text id="industries.cta.description" />}
+        primaryLabel={<Text id="industries.cta.primary" />}
+        secondaryLabel={<Text id="industries.cta.secondary" />}
         secondaryHref="/solutions"
       />
     </>

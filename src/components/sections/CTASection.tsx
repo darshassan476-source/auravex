@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Text } from "@/cms/Text";
-import { SITE } from "@/data/site";
+import { SiteEmailLink } from "../layout/SiteEmail";
 import { Reveal } from "../fx/Reveal";
 import { Button } from "../ui/Button";
 import { Eyebrow } from "../ui/Primitives";
@@ -59,13 +59,8 @@ export function CTASection({
               </div>
 
               <p className="mt-3 text-[12.5px] text-[var(--ax-ink-dim)]">
-                Or email us directly at{" "}
-                <a
-                  href={`mailto:${SITE.email}`}
-                  className="ax-focus font-medium text-[var(--ax-accent-soft)] transition-colors hover:text-[var(--ax-accent)]"
-                >
-                  {SITE.email}
-                </a>
+                <Text id="cta.emailLead" />{" "}
+                <SiteEmailLink className="ax-focus font-medium text-[var(--ax-accent-soft)] transition-colors hover:text-[var(--ax-accent)]" />
               </p>
             </div>
           </div>

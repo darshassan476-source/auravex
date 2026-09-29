@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Text } from "@/cms/Text";
 import { AX_EASE } from "./Reveal";
 import { Logo } from "../layout/Logo";
 
@@ -94,7 +95,7 @@ export function Preloader() {
                 />
               </div>
               <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[var(--ax-ink-dim)]">
-                <span>INITIALISING SYSTEM</span>
+                <Text id="preloader.label" />
                 <span className="tabular-nums text-[var(--ax-accent-soft)]">
                   {String(progress).padStart(3, "0")}%
                 </span>

@@ -1,13 +1,18 @@
 import type { Industry, Solution } from "@/lib/types";
 
-export const SOLUTION_FILTERS = [
-  "All Solutions",
-  "Real Estate",
-  "Operations",
-  "Analytics",
-  "Customer Experience",
-  "Custom Development",
-] as const;
+/**
+ * The filter rail on the Solutions page. `id` is what the grid filters on
+ * (it matches `Solution.category`, or "all"); `label` is the shipped wording,
+ * editable in the portal and also used as the category tag on solution cards.
+ */
+export const SOLUTION_FILTERS: readonly { id: string; label: string }[] = [
+  { id: "all", label: "All Solutions" },
+  { id: "Real Estate", label: "Real Estate" },
+  { id: "Operations", label: "Operations" },
+  { id: "Analytics", label: "Analytics" },
+  { id: "Customer Experience", label: "Customer Experience" },
+  { id: "Custom Development", label: "Custom Development" },
+];
 
 export const SOLUTIONS: Solution[] = [
   {

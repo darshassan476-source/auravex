@@ -3,7 +3,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { NAV_ITEMS, SITE } from "@/data/site";
+import { Text } from "@/cms/Text";
+import { useNavItems } from "@/cms/useSiteLists";
 import { AX_EASE } from "../fx/Reveal";
 import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
@@ -11,6 +12,7 @@ import { Logo } from "./Logo";
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [expanded, setExpanded] = useState<string | null>(null);
+  const navItems = useNavItems();
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -53,7 +55,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
 
             <nav className="ax-container flex-1 overflow-y-auto py-6">
               <ul className="flex flex-col">
-                {NAV_ITEMS.map((item, i) => (
+                {navItems.map((item, i) => (
                   <motion.li
                     key={item.href}
                     initial={{ opacity: 0, x: -18 }}
@@ -74,14 +76,14 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
                           type="button"
                           aria-label={`Toggle ${item.label}`}
                           onClick={() =>
-                            setExpanded(expanded === item.label ? null : item.label)
+                            setExpanded(expanded === item.href ? null : item.href)
                           }
                           className="ax-focus grid size-10 place-items-center rounded-full text-[var(--ax-ink-muted)]"
                         >
                           <Icon
                             name="chevron-down"
                             className={`size-5 transition-transform duration-300 ${
-                              expanded === item.label ? "rotate-180" : ""
+                              expanded === item.href ? "rotate-180" : ""
                             }`}
                             strokeWidth={2}
                           />
@@ -90,7 +92,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
                     </div>
 
                     <AnimatePresence>
-                      {item.children && expanded === item.label && (
+                      {item.children && expanded === item.href && (
                         <motion.ul
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
@@ -120,10 +122,10 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
 
             <div className="ax-container shrink-0 space-y-4 border-t border-[var(--ax-line)] py-6">
               <Button href="/contact" size="lg" icon="arrow-right" className="w-full">
-                Request Demo
+                <Text id="nav.mobile.cta" />
               </Button>
               <p className="text-center text-[12px] text-[var(--ax-ink-dim)]">
-                {SITE.email} · {SITE.location}
+                <Text id="site.email" /> · <Text id="site.location" />
               </p>
             </div>
           </motion.div>

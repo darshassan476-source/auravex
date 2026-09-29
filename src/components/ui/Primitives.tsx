@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { sparklineArea, sparklinePath } from "@/lib/utils";
 import type { ProductStatus } from "@/lib/types";
-import { STATUS_LABELS } from "@/data/products";
+import { Text } from "@/cms/Text";
 import { Icon } from "./Icon";
 
 /* ---------------- Eyebrow ---------------- */
@@ -101,7 +101,7 @@ export function StatusBadge({
         )}
         <span className="relative inline-flex size-1.5 rounded-full bg-current" />
       </span>
-      {STATUS_LABELS[status]}
+      <Text id={`status.${status}`} />
     </span>
   );
 }

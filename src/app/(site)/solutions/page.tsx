@@ -6,14 +6,19 @@ import { HeroBackdrop } from "@/components/showcase/HeroBackdrop";
 import { EyebrowPill } from "@/components/ui/EyebrowPill";
 import { Icon } from "@/components/ui/Icon";
 import { Section } from "@/components/ui/Primitives";
-import { SOLUTION_HERO_STATS, SOLUTIONS } from "@/data/solutions";
+import { CONTENT_DEFAULTS } from "@/cms/contentSchema";
+import { Text } from "@/cms/Text";
+import { SOLUTION_HERO_STATS } from "@/data/solutions";
+import { getSiteBundle } from "@/server/cache";
 import { SolutionGrid } from "./SolutionGrid";
 
-export const metadata: Metadata = {
-  title: "Solutions",
-  description:
-    "Outcome-led software for real business problems — property operations, workflow automation, analytics, customer experience and custom platforms.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const text = (await getSiteBundle()).text ?? {};
+  return {
+    title: text["solutions.meta.title"] || CONTENT_DEFAULTS["solutions.meta.title"],
+    description: text["solutions.meta.description"] || CONTENT_DEFAULTS["solutions.meta.description"],
+  };
+}
 
 export default function SolutionsPage() {
   return (
@@ -26,22 +31,23 @@ export default function SolutionsPage() {
           <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
             <div className="flex flex-col items-start">
               <Reveal trigger="load" direction="fade" duration={0.6}>
-                <EyebrowPill>Our Solutions</EyebrowPill>
+                <EyebrowPill>
+                  <Text id="home.solutions.eyebrow" />
+                </EyebrowPill>
               </Reveal>
 
               <Reveal trigger="load" delay={0.06}>
                 <h1 className="ax-display mt-7 text-[clamp(2.6rem,5.4vw,4.5rem)] leading-[1.03]">
-                  Software Built Around
-                  <br />
-                  Real <span className="ax-gradient-text">Business Outcomes.</span>
+                  <Text id="home.solutions.title" />{" "}
+                  <span className="ax-gradient-text">
+                    <Text id="home.solutions.accent" />
+                  </span>
                 </h1>
               </Reveal>
 
               <Reveal trigger="load" delay={0.14}>
                 <p className="ax-text-pretty mt-6 max-w-[34rem] text-[16px] leading-[1.75] text-[var(--ax-ink-muted)]">
-                  A powerful suite of enterprise software solutions designed for the real
-                  estate and urban economy — helping you automate, connect and grow with
-                  confidence.
+                  <Text id="solutions.hero.body" />
                 </p>
               </Reveal>
             </div>
@@ -51,8 +57,8 @@ export default function SolutionsPage() {
               <div className="flex flex-col items-end gap-8">
                 <div className="ax-glass-strong ax-edge-light w-full max-w-[330px] rounded-2xl p-5">
                   <div className="flex flex-col gap-4">
-                    {SOLUTION_HERO_STATS.map((stat) => (
-                      <div key={stat.label} className="flex items-center gap-3.5">
+                    {SOLUTION_HERO_STATS.map((stat, i) => (
+                      <div key={i} className="flex items-center gap-3.5">
                         <span
                           className="grid size-10 shrink-0 place-items-center rounded-xl text-[var(--ax-accent-soft)]"
                           style={{
@@ -65,10 +71,10 @@ export default function SolutionsPage() {
                         </span>
                         <span className="flex min-w-0 flex-col">
                           <span className="ax-display text-[21px] leading-none text-[var(--ax-ink)]">
-                            {stat.value}
+                            <Text id={`solutions.hero.stats.${i + 1}.value`} />
                           </span>
                           <span className="mt-1 truncate text-[11.5px] text-[var(--ax-ink-muted)]">
-                            {stat.label}
+                            <Text id={`solutions.hero.stats.${i + 1}.label`} />
                           </span>
                         </span>
                       </div>
@@ -78,10 +84,7 @@ export default function SolutionsPage() {
 
                 <div className="hidden flex-col items-end gap-3 text-right xl:flex">
                   <p className="ax-display text-[20px] leading-tight text-[var(--ax-ink)]">
-                    One Platform.
-                    <br />A Smarter
-                    <br />
-                    Enterprise Future.
+                    <Text id="solutions.hero.note" />
                   </p>
                   <span className="h-px w-24 bg-[var(--ax-line-strong)]" />
                 </div>
@@ -95,17 +98,17 @@ export default function SolutionsPage() {
 
       {/* ================= Grid ================= */}
       <Section className="pt-2">
-        <SolutionGrid solutions={SOLUTIONS} />
+        <SolutionGrid />
       </Section>
 
       <BlockSlot page="solutions" slot="before-cta" />
 
       <CTASection
-        eyebrow="Next step"
-        title="Bring us the number you"
-        accent="cannot move."
-        primaryLabel="Book a discovery call"
-        secondaryLabel="Browse industries"
+        eyebrow={<Text id="solutions.cta.eyebrow" />}
+        title={<Text id="solutions.cta.title" />}
+        accent={<Text id="solutions.cta.accent" />}
+        primaryLabel={<Text id="solutions.cta.primary" />}
+        secondaryLabel={<Text id="solutions.cta.secondary" />}
         secondaryHref="/industries"
       />
     </>

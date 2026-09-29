@@ -5,6 +5,7 @@ import { CmsProvider } from "@/cms/CmsProvider";
 import { getSiteBundle } from "@/server/cache";
 import { revealWatcherScript } from "@/components/fx/revealWatcher";
 import { SmoothScroll } from "@/components/fx/SmoothScroll";
+import { SEO_KEYWORDS } from "@/data/chromeCopy";
 import { SITE } from "@/data/site";
 import { themeNoFlashScript } from "@/themes/noFlash";
 import { ThemeProvider } from "@/themes/ThemeProvider";
@@ -23,6 +24,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const tagline = text["site.tagline"] || SITE.tagline;
   const headline = text["site.headline"] || SITE.headline;
   const description = text["site.description"] || SITE.description;
+  const keywords = (text["seo.keywords"] || SEO_KEYWORDS.join(", "))
+    .split(",")
+    .map((k) => k.trim())
+    .filter(Boolean);
   return {
   metadataBase: new URL("https://auravex.com"),
   title: {
@@ -30,14 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
     template: `%s · ${name}`,
   },
   description: description,
-  keywords: [
-    "AI software",
-    "enterprise platforms",
-    "real estate technology",
-    "business intelligence",
-    "automation",
-    "Dubai software company",
-  ],
+  keywords,
   authors: [{ name: name }],
   openGraph: {
     type: "website",

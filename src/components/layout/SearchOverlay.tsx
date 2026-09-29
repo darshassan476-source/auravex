@@ -3,9 +3,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { PRODUCTS } from "@/data/products";
+import { useText } from "@/cms/CmsProvider";
+import { useTextList } from "@/cms/useTextList";
+import { SEARCH_PAGES } from "@/data/chromeCopy";
+import { useCatalogue } from "@/cms/useProduct";
+import { useIndustries, useSolutions } from "@/cms/useSolutions";
 import { CASE_STUDIES } from "@/data/caseStudies";
-import { INDUSTRIES, SOLUTIONS } from "@/data/solutions";
 import { cn } from "@/lib/utils";
 import { AX_EASE } from "../fx/Reveal";
 import { Icon } from "../ui/Icon";
@@ -24,41 +27,64 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
 
+  const groupProducts = useText("search.group.products");
+  const groupSolutions = useText("search.group.solutions");
+  const groupIndustries = useText("search.group.industries");
+  const groupCaseStudies = useText("search.group.caseStudies");
+  const groupPages = useText("search.group.pages");
+  const pages = useTextList("search.page", SEARCH_PAGES.length, ["label", "description"] as const);
+  const placeholder = useText("search.placeholder");
+  const escLabel = useText("search.esc");
+  const noResults = useText("search.noResults");
+  const hintNavigate = useText("search.hint.navigate");
+  const hintOpen = useText("search.hint.open");
+  const footerLabel = useText("search.footer");
+
+  // Live lists: products added or renamed in the portal, and edited solution
+  // and industry copy, are what search finds.
+  const products = useCatalogue();
+  const solutions = useSolutions();
+  const industries = useIndustries();
+
   const index = useMemo<Entry[]>(
     () => [
-      ...PRODUCTS.map((p) => ({
+      ...products.map((p) => ({
         label: p.name,
-        group: "Products",
+        group: groupProducts,
         href: `/products/${p.slug}`,
         description: p.summary,
         icon: p.icon,
       })),
-      ...SOLUTIONS.map((s) => ({
+      ...solutions.map((s) => ({
         label: s.name,
-        group: "Solutions",
+        group: groupSolutions,
         href: `/solutions#${s.slug}`,
         description: s.description,
         icon: s.icon,
       })),
-      ...INDUSTRIES.map((i) => ({
+      ...industries.map((i) => ({
         label: i.name,
-        group: "Industries",
+        group: groupIndustries,
         href: `/industries#${i.slug}`,
         description: i.description,
         icon: i.icon,
       })),
       ...CASE_STUDIES.map((c) => ({
         label: c.title,
-        group: "Case Studies",
+        group: groupCaseStudies,
         href: `/our-work/${c.slug}`,
         description: c.summary,
         icon: "file",
       })),
-      { label: "About AURAVEX", group: "Pages", href: "/about", description: "The team, method and mission", icon: "users" },
-      { label: "Contact", group: "Pages", href: "/contact", description: "Request a demo or book a call", icon: "mail" },
-      { label: "Admin Portal", group: "Pages", href: "/admin/login", description: "Private management platform", icon: "lock" },
+      ...SEARCH_PAGES.map((page, i) => ({
+        label: pages[i].label,
+        group: groupPages,
+        href: page.href,
+        description: pages[i].description,
+        icon: page.icon,
+      })),
     ],
-    [],
+    [products, solutions, industries, groupProducts, groupSolutions, groupIndustries, groupCaseStudies, groupPages, pages],
   );
 
   const results = useMemo(() => {
@@ -142,18 +168,18 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                   setQuery(e.target.value);
                   setCursor(0);
                 }}
-                placeholder="Search products, solutions, case studies..."
+                placeholder={placeholder}
                 className="h-14 flex-1 bg-transparent text-[15px] text-[var(--ax-ink)] outline-none placeholder:text-[var(--ax-ink-dim)]"
               />
               <kbd className="hidden rounded border border-[var(--ax-line)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--ax-ink-dim)] sm:block">
-                ESC
+                {escLabel}
               </kbd>
             </div>
 
             <div className="max-h-[52vh] overflow-y-auto p-2">
               {results.length === 0 ? (
                 <p className="px-4 py-10 text-center text-[13px] text-[var(--ax-ink-dim)]">
-                  No results for &ldquo;{query}&rdquo;
+                  {noResults} &ldquo;{query}&rdquo;
                 </p>
               ) : (
                 results.map((entry, i) => (
@@ -191,10 +217,10 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
 
             <div className="flex items-center justify-between border-t border-[var(--ax-line)] px-5 py-2.5 text-[11px] text-[var(--ax-ink-dim)]">
               <span className="flex items-center gap-3">
-                <span>↑↓ Navigate</span>
-                <span>↵ Open</span>
+                <span>{hintNavigate}</span>
+                <span>{hintOpen}</span>
               </span>
-              <span>AURAVEX Search</span>
+              <span>{footerLabel}</span>
             </div>
           </motion.div>
         </motion.div>

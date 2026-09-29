@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from "react";
 import { useCms, useText } from "@/cms/CmsProvider";
+import { useTextList } from "@/cms/useTextList";
 import { FloatingCard } from "@/components/showcase/FloatingCard";
 import { HeroBackdrop } from "@/components/showcase/HeroBackdrop";
 import { LaptopFrame } from "@/components/showcase/LaptopFrame";
@@ -40,6 +41,8 @@ export function HomeHero() {
   const body = useText("home.hero.body");
   const primaryCta = useText("home.hero.primaryCta");
   const secondaryCta = useText("home.hero.secondaryCta");
+  const cards = useTextList("home.hero.card", 3, ["title", "body"] as const);
+  const capabilities = useTextList("home.hero.capability", CAPABILITY_STRIP.length, ["label"] as const);
 
   return (
     <section className="relative isolate overflow-hidden">
@@ -105,22 +108,22 @@ export function HomeHero() {
             {/* Callouts overlapping the device, as in the reference */}
             <FloatingCard
               icon="sparkles"
-              title="AI Insights"
-              body="Identify high-value investments and opportunities with AI."
+              title={cards[0].title}
+              body={cards[0].body}
               delay={0.85}
               className="absolute -left-12 top-[42%] hidden xl:block"
             />
             <FloatingCard
               icon="settings"
-              title="Automate Operations"
-              body="Reduce costs and increase efficiency."
+              title={cards[1].title}
+              body={cards[1].body}
               delay={0.98}
               className="absolute right-0 top-[16%] hidden lg:block"
             />
             <FloatingCard
               icon="chart"
-              title="Predict Growth"
-              body="Turn data into smarter decisions."
+              title={cards[2].title}
+              body={cards[2].body}
               delay={1.1}
               className="absolute right-0 top-[50%] hidden lg:block"
             />
@@ -134,7 +137,7 @@ export function HomeHero() {
         >
           {CAPABILITY_STRIP.map((item, i) => (
             <div
-              key={item.label}
+              key={item.icon}
               className={cnDivider(i)}
             >
               <span className="grid size-10 shrink-0 place-items-center rounded-xl text-[var(--ax-accent-soft)]"
@@ -147,7 +150,7 @@ export function HomeHero() {
                 <Icon name={item.icon} className="size-[18px]" strokeWidth={1.8} />
               </span>
               <span className="whitespace-pre-line text-[13.5px] font-medium leading-tight text-[var(--ax-ink)]">
-                {item.label}
+                {capabilities[i].label}
               </span>
             </div>
           ))}

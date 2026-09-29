@@ -5,19 +5,24 @@ import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "@/components/fx/Reveal";
 import { CTASection } from "@/components/sections/CTASection";
 import { SectionHead } from "@/components/sections/SectionHead";
-import { FloatingCard } from "@/components/showcase/FloatingCard";
 import { HeroBackdrop } from "@/components/showcase/HeroBackdrop";
 import { Button } from "@/components/ui/Button";
 import { EyebrowPill } from "@/components/ui/EyebrowPill";
 import { Icon } from "@/components/ui/Icon";
 import { Section } from "@/components/ui/Primitives";
 import { CASE_STUDIES, WORK_HERO_STATS } from "@/data/caseStudies";
+import { CONTENT_DEFAULTS } from "@/cms/contentSchema";
+import { TextFloatingCard } from "@/cms/sectorsWorkClient";
+import { Text } from "@/cms/Text";
+import { getSiteBundle } from "@/server/cache";
 
-export const metadata: Metadata = {
-  title: "Our Work",
-  description:
-    "Case studies and measurable results from enterprise platforms AURAVEX has designed, built and scaled.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const text = (await getSiteBundle()).text ?? {};
+  return {
+    title: text["work.meta.title"] || CONTENT_DEFAULTS["work.meta.title"],
+    description: text["work.meta.description"] || CONTENT_DEFAULTS["work.meta.description"],
+  };
+}
 
 export default function OurWorkPage() {
   return (
@@ -30,45 +35,48 @@ export default function OurWorkPage() {
           <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
             <div className="flex flex-col items-start">
               <Reveal trigger="load" direction="fade" duration={0.6}>
-                <EyebrowPill>Success Stories</EyebrowPill>
+                <EyebrowPill>
+                  <Text id="work.hero.eyebrow" />
+                </EyebrowPill>
               </Reveal>
 
               <Reveal trigger="load" delay={0.06}>
                 <h1 className="ax-display mt-7 text-[clamp(2.7rem,5.6vw,4.7rem)] leading-[1.02]">
-                  Real Outcomes
-                  <br />
-                  for a Smarter <span className="ax-gradient-text">Tomorrow.</span>
+                  <Text id="work.hero.title" />{" "}
+                  <span className="ax-gradient-text">
+                    <Text id="work.hero.accent" />
+                  </span>
                 </h1>
               </Reveal>
 
               <Reveal trigger="load" delay={0.14}>
                 <p className="ax-text-pretty mt-6 max-w-[34rem] text-[16px] leading-[1.75] text-[var(--ax-ink-muted)]">
-                  See how leading real estate and construction enterprises use AURAVEX to
-                  streamline operations, unlock insights, and build what&rsquo;s next —
-                  faster, smarter, and at scale.
+                  <Text id="work.hero.body" />
                 </p>
               </Reveal>
 
               <Reveal trigger="load" delay={0.22}>
                 <Button href="#case-studies" size="lg" icon="arrow-right" className="mt-9">
-                  View All Case Studies
+                  <Text id="work.hero.button" />
                 </Button>
               </Reveal>
 
               {/* Figures with vertical rules, as in the reference */}
               <Reveal trigger="load" delay={0.3}>
                 <div className="mt-12 flex flex-wrap items-center">
-                  {WORK_HERO_STATS.map((stat, i) => (
+                  {WORK_HERO_STATS.map((_, i) => (
                     <div
-                      key={stat.label}
+                      key={i}
                       className={`flex flex-col gap-1 pr-10 ${
                         i > 0 ? "border-l border-[var(--ax-line)] pl-10" : ""
                       }`}
                     >
                       <span className="ax-display ax-gradient-text text-[clamp(1.9rem,3.4vw,2.6rem)] leading-none">
-                        {stat.value}
+                        <Text id={`work.hero.stats.${i + 1}.value`} />
                       </span>
-                      <span className="text-[12px] text-[var(--ax-ink-muted)]">{stat.label}</span>
+                      <span className="text-[12px] text-[var(--ax-ink-muted)]">
+                        <Text id={`work.hero.stats.${i + 1}.label`} />
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -78,21 +86,21 @@ export default function OurWorkPage() {
             {/* Outcome callouts */}
             <Reveal trigger="load" direction="left" delay={0.12}>
               <div className="relative hidden min-h-[340px] lg:block">
-                <FloatingCard
+                <TextFloatingCard
                   icon="chart"
-                  title="Higher Productivity"
+                  titleId="work.hero.card1"
                   delay={0.5}
                   className="absolute left-[4%] top-0 w-[212px]"
                 />
-                <FloatingCard
+                <TextFloatingCard
                   icon="settings"
-                  title="Smarter Operations"
+                  titleId="work.hero.card2"
                   delay={0.62}
                   className="absolute left-[24%] top-[42%] w-[212px]"
                 />
-                <FloatingCard
+                <TextFloatingCard
                   icon="users"
-                  title="Stronger Business Outcomes"
+                  titleId="work.hero.card3"
                   delay={0.74}
                   className="absolute right-0 top-[76%] w-[228px]"
                 />
@@ -107,13 +115,13 @@ export default function OurWorkPage() {
       {/* ================= Case studies ================= */}
       <Section id="case-studies" className="pt-6">
         <SectionHead
-          eyebrow="Featured Case Studies"
-          title={<>Transformation in</>}
-          accent="Action."
-          description="From complex developments to large-scale operations, explore how our customers turn challenges into measurable growth with AURAVEX."
+          eyebrow={<Text id="home.work.eyebrow" />}
+          title={<Text id="home.work.title" />}
+          accent={<Text id="home.work.accent" />}
+          description={<Text id="work.cases.description" />}
           action={
             <Button href="/contact" variant="outline" icon="arrow-right" magnetic={false}>
-              More Success Stories
+              <Text id="work.cases.button" />
             </Button>
           }
         />
@@ -201,11 +209,11 @@ export default function OurWorkPage() {
       <BlockSlot page="our-work" slot="before-cta" />
 
       <CTASection
-        eyebrow="Your turn"
-        title="Let's put your numbers on"
-        accent="this page."
-        primaryLabel="Request a Demo"
-        secondaryLabel="Explore products"
+        eyebrow={<Text id="work.cta.eyebrow" />}
+        title={<Text id="work.cta.title" />}
+        accent={<Text id="work.cta.accent" />}
+        primaryLabel={<Text id="work.cta.primary" />}
+        secondaryLabel={<Text id="work.cta.secondary" />}
         secondaryHref="/products"
       />
     </>

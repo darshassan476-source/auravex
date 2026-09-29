@@ -3,6 +3,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useCms, useText } from "@/cms/CmsProvider";
+import { useCatalogue } from "@/cms/useProduct";
+import { useTextList } from "@/cms/useTextList";
 import { AX_EASE } from "@/components/fx/Reveal";
 import { MiniDevice } from "@/components/showcase/MiniDevice";
 import { FilterPills, type FilterOption } from "@/components/ui/FilterPills";
@@ -45,21 +48,28 @@ const DEVICE_BY_CATEGORY: Record<string, DeviceVariant> = {
  * The product gallery from reference 8: a filter rail above a grid of cards
  * that pair copy on the left with a device shot on the right.
  */
-export function ProductExplorer({ products }: { products: Product[] }) {
+export function ProductExplorer({ products: rendered }: { products: Product[] }) {
+  // The server-rendered list paints first; once the live store is in, products
+  // published, renamed or hidden in the portal show without waiting for a refresh.
+  const { ready } = useCms();
+  const live = useCatalogue();
+  const products: Product[] = ready ? live : rendered;
   const [category, setCategory] = useState<CategoryFilter>("all");
+  // Filter names are editable; the ids that drive the filtering stay in code.
+  const labels = useTextList("products.filters", PRODUCT_FILTERS.length, ["label"]);
 
   const options: FilterOption[] = useMemo(
     () =>
-      PRODUCT_FILTERS.map((filter) => ({
+      PRODUCT_FILTERS.map((filter, i) => ({
         id: filter.id,
-        label: filter.label,
+        label: labels[i].label,
         icon: filter.icon,
         count:
           filter.id === "all"
             ? products.length
             : products.filter((p) => p.category === filter.id).length,
       })).filter((option) => option.count > 0),
-    [products],
+    [products, labels],
   );
 
   const results = useMemo(
@@ -99,7 +109,9 @@ export function ProductExplorer({ products }: { products: Product[] }) {
 
 function GalleryCard({ product }: { product: Product }) {
   const href = product.links.caseStudy ?? `/products/${product.slug}`;
-  const cta = product.links.caseStudy ? "View Case Study" : "Explore Product";
+  const caseStudyLabel = useText("products.card.caseStudy");
+  const exploreLabel = useText("products.card.explore");
+  const cta = product.links.caseStudy ? caseStudyLabel : exploreLabel;
 
   return (
     <article

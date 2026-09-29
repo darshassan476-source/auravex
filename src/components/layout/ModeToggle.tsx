@@ -1,5 +1,6 @@
 "use client";
 
+import { useText } from "@/cms/CmsProvider";
 import { useTheme } from "@/themes/ThemeProvider";
 import { THEMES } from "@/themes/themes";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,8 @@ const COUNTERPART: Record<string, string> = {
 export function ModeToggle({ className }: { className?: string }) {
   const { themeId, theme, setThemeId, custom } = useTheme();
   const dark = theme.mode === "dark";
+  const toLight = useText("mode.toLight");
+  const toDark = useText("mode.toDark");
 
   function flip() {
     // A custom theme flips through the preset it was built on.
@@ -50,7 +53,7 @@ export function ModeToggle({ className }: { className?: string }) {
       type="button"
       onClick={flip}
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-      title={dark ? "Switch to light mode" : "Switch to dark mode"}
+      title={dark ? toLight : toDark}
       className={cn(
         "ax-focus grid size-10 place-items-center rounded-full text-[var(--ax-ink-muted)]",
         "transition-colors duration-300 hover:bg-[rgba(var(--ax-glow),0.10)] hover:text-[var(--ax-ink)]",

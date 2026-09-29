@@ -1,6 +1,5 @@
 import { BlockSlot } from "@/components/sections/BlockSlot";
 import type { Metadata } from "next";
-import { FloatingCard } from "@/components/showcase/FloatingCard";
 import { HeroBackdrop } from "@/components/showcase/HeroBackdrop";
 import { CTASection } from "@/components/sections/CTASection";
 import { TrustBar } from "@/components/sections/TrustBar";
@@ -8,15 +7,19 @@ import { Reveal } from "@/components/fx/Reveal";
 import { LogoMark } from "@/components/layout/Logo";
 import { EyebrowPill } from "@/components/ui/EyebrowPill";
 import { Section } from "@/components/ui/Primitives";
-import { SITE } from "@/data/site";
-import { getCatalogue } from "@/server/cache";
+import { Text } from "@/cms/Text";
+import { CONTENT_DEFAULTS } from "@/cms/contentSchema";
+import { getCatalogue, getSiteBundle } from "@/server/cache";
+import { HeroCard } from "./HeroCard";
 import { ProductExplorer } from "./ProductExplorer";
 
-export const metadata: Metadata = {
-  title: "Products",
-  description:
-    "The full AURAVEX product portfolio — AI engines, enterprise platforms, automation suites and developer tooling, all in production.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const text = (await getSiteBundle()).text ?? {};
+  return {
+    title: text["products.meta.title"] || CONTENT_DEFAULTS["products.meta.title"],
+    description: text["products.meta.description"] || CONTENT_DEFAULTS["products.meta.description"],
+  };
+}
 
 export default async function ProductsPage() {
   return (
@@ -29,22 +32,19 @@ export default async function ProductsPage() {
           <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
             <div className="flex flex-col items-start">
               <Reveal trigger="load" direction="fade" duration={0.6}>
-                <EyebrowPill>Our Work / Product Gallery</EyebrowPill>
+                <EyebrowPill><Text id="products.hero.eyebrow" /></EyebrowPill>
               </Reveal>
 
               <Reveal trigger="load" delay={0.06}>
                 <h1 className="ax-display mt-7 text-[clamp(2.6rem,5.2vw,4.4rem)] leading-[1.03]">
-                  Software Experiences
-                  <br />
-                  Designed to <span className="ax-gradient-text">Impress.</span>
+                  <Text id="products.hero.title" />{" "}
+                  <span className="ax-gradient-text"><Text id="products.hero.accent" /></span>
                 </h1>
               </Reveal>
 
               <Reveal trigger="load" delay={0.14}>
                 <p className="ax-text-pretty mt-6 max-w-[36rem] text-[16px] leading-[1.75] text-[var(--ax-ink-muted)]">
-                  From real estate and hospitality to enterprise operations, we design and
-                  build intelligent software products that solve complex challenges and
-                  deliver measurable impact.
+                  <Text id="products.hero.body" />
                 </p>
               </Reveal>
             </div>
@@ -52,21 +52,21 @@ export default async function ProductsPage() {
             {/* Callouts + brand plinth */}
             <Reveal trigger="load" direction="left" delay={0.12}>
               <div className="relative hidden min-h-[320px] lg:block">
-                <FloatingCard
+                <HeroCard
                   icon="chart"
-                  title="Real Businesses. Real Impact."
+                  titleId="products.hero.card1"
                   delay={0.5}
                   className="absolute left-0 top-2 w-[236px]"
                 />
-                <FloatingCard
+                <HeroCard
                   icon="users"
-                  title="Built in Collaboration. For a Global Future."
+                  titleId="products.hero.card2"
                   delay={0.62}
                   className="absolute left-[8%] top-[38%] w-[248px]"
                 />
-                <FloatingCard
+                <HeroCard
                   icon="globe"
-                  title="Enterprise Software That Scales."
+                  titleId="products.hero.card3"
                   delay={0.74}
                   className="absolute left-0 top-[74%] w-[236px]"
                 />
@@ -81,10 +81,10 @@ export default async function ProductsPage() {
                     />
                     <LogoMark className="size-11" />
                     <span className="text-[17px] font-semibold tracking-[0.26em] text-[var(--ax-ink)]">
-                      AURAVEX
+                      <Text id="site.name" />
                     </span>
                     <span className="text-[7.5px] font-medium uppercase tracking-[0.22em] text-[var(--ax-ink-dim)]">
-                      {SITE.tagline}
+                      <Text id="site.tagline" />
                     </span>
                   </div>
                 </div>
@@ -106,12 +106,12 @@ export default async function ProductsPage() {
       <BlockSlot page="products" slot="before-cta" />
 
       <CTASection
-        eyebrow="Not on the list?"
-        title="Most of our best work started as"
-        accent="something that did not exist."
-        description="If your problem does not map onto any of these, that is usually the sign it is worth building properly. Tell us what you are up against."
-        primaryLabel="Start a conversation"
-        secondaryLabel="See how we work"
+        eyebrow={<Text id="products.cta.eyebrow" />}
+        title={<Text id="products.cta.title" />}
+        accent={<Text id="products.cta.accent" />}
+        description={<Text id="products.cta.body" />}
+        primaryLabel={<Text id="products.cta.primary" />}
+        secondaryLabel={<Text id="products.cta.secondary" />}
         secondaryHref="/about"
       />
     </>
