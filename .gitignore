@@ -42,3 +42,9 @@ next-env.d.ts
 
 # runtime data (sqlite + uploads)
 /data/
+
+# Local Netlify folder
+.netlify
+
+# netlify cli
+/.netlify/
