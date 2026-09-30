@@ -147,3 +147,12 @@ data/               runtime data (git-ignored)
 
 Everything lives in `data/`. Copy the folder while the server is stopped, or
 copy `auravex.db`, `auravex.db-wal` and `media/` together.
+
+## Deployment
+
+Pushing to `main` deploys everything automatically:
+
+- **Frontend** — Netlify site `auravex-site` (https://auravex-site.netlify.app), built on Netlify from this repo using `netlify.toml`. `/api/*` and `/go/*` are proxied to the backend.
+- **Backend** — Render web service `auravex-api` (https://auravex-api.onrender.com), defined in `render.yaml`, auto-deploys on every commit.
+
+Secrets (`MONGODB_URI`, `ADMIN_*`, `ANTHROPIC_API_KEY`, `AURAVEX_SECRET`) live only in the Render dashboard, never in this repo.
