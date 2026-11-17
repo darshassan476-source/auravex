@@ -6,7 +6,7 @@ import type { ResolvedProduct } from "@/cms/useProduct";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import { BrowserFrame } from "./BrowserFrame";
-import { BlueprintTower, ProductAura } from "./ProductAura";
+import { ProductAura } from "./ProductAura";
 import { ProductSchematic } from "./ProductSchematic";
 
 /** Every screen for a product: portal uploads first, then the bundled captures. */
@@ -122,16 +122,6 @@ export function ProductShowcase({
             </div>
           ))}
       </motion.div>
-
-      {product.slug === "buildsphere-ai" && (
-        <BlueprintTower
-          accent={product.accent}
-          className={cn(
-            "absolute z-30 h-[82%] w-auto drop-shadow-[0_0_18px_rgba(239,68,68,0.45)]",
-            sm ? "bottom-[10%] right-[12%] h-[70%]" : "bottom-[12%] right-[10%]",
-          )}
-        />
-      )}
     </div>
   );
 }

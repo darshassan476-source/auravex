@@ -34,13 +34,13 @@ export function ProductStage({ product: source, index }: { product: Product; ind
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
-          background: `radial-gradient(60% 70% at ${flip ? "20%" : "80%"} 50%, ${product.accent}1f, transparent 70%)`,
+          background: `radial-gradient(60% 70% at ${flip ? "20%" : "80%"} 50%, ${product.accent}0f, transparent 70%)`,
         }}
       />
       <span
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: `linear-gradient(90deg, transparent, ${product.accent}55, transparent)` }}
+        style={{ background: `linear-gradient(90deg, transparent, ${product.accent}33, transparent)` }}
       />
 
       <div className="ax-container">

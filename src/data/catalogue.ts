@@ -514,7 +514,10 @@ const SCREENS: Record<string, [string, string][]> = {
     ["The dashboard builder", "2"],
     ["The assistant proposes changes before anything is applied", "3"],
   ],
-  "buildsphere-ai": [["Describe a building — get the whole thing", "1"]],
+  "buildsphere-ai": [
+    ["Describe a building — get the whole thing", "1"],
+    ["The live digital twin", "2"],
+  ],
 };
 
 export const CATALOGUE: Product[] = RECORDS.map((p) => ({
