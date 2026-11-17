@@ -42,7 +42,7 @@ export default function NotFound() {
               <Text id="notfound.home" />
             </Button>
             <Button href="/products" size="lg" variant="secondary" icon="arrow-right">
-              <Text id="notfound.products" />
+              <Text id="ex.notfound.products" />
             </Button>
           </div>
 

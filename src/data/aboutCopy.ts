@@ -4,71 +4,74 @@
  * each editable field.
  */
 
-export const ABOUT_PRINCIPLES = [
+/** What Auravex builds: the product areas, not a list of services. */
+export const ABOUT_BUILD = [
   {
-    icon: "target",
-    title: "Start with the number",
-    body: "Before a single screen is designed we agree what success looks like numerically, and who owns that number after we leave.",
+    icon: "file",
+    title: "Information management",
+    body: "AI-powered document and information management for organisations that need control, retrieval and accountability.",
+  },
+  {
+    icon: "bot",
+    title: "Enterprise AI agents",
+    body: "AI agents that work across connected business systems to assist operations and automate routine work.",
+  },
+  {
+    icon: "chart",
+    title: "Business intelligence",
+    body: "Dashboards and reporting that give leadership a consolidated, current view of operations.",
+  },
+  {
+    icon: "building",
+    title: "Industry platforms",
+    body: "Products for sustainability, enterprise management and construction delivery, built around how those sectors operate.",
+  },
+];
+
+/** How a deployment is delivered. */
+export const ABOUT_DELIVERY = [
+  {
+    icon: "box",
+    title: "Product",
+    body: "A working enterprise product as the starting point, with its core modules already in place.",
+  },
+  {
+    icon: "settings",
+    title: "Configuration",
+    body: "Roles, departments, workflows and terminology set up to match your organisation.",
+  },
+  {
+    icon: "link",
+    title: "Integration",
+    body: "Connections to the business systems you already run, agreed with your IT team.",
+  },
+  {
+    icon: "cloud",
+    title: "Deployment",
+    body: "Cloud, private cloud or on-premises deployment, followed by onboarding and ongoing support.",
+  },
+];
+
+/** Enterprise readiness, stated as commitments of each engagement rather than unverified certifications. */
+export const ABOUT_READINESS = [
+  {
+    icon: "shield",
+    title: "Role-based access",
+    body: "Access is defined around your organisational structure, so people see what their role requires.",
+  },
+  {
+    icon: "database",
+    title: "Your data, your control",
+    body: "Where data is hosted and who can reach it is agreed with you as part of the deployment.",
   },
   {
     icon: "layers",
-    title: "Build it to be replaced",
-    body: "Every layer is independently deployable. If you outgrow a decision we made, you swap that layer — not the platform.",
-  },
-  {
-    icon: "shield",
-    title: "Own your own data",
-    body: "Your data stays yours, in your cloud, under your keys. No lock-in disguised as a managed service.",
-  },
-  {
-    icon: "zap",
-    title: "Ship in weeks, not quarters",
-    body: "Discovery is two weeks because we already know the sector. First production release lands inside the first quarter.",
+    title: "Configurable, not rebuilt",
+    body: "Requirements are met through configuration and optional modules, keeping the product maintainable.",
   },
   {
     icon: "users",
-    title: "One team, not a handoff chain",
-    body: "The engineers in discovery are the engineers in production. Nothing is thrown over a wall to a delivery unit you never met.",
+    title: "Support after go-live",
+    body: "Onboarding, training and support and maintenance arrangements agreed for each deployment.",
   },
-  {
-    icon: "activity",
-    title: "Observable by default",
-    body: "If it runs in production it emits metrics, traces and logs from day one. You should never need to ask us whether something is working.",
-  },
-];
-
-export const ABOUT_METHOD = [
-  {
-    phase: "01",
-    title: "Discovery",
-    duration: "2 weeks",
-    body: "We map the workflow as it actually runs — including the spreadsheets and the WhatsApp groups nobody mentions in the kickoff.",
-  },
-  {
-    phase: "02",
-    title: "Architecture",
-    duration: "2 weeks",
-    body: "Data model, integration contracts and the deployment topology, agreed and signed off before implementation starts.",
-  },
-  {
-    phase: "03",
-    title: "Build",
-    duration: "8–12 weeks",
-    body: "Two-week increments, each one deployed to a live environment your team can use. No big-bang reveal at the end.",
-  },
-  {
-    phase: "04",
-    title: "Scale",
-    duration: "Ongoing",
-    body: "Rollout, training and the operational handover — or we keep running it for you. Both are supported paths.",
-  },
-];
-
-export const ABOUT_SECURITY = [
-  { icon: "lock", label: "SSO & SCIM", detail: "SAML, OIDC and directory sync on every platform." },
-  { icon: "shield", label: "Role-based access", detail: "Field-level permissions with a full audit trail." },
-  { icon: "database", label: "Data residency", detail: "Deployed in your region, in your cloud account." },
-  { icon: "scan", label: "Continuous scanning", detail: "Dependency, container and secret scanning in CI." },
-  { icon: "cloud", label: "Encrypted throughout", detail: "TLS 1.3 in transit, AES-256 at rest, keys you hold." },
-  { icon: "file", label: "Audit exports", detail: "Immutable event history, exportable on demand." },
 ];

@@ -17,24 +17,38 @@ export const DEMO_CREDENTIALS = {
 
 export const ADMIN_NAV = [
   {
-    group: "Content",
+    group: "Products",
     items: [
       { label: "Dashboard", href: "/admin", icon: "home" },
-      { label: "Add Software", href: "/admin/products/new", icon: "plus" },
+      { label: "Add Product", href: "/admin/products/new", icon: "plus" },
       { label: "Manage Products", href: "/admin/products", icon: "box" },
-      { label: "Case Studies", href: "/admin/case-studies", icon: "file" },
-      { label: "Page Builder", href: "/admin/pages", icon: "layers" },
-      { label: "Media Library", href: "/admin/media", icon: "image" },
-      { label: "Manage Links", href: "/admin/links", icon: "link" },
+      { label: "Pricing", href: "/admin/pricing", icon: "target" },
+      { label: "Latest Updates", href: "/admin/updates", icon: "bell" },
+    ],
+  },
+  {
+    group: "Customers",
+    items: [
+      { label: "Customers & Deployments", href: "/admin/customers", icon: "building" },
+      { label: "Adoption Figures", href: "/admin/adoption", icon: "chart" },
     ],
   },
   {
     group: "Growth",
     items: [
+      { label: "Enquiries", href: "/admin/enquiries", icon: "mail" },
       { label: "Messages", href: "/admin/messages", icon: "message" },
+      { label: "Demo Requests", href: "/admin/demo-requests", icon: "users" },
       { label: "Bookings", href: "/admin/bookings", icon: "calendar" },
-      { label: "Demo Requests", href: "/admin/demo-requests", icon: "mail" },
-      { label: "Analytics", href: "/admin/analytics", icon: "chart" },
+      { label: "Analytics", href: "/admin/analytics", icon: "activity" },
+    ],
+  },
+  {
+    group: "Content",
+    items: [
+      { label: "Page Builder", href: "/admin/pages", icon: "layers" },
+      { label: "Media Library", href: "/admin/media", icon: "image" },
+      { label: "Manage Links", href: "/admin/links", icon: "link" },
     ],
   },
   {

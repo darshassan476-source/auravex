@@ -58,7 +58,7 @@ const BUDGET = 40;
 const QUICK_ASKS: { kind: JobKind; text: string }[] = [
   { kind: "site-edit", text: "Make the homepage headline warmer without losing its meaning." },
   { kind: "site-edit", text: "The Solutions page reads too corporate. Warm it up." },
-  { kind: "site-edit", text: "Hide Custom Platforms from the catalogue for now." },
+  { kind: "site-edit", text: "Mark BuildSphere AI as under development for now." },
   { kind: "site-edit", text: "Give the Contact page the daylight atrium background." },
 ];
 

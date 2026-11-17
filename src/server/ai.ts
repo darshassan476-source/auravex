@@ -1420,8 +1420,8 @@ async function runProductImport(job: AiJob, steps: Steps, record: AgentRun["reco
     screens.push({ id: item.id, src: item.src, label: c.label, width: c.width, height: c.height });
   }
 
-  const categories = ["ai", "saas", "web-apps", "automation", "developer-tools", "enterprise"] as const;
-  const category = categories.includes(draft.category as (typeof categories)[number]) ? (draft.category as Product["category"]) : "saas";
+  const categories = ["sustainability", "document-management", "ai-agents", "enterprise-management", "business-intelligence", "construction", "other"] as const;
+  const category = categories.includes(draft.category as (typeof categories)[number]) ? (draft.category as Product["category"]) : "other";
   const product: Product = {
     id: `custom-${slug}`,
     slug,
@@ -1429,7 +1429,7 @@ async function runProductImport(job: AiJob, steps: Steps, record: AgentRun["reco
     tagline: String(draft.tagline ?? "").slice(0, 90),
     category,
     sector: String(draft.sector ?? "Software").slice(0, 40),
-    status: "live",
+    status: "available",
     summary: String(draft.summary ?? "").slice(0, 240),
     description: String(draft.description ?? "").slice(0, 600),
     icon: "box",

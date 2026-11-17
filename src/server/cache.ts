@@ -2,6 +2,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import { EMPTY_CMS } from "@/lib/cms";
 import { PRODUCTS } from "@/data/products";
+import { mergeCatalogue } from "@/lib/catalogue";
 import type { Product } from "@/lib/types";
 import { fullCatalogue, publicBundle } from "./site";
 
@@ -50,7 +51,7 @@ const readBundle = () => (BACKEND ? remoteBundle() : publicBundle());
 const readCatalogue = async (): Promise<Product[]> => {
   if (!BACKEND) return fullCatalogue();
   const list = (await remoteBundle()).customProducts;
-  return [...PRODUCTS, ...(Array.isArray(list) ? (list as Product[]) : [])];
+  return mergeCatalogue(PRODUCTS, Array.isArray(list) ? (list as Product[]) : []);
 };
 const cacheOptions = { tags: [SITE_TAG], ...(BACKEND ? { revalidate: REMOTE_REVALIDATE } : {}) };
 

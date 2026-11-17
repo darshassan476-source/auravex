@@ -15,7 +15,7 @@ export const PRIVACY_SECTIONS: LegalCopySection[] = [
   {
     heading: "What we collect",
     body: [
-      "When you submit a demo request we collect the name, work email, organisation and message you provide, plus the product interest and indicative budget if you choose to share them.",
+      "When you submit an enquiry we collect the name, business email, company, country and industry you provide, the product and options you select, and any requirements, notes or preferred meeting times you choose to share.",
       "We collect aggregate analytics about how this site is used — pages viewed, referrer and approximate region. This is measured at the session level and is not linked to an identified individual.",
     ],
   },
@@ -48,9 +48,9 @@ export const PRIVACY_SECTIONS: LegalCopySection[] = [
     ],
   },
   {
-    heading: "Client project data",
+    heading: "Customer deployment data",
     body: [
-      "Platforms we build are deployed in your cloud account, in the region you nominate, with encryption keys you control. We hold no copy of your production data outside the environment you own.",
+      "Data processed by an Auravex solution after deployment is governed by the agreement for that deployment, including where it is hosted and who may access it, rather than by this policy.",
       "Where support requires temporary access, that access is time-bound, logged and revoked automatically at the end of the window.",
     ],
   },
@@ -66,7 +66,7 @@ export const TERMS_SECTIONS: LegalCopySection[] = [
   {
     heading: "Scope",
     body: [
-      "These terms govern your use of this website. They do not govern any engagement between us — that is covered by the master services agreement and statement of work signed for the specific project.",
+      "These terms govern your use of this website. They do not govern the licensing, deployment or support of Auravex software, which are covered by the agreement signed for each deployment.",
       "Where these terms and a signed agreement conflict, the signed agreement takes precedence.",
     ],
   },
@@ -78,17 +78,17 @@ export const TERMS_SECTIONS: LegalCopySection[] = [
     ],
   },
   {
-    heading: "Accuracy of published figures",
+    heading: "Product information",
     body: [
-      "Metrics quoted in case studies and product pages come from client reporting after go-live and reflect specific deployments in specific conditions.",
-      "They are evidence of what has been achieved, not a guarantee of what any future engagement will achieve. Nothing on this site constitutes a warranty of results.",
+      "Product descriptions on this site summarise the capabilities of each solution. Available modules, integrations and deployment options for a specific organisation are confirmed in a commercial proposal.",
+      "Nothing on this site constitutes an offer, a price commitment or a warranty of results.",
     ],
   },
   {
     heading: "Intellectual property",
     body: [
       "The AURAVEX name, logo, written material and interface design on this site are our property. Third-party names and marks appearing here belong to their respective owners.",
-      "Source code written for a client engagement is assigned to that client on the terms set out in the relevant statement of work.",
+      "Rights in Auravex software and in any customisation delivered for a customer are set out in the agreement for that deployment.",
     ],
   },
   {

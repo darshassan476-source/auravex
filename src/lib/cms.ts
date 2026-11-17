@@ -13,7 +13,22 @@
  * edits instantly through the `storage` event.
  */
 import type { BackgroundId } from "@/data/backgrounds";
-import type { LeadStatus, Product, ProductMetric } from "./types";
+import type {
+  PublicCustomer,
+  PublicFigure,
+  PublicPricing,
+  PublicUpdate,
+  EnquiryDetails,
+} from "./enterprise";
+import type {
+  DeploymentOption,
+  LeadStatus,
+  Product,
+  ProductFeature,
+  ProductMetric,
+  ProductModule,
+  ProductPreview,
+} from "./types";
 
 export const CMS_STORAGE_KEY = "auravex:cms";
 export const CMS_VERSION = 3;
@@ -241,6 +256,8 @@ export interface Thread {
   /** Where the lead sits in the pipeline, moved by the operator. */
   status: LeadStatus;
   createdAt: string;
+  /** What they configured or asked for on the enquiry form, when they used it. */
+  details?: EnquiryDetails;
 }
 
 /** An outbound destination with a tracked address at /go/<id>. */
@@ -307,6 +324,11 @@ export interface CmsState {
   heroImageId?: string;
   /** Whether the operator has granted desktop notification permission. */
   remindersEnabled: boolean;
+  /** Read-only public views of the portal's private records, built on the server. */
+  publicCustomers: PublicCustomer[];
+  publicAdoption: PublicFigure[];
+  publicPricing: PublicPricing[];
+  publicUpdates: PublicUpdate[];
   updatedAt: string | null;
 }
 
@@ -351,6 +373,22 @@ export interface ProductOverride {
   /** A film made in AI Studio, and its poster frame. */
   videoId?: string;
   posterId?: string;
+  demoPublic?: boolean;
+  /* Enterprise detail — each replaces the bundled list when set. */
+  features?: ProductFeature[];
+  problems?: string[];
+  modules?: ProductModule[];
+  aiCapabilities?: string[];
+  workflows?: string[];
+  deployment?: DeploymentOption[];
+  integrations?: string[];
+  industries?: string[];
+  optionalModules?: ProductModule[];
+  aiEnhancements?: ProductModule[];
+  voiceAI?: boolean;
+  customization?: string[];
+  preview?: ProductPreview;
+  order?: number;
 }
 
 export interface CaseStudyOverride {
@@ -418,6 +456,10 @@ export const EMPTY_CMS: CmsState = {
   bookings: [],
   remindersEnabled: false,
   customThemes: [],
+  publicCustomers: [],
+  publicAdoption: [],
+  publicPricing: [],
+  publicUpdates: [],
   updatedAt: null,
 };
 

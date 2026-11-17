@@ -8,7 +8,9 @@ import { Panel } from "@/components/admin/Primitives";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { Select } from "@/components/ui/Select";
 import { Toggle } from "@/components/ui/Toggle";
-import { PRODUCTS, STATUS_LABELS } from "@/data/products";
+import { PRODUCTS, STATUS_LABELS, normalizeStatus } from "@/data/products";
+import { mergeCatalogue } from "@/lib/catalogue";
+import { EnterpriseDetails } from "./EnterpriseDetails";
 import type { Product } from "@/lib/types";
 import { formatBytes, type MediaItem } from "@/lib/cms";
 import { fileToMedia, isSupported, isVideo, uploadRaw } from "@/lib/imageUpload";
@@ -30,14 +32,22 @@ export function ProductEditor() {
   const params = useSearchParams();
   const catalogue = useCatalogue({ includeHidden: true });
   const requested = params.get("slug");
-  const [slug, setSlug] = useState(
-    requested && catalogue.some((p) => p.slug === requested)
-      ? requested
-      : PRODUCTS[0].slug,
+  const [chosen, setSlug] = useState(
+    requested && catalogue.some((p) => p.slug === requested) ? requested : "",
   );
   // The unedited record: bundled, or the portal's own saved copy.
-  const sources: Product[] = [...PRODUCTS, ...state.customProducts];
-  const base = sources.find((p) => p.slug === slug) ?? PRODUCTS[0];
+  const sources: Product[] = mergeCatalogue(PRODUCTS, state.customProducts);
+  const base = sources.find((p) => p.slug === chosen) ?? sources[0];
+  if (!base) {
+    return (
+      <Panel title="Products">
+        <p className="text-[12.5px] text-[var(--ax-ink-dim)]">
+          No products yet. Use Add Product to create the first one.
+        </p>
+      </Panel>
+    );
+  }
+  const slug = base.slug;
   const patch = state.products[slug] ?? {};
   const edited = Object.values(patch).some((v) => v !== undefined);
 
@@ -47,7 +57,7 @@ export function ProductEditor() {
     summary: patch.summary ?? base.summary,
     description: patch.description ?? base.description,
     accent: patch.accent ?? base.accent,
-    status: (patch.status as ProductStatus) ?? base.status,
+    status: normalizeStatus((patch.status as ProductStatus) ?? base.status),
     hidden: patch.hidden ?? false,
     metrics: patch.metrics ?? base.metrics,
     links: patch.links ? { ...base.links, ...patch.links } : base.links,
@@ -295,6 +305,8 @@ export function ProductEditor() {
 
         <ScreensPanel slug={slug} accent={value.accent} />
       </div>
+
+      <EnterpriseDetails key={slug} slug={slug} base={base} />
 
       <FilmPanel slug={slug} />
 

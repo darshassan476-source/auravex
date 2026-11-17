@@ -160,7 +160,7 @@ export function Navbar() {
               <ModeToggle />
 
               <Button href="/contact" size="sm" className="hidden md:inline-flex" icon="arrow-right">
-                <Text id="nav.cta" />
+                <Text id="ex.nav.cta" />
               </Button>
 
               <button

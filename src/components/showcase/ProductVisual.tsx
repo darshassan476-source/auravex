@@ -2,85 +2,17 @@
 
 import { useState } from "react";
 import { useProduct } from "@/cms/useProduct";
-import type { Product, ProductCategory } from "@/lib/types";
+import type { Product } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { DashboardMock } from "./DashboardMock";
 import { LaptopFrame } from "./LaptopFrame";
-import { BoardScreen } from "./interfaces/BoardScreen";
-import { ConsoleScreen } from "./interfaces/ConsoleScreen";
-import { KioskScreen } from "./interfaces/KioskScreen";
-import { MapScreen } from "./interfaces/MapScreen";
-import { PipelineScreen } from "./interfaces/PipelineScreen";
+import { ProductSchematic } from "./ProductSchematic";
 
 /**
- * The hero visual for a product: the machine, with this product on its screen.
- *
- * Every product page shows the same laptop, so the catalogue reads as one
- * shelf — but never the same screen twice. Each product has its own kind of
- * interface (a map, an approval board, an analytics desk, a pipeline, a
- * deploy console, a check-in app), and screens uploaded in the portal replace
- * the generated one entirely. Where there is more than one, the visitor can
- * flick through them and the laptop's screen changes like a wallpaper.
+ * The hero visual for a product: the machine, with this product on its
+ * screen — screens uploaded in the portal when there are any, otherwise a
+ * schematic drawn from the product's own modules and capabilities. Where
+ * there is more than one screen, the visitor can flick through them.
  */
-
-type Archetype =
-  "map" | "analytics" | "board" | "pipeline" | "kiosk" | "console";
-
-const BY_SLUG: Record<string, Archetype> = {
-  "real-estate-os": "map",
-  "business-intelligence": "analytics",
-  "operations-suite": "board",
-  "crm-lead-flow": "pipeline",
-  "visitor-experience": "kiosk",
-  "custom-platforms": "console",
-  "aurora-ai-engine": "analytics",
-  "forge-devkit": "console",
-  "atlas-site-builder": "board",
-};
-
-const BY_CATEGORY: Record<ProductCategory, Archetype> = {
-  enterprise: "map",
-  ai: "analytics",
-  automation: "board",
-  saas: "pipeline",
-  "web-apps": "kiosk",
-  "developer-tools": "console",
-};
-
-export function archetypeFor(
-  slug: string,
-  category: ProductCategory,
-): Archetype {
-  return BY_SLUG[slug] ?? BY_CATEGORY[category] ?? "analytics";
-}
-
-/** The generated interface for a product that has no screenshot of its own. */
-function GeneratedScreen({
-  archetype,
-  accent,
-}: {
-  archetype: Archetype;
-  accent: string;
-}) {
-  if (archetype === "map") return <MapScreen accent={accent} />;
-  if (archetype === "board") return <BoardScreen accent={accent} />;
-  if (archetype === "pipeline") return <PipelineScreen accent={accent} />;
-  if (archetype === "console") return <ConsoleScreen accent={accent} />;
-  if (archetype === "kiosk") {
-    // A check-in app is a portrait interface. Stretched across a 16:10 screen
-    // it stops looking like itself, so it is shown at its own shape, the way
-    // it would be previewed on a desktop.
-    return (
-      <div className="flex h-full items-center justify-center bg-[var(--ax-bg)] p-2.5">
-        <div className="h-full overflow-hidden rounded-[9px] border border-[var(--ax-line)] shadow-[0_18px_40px_-20px_rgba(0,0,0,0.7)] [aspect-ratio:3/4]">
-          <KioskScreen accent={accent} />
-        </div>
-      </div>
-    );
-  }
-  return <DashboardMock preset="analytics" />;
-}
-
 export function ProductVisual({
   product: source,
   className,
@@ -89,8 +21,6 @@ export function ProductVisual({
   className?: string;
 }) {
   const product = useProduct(source);
-  const archetype = archetypeFor(product.slug, product.category);
-  const accent = product.accent;
   const shots = product.imageSrcs ?? [];
   const [shown, setShown] = useState(0);
   const index = Math.min(shown, Math.max(0, shots.length - 1));
@@ -107,7 +37,7 @@ export function ProductVisual({
             className="size-full object-cover"
           />
         ) : (
-          <GeneratedScreen archetype={archetype} accent={accent} />
+          <ProductSchematic product={product} />
         )}
       </LaptopFrame>
 

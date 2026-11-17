@@ -7,8 +7,7 @@ import { useText } from "@/cms/CmsProvider";
 import { useTextList } from "@/cms/useTextList";
 import { SEARCH_PAGES } from "@/data/chromeCopy";
 import { useCatalogue } from "@/cms/useProduct";
-import { useIndustries, useSolutions } from "@/cms/useSolutions";
-import { CASE_STUDIES } from "@/data/caseStudies";
+import { INDUSTRIES } from "@/data/enterprise";
 import { cn } from "@/lib/utils";
 import { AX_EASE } from "../fx/Reveal";
 import { Icon } from "../ui/Icon";
@@ -27,24 +26,21 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
 
-  const groupProducts = useText("search.group.products");
-  const groupSolutions = useText("search.group.solutions");
+  const groupProducts = useText("ex.search.group.products");
   const groupIndustries = useText("search.group.industries");
-  const groupCaseStudies = useText("search.group.caseStudies");
   const groupPages = useText("search.group.pages");
-  const pages = useTextList("search.page", SEARCH_PAGES.length, ["label", "description"] as const);
-  const placeholder = useText("search.placeholder");
+  const pages = useTextList("ex.search.page", SEARCH_PAGES.length, ["label", "description"] as const);
+  const placeholder = useText("ex.search.placeholder");
   const escLabel = useText("search.esc");
   const noResults = useText("search.noResults");
   const hintNavigate = useText("search.hint.navigate");
   const hintOpen = useText("search.hint.open");
   const footerLabel = useText("search.footer");
 
-  // Live lists: products added or renamed in the portal, and edited solution
-  // and industry copy, are what search finds.
+  // Live lists: products added or renamed in the portal, and the edited
+  // industry copy, are what search finds.
   const products = useCatalogue();
-  const solutions = useSolutions();
-  const industries = useIndustries();
+  const industries = useTextList("ex.industry", INDUSTRIES.length, ["title", "body"] as const);
 
   const index = useMemo<Entry[]>(
     () => [
@@ -55,26 +51,12 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
         description: p.summary,
         icon: p.icon,
       })),
-      ...solutions.map((s) => ({
-        label: s.name,
-        group: groupSolutions,
-        href: `/solutions#${s.slug}`,
-        description: s.description,
-        icon: s.icon,
-      })),
-      ...industries.map((i) => ({
-        label: i.name,
+      ...INDUSTRIES.map((industry, i) => ({
+        label: industries[i].title,
         group: groupIndustries,
-        href: `/industries#${i.slug}`,
-        description: i.description,
-        icon: i.icon,
-      })),
-      ...CASE_STUDIES.map((c) => ({
-        label: c.title,
-        group: groupCaseStudies,
-        href: `/our-work/${c.slug}`,
-        description: c.summary,
-        icon: "file",
+        href: `/industries#${industry.slug}`,
+        description: industries[i].body,
+        icon: industry.icon,
       })),
       ...SEARCH_PAGES.map((page, i) => ({
         label: pages[i].label,
@@ -84,7 +66,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
         icon: page.icon,
       })),
     ],
-    [products, solutions, industries, groupProducts, groupSolutions, groupIndustries, groupCaseStudies, groupPages, pages],
+    [products, industries, groupProducts, groupIndustries, groupPages, pages],
   );
 
   const results = useMemo(() => {

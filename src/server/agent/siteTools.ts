@@ -244,7 +244,7 @@ export function siteTools(ledger: Ledger): { tools: Tool[]; run: (name: string, 
     },
     {
       name: "update_product",
-      description: "Edit a product's copy or state by slug. Any of: name, tagline, summary, description, status (live|beta|development|coming-soon), accent (hex), sector, hidden (true hides it from the site).",
+      description: "Edit a product's copy or state by slug. Any of: name, tagline, summary, description, status (available|preview|development|upcoming|unavailable), accent (hex), sector, hidden (true hides it from the site).",
       input_schema: {
         type: "object",
         properties: {
@@ -398,7 +398,7 @@ export function siteTools(ledger: Ledger): { tools: Tool[]; run: (name: string, 
         const allowed = ["name", "tagline", "summary", "description", "status", "accent", "sector", "hidden"] as const;
         const patch: Record<string, unknown> = {};
         for (const key of allowed) if (input[key] !== undefined) patch[key] = input[key];
-        if (patch.status && !["live", "beta", "development", "coming-soon"].includes(String(patch.status))) return "status must be live, beta, development or coming-soon.";
+        if (patch.status && !["available", "preview", "development", "upcoming", "unavailable"].includes(String(patch.status))) return "status must be available, preview, development, upcoming or unavailable.";
         if (!Object.keys(patch).length) return "Nothing to change: pass at least one field.";
         const products = await getSetting<Record<string, Record<string, unknown>>>("products", {});
         await write(ledger, "products", slug, { ...products, [slug]: { ...(products[slug] ?? {}), ...patch } });

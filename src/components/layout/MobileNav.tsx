@@ -122,7 +122,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
 
             <div className="ax-container shrink-0 space-y-4 border-t border-[var(--ax-line)] py-6">
               <Button href="/contact" size="lg" icon="arrow-right" className="w-full">
-                <Text id="nav.mobile.cta" />
+                <Text id="ex.nav.mobile.cta" />
               </Button>
               <p className="text-center text-[12px] text-[var(--ax-ink-dim)]">
                 <Text id="site.email" /> · <Text id="site.location" />

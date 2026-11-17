@@ -9,7 +9,7 @@ import type { ProductStatus } from "@/lib/types";
 import { ProductEditor } from "./ProductEditor";
 import { ProductTable } from "./ProductTable";
 
-const STATUS_ORDER: ProductStatus[] = ["live", "beta", "development", "coming-soon"];
+const STATUS_ORDER: ProductStatus[] = ["available", "preview", "development", "upcoming", "unavailable"];
 
 /** The catalogue screen: counts, the quick editor and the full table, all from the live catalogue. */
 export function ProductsAdmin() {

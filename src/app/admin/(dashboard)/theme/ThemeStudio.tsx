@@ -198,7 +198,7 @@ export function ThemeStudio() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <StatusBadge status="live" />
+              <StatusBadge status="available" />
               <Tag>Enterprise</Tag>
               <Tag>AI-Powered</Tag>
               <Delta value="+32%" trend="up" />

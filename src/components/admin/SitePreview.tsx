@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 const PAGES = [
   { value: "/", label: "Home" },
   { value: "/products", label: "Products" },
-  { value: "/products/real-estate-os", label: "Product detail" },
   { value: "/solutions", label: "Solutions" },
   { value: "/industries", label: "Industries" },
   { value: "/our-work", label: "Our Work" },

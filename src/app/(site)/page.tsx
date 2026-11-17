@@ -1,240 +1,117 @@
-import Link from "next/link";
+import type { Metadata } from "next";
 import { Text } from "@/cms/Text";
 import { BlockSlot } from "@/components/sections/BlockSlot";
-import { CaseStudyMetrics } from "@/components/sections/CaseStudyMetrics";
-import { Reveal, RevealGroup, RevealItem } from "@/components/fx/Reveal";
 import { CTASection } from "@/components/sections/CTASection";
 import { HomeHero } from "@/components/sections/HomeHero";
-import { ProductCarousel } from "@/components/sections/ProductCarousel";
+import {
+  CapabilityList,
+  DeploymentSteps,
+  IndustryGrid,
+  LatestUpdates,
+  OutcomeGrid,
+  UpdatesButton,
+} from "@/components/sections/HomeSections";
 import { SectionHead } from "@/components/sections/SectionHead";
-import { StackTags } from "@/components/sections/StackTags";
-import { TrustBar } from "@/components/sections/TrustBar";
+import { SolutionCount, SolutionsGrid } from "@/components/sections/SolutionsGrid";
 import { Button } from "@/components/ui/Button";
-import { Icon } from "@/components/ui/Icon";
-import { EyebrowPill } from "@/components/ui/EyebrowPill";
-import { Hairline, Section, Tag } from "@/components/ui/Primitives";
-import { CASE_STUDIES } from "@/data/caseStudies";
-import { PRODUCTS } from "@/data/products";
-import { PROCESS_STEPS, TECH_STACK } from "@/data/site";
-import { HomeSolutionCards } from "@/components/sections/HomeSolutionCards";
+import { Section } from "@/components/ui/Primitives";
+
+export const metadata: Metadata = {
+  title: { absolute: "AURAVEX — Enterprise Software & AI Solutions" },
+  description:
+    "Auravex develops AI-powered enterprise software: document management, enterprise AI agents, business intelligence, sustainability and construction management solutions, configured and deployed to your requirements.",
+};
 
 export default function HomePage() {
-  // The reference gallery shows these four, in this order.
-  const PORTFOLIO_SLUGS = [
-    "real-estate-os",
-    "business-intelligence",
-    "operations-suite",
-    "custom-platforms",
-  ];
-  const portfolio = PORTFOLIO_SLUGS.map(
-    (slug) => PRODUCTS.find((p) => p.slug === slug)!,
-  ).filter(Boolean);
-  const lead = CASE_STUDIES[0];
-
   return (
     <>
       <HomeHero />
 
       <BlockSlot page="home" slot="after-hero" />
 
-      {/* ================= Product portfolio ================= */}
-      <Section id="products" className="pt-16 md:pt-20">
+      {/* 1. Enterprise Solutions */}
+      <Section id="solutions" className="pt-16 md:pt-20">
         <SectionHead
-          eyebrow={<Text id="home.portfolio.eyebrow" />}
-          title={<Text id="home.portfolio.title" />}
-          accent={<Text id="home.portfolio.accent" />}
-          description={<Text id="home.portfolio.body" />}
+          eyebrow={<SolutionCount />}
+          title={<Text id="ex.home.solutions.title" />}
+          description={<Text id="ex.home.solutions.body" />}
           action={
             <Button href="/products" variant="outline" icon="arrow-right" magnetic={false}>
-              <Text id="home.portfolio.button" />
+              <Text id="ex.home.solutions.button" />
             </Button>
           }
         />
-
-        <Reveal className="mt-12">
-          <ProductCarousel products={portfolio} />
-        </Reveal>
+        <SolutionsGrid className="mt-12" />
       </Section>
 
-      <TrustBar />
-
-      {/* ================= Solutions ================= */}
-      <Section className="pt-6">
+      {/* 2. Built Around Business Outcomes */}
+      <Section>
         <SectionHead
-          eyebrow={<Text id="home.solutions.eyebrow" />}
-          title={<Text id="home.solutions.title" />}
-          accent={<Text id="home.solutions.accent" />}
-          description={<Text id="home.solutions.body" />}
+          eyebrow={<Text id="ex.home.outcomes.eyebrow" />}
+          title={<Text id="ex.home.outcomes.title" />}
+          description={<Text id="ex.home.outcomes.body" />}
+        />
+        <OutcomeGrid />
+      </Section>
+
+      {/* 3. Industries We Serve */}
+      <Section>
+        <SectionHead
+          eyebrow={<Text id="ex.home.industries.eyebrow" />}
+          title={<Text id="ex.home.industries.title" />}
+          description={<Text id="ex.home.industries.body" />}
           action={
-            <Button href="/solutions" variant="outline" icon="arrow-right" magnetic={false}>
-              <Text id="home.solutions.button" />
+            <Button href="/industries" variant="outline" icon="arrow-right" magnetic={false}>
+              <Text id="ex.home.industries.button" />
             </Button>
           }
         />
-
-        <RevealGroup className="mt-12 grid gap-4 lg:grid-cols-2" stagger={0.08}>
-          <HomeSolutionCards />
-        </RevealGroup>
+        <IndustryGrid />
       </Section>
 
-      {/* ================= Featured case study ================= */}
-      <Section className="pt-6">
+      {/* 4. Enterprise Deployment */}
+      <Section>
         <SectionHead
-          eyebrow={<Text id="home.work.eyebrow" />}
-          title={<Text id="home.work.title" />}
-          accent={<Text id="home.work.accent" />}
-          description={<Text id="home.work.body" />}
-          action={
-            <Button href="/our-work" variant="outline" icon="arrow-right" magnetic={false}>
-              <Text id="home.work.button" />
-            </Button>
-          }
+          eyebrow={<Text id="ex.home.deploy.eyebrow" />}
+          title={<Text id="ex.home.deploy.title" />}
+          description={<Text id="ex.home.deploy.body" />}
         />
-
-        <Reveal className="mt-12">
-          <Link
-            href={`/our-work/${lead.slug}`}
-            className="ax-glass ax-focus group grid overflow-hidden rounded-2xl transition-all duration-500 hover:border-[var(--ax-line-strong)] lg:grid-cols-[1.35fr_1fr]"
-          >
-            <div className="flex flex-col gap-6 p-8 md:p-11">
-              <div className="flex flex-wrap items-center gap-3">
-                <EyebrowPill trail={false}>{lead.index}</EyebrowPill>
-                <Tag>{lead.sector}</Tag>
-              </div>
-
-              <h3 className="ax-display ax-text-balance max-w-2xl text-[clamp(1.6rem,3vw,2.5rem)] leading-[1.08]">
-                {lead.title}
-              </h3>
-
-              <p className="ax-text-pretty max-w-xl text-[14.5px] leading-relaxed text-[var(--ax-ink-muted)]">
-                {lead.summary}
-              </p>
-
-              <div className="mt-2 grid grid-cols-3 gap-6 border-t border-[var(--ax-line)] pt-6">
-                <CaseStudyMetrics study={lead} variant="cells" />
-              </div>
-
-              {/* Timeline, as printed across the reference case-study cards */}
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                {lead.timeline.map((phase) => (
-                  <div key={phase.phase} className="flex flex-col gap-1">
-                    <span className="flex items-center gap-1.5 text-[11.5px] font-medium text-[var(--ax-ink)]">
-                      <span className="size-1.5 rounded-full bg-[var(--ax-accent)]" />
-                      {phase.phase}
-                    </span>
-                    <span className="pl-3 text-[11px] text-[var(--ax-ink-dim)]">
-                      {phase.duration}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <aside className="relative flex flex-col justify-between gap-8 border-t border-[var(--ax-line)] bg-[rgba(var(--ax-glow),0.05)] p-8 md:p-11 lg:border-l lg:border-t-0">
-              <Icon
-                name="message"
-                className="size-6 text-[var(--ax-accent-soft)] opacity-70"
-                strokeWidth={1.7}
-              />
-
-              <blockquote className="ax-text-pretty text-[16px] leading-relaxed text-[var(--ax-ink)]">
-                &ldquo;{lead.testimonial.quote}&rdquo;
-              </blockquote>
-
-              <div className="flex items-center gap-3">
-                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[linear-gradient(140deg,var(--ax-accent),var(--ax-violet))] text-[12px] font-bold text-white">
-                  {lead.testimonial.author
-                    .split(" ")
-                    .map((w) => w[0])
-                    .slice(0, 2)
-                    .join("")}
-                </span>
-                <span className="flex flex-col">
-                  <span className="text-[13px] font-semibold text-[var(--ax-ink)]">
-                    {lead.testimonial.author}
-                  </span>
-                  <span className="text-[11.5px] text-[var(--ax-ink-dim)]">
-                    {lead.testimonial.role}
-                  </span>
-                </span>
-              </div>
-            </aside>
-          </Link>
-        </Reveal>
+        <DeploymentSteps />
       </Section>
 
-      {/* ================= Process ================= */}
-      <Section className="pt-6">
+      {/* 5. Additional Capabilities */}
+      <Section>
         <SectionHead
-          eyebrow={<Text id="home.process.eyebrow" />}
-          title={<Text id="home.process.title" />}
-          accent={<Text id="home.process.accent" />}
-          description={<Text id="home.process.body" />}
+          eyebrow={<Text id="ex.home.caps.eyebrow" />}
+          title={<Text id="ex.home.caps.title" />}
+          description={<Text id="ex.home.caps.body" />}
         />
-
-        <RevealGroup className="mt-14 grid gap-10 md:grid-cols-3" stagger={0.12}>
-          {PROCESS_STEPS.map((step, i) => (
-            <RevealItem key={step.step}>
-              <div className="relative flex flex-col gap-5">
-                {/* Connector, as drawn between the reference process nodes */}
-                {i < PROCESS_STEPS.length - 1 && (
-                  <span
-                    aria-hidden
-                    className="absolute left-[76px] top-[31px] hidden h-px w-[calc(100%-46px)] bg-[linear-gradient(90deg,var(--ax-line-strong),transparent)] md:block"
-                  />
-                )}
-
-                <div className="flex items-center gap-4">
-                  <span className="relative grid size-[62px] shrink-0 place-items-center rounded-full border border-[var(--ax-line-strong)] bg-[var(--ax-bg)] text-[var(--ax-accent-soft)]">
-                    <span className="absolute inset-0 rounded-full bg-[rgba(var(--ax-glow),0.10)] blur-md" />
-                    <Icon name={step.icon} className="relative size-6" strokeWidth={1.7} />
-                  </span>
-                  <span className="font-mono text-[13px] text-[var(--ax-ink-dim)]">{step.step}</span>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-[18px] font-semibold text-[var(--ax-ink)]">
-                    <Text id={`process.${i + 1}.title`} />
-                  </h3>
-                  <p className="ax-text-pretty max-w-[34ch] text-[13.5px] leading-relaxed text-[var(--ax-ink-muted)]">
-                    <Text id={`process.${i + 1}.body`} />
-                  </p>
-                </div>
-              </div>
-            </RevealItem>
-          ))}
-        </RevealGroup>
+        <CapabilityList />
       </Section>
 
-      {/* ================= Stack ================= */}
-      <Section id="stack" className="pt-6">
+      {/* 6. Latest Updates */}
+      <Section>
         <SectionHead
-          eyebrow={<Text id="home.stack.eyebrow" />}
-          title={<Text id="home.stack.title" />}
-          accent={<Text id="home.stack.accent" />}
-          description={<Text id="home.stack.body" />}
+          eyebrow={<Text id="ex.home.updates.eyebrow" />}
+          title={<Text id="ex.home.updates.title" />}
+          action={<UpdatesButton />}
         />
-
-        <RevealGroup className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4" stagger={0.08}>
-          {TECH_STACK.map((group, i) => (
-            <RevealItem key={group.group}>
-              <div className="ax-glass flex h-full flex-col gap-4 rounded-2xl p-6">
-                <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--ax-ink)]">
-                  <Text id={`stack.${i + 1}.title`} />
-                </h3>
-                <Hairline />
-                <ul className="flex flex-wrap gap-2">
-                  <StackTags index={i + 1} />
-                </ul>
-              </div>
-            </RevealItem>
-          ))}
-        </RevealGroup>
+        <LatestUpdates />
       </Section>
 
       <BlockSlot page="home" slot="before-cta" />
 
-      <CTASection />
+      {/* 7. Contact / Business Discussion */}
+      <CTASection
+        eyebrow={<Text id="ex.home.contact.eyebrow" />}
+        title={<Text id="ex.home.contact.title" />}
+        accent=""
+        description={<Text id="ex.home.contact.body" />}
+        primaryLabel={<Text id="ex.home.contact.primary" />}
+        primaryHref="/contact"
+        secondaryLabel={<Text id="ex.home.contact.secondary" />}
+        secondaryHref="/products"
+      />
     </>
   );
 }

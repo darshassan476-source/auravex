@@ -133,46 +133,42 @@ export function ContentPreview({
     );
   }
 
-  if (groupId === "home-hero") {
+  if (groupId === "ex-home-hero") {
     return (
       <Frame title="Home page — the first screen">
         <div className="grid grid-cols-[1.05fr_0.95fr] items-center gap-3">
           <div className="flex flex-col items-start gap-2">
-            <Region id="home.hero.eyebrow" active={active}>
+            <Region id="ex.hero.eyebrow" active={active}>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--ax-line)] px-2 py-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-[var(--ax-ink-muted)]">
                 <span className="size-1 rounded-full bg-[var(--ax-accent)]" />
-                {value("home.hero.eyebrow")}
+                {value("ex.hero.eyebrow")}
               </span>
             </Region>
 
             <h3 className="ax-display text-[17px] leading-[1.1]">
-              <Region id="home.hero.titleA" active={active}>
-                {value("home.hero.titleA")}
-              </Region>
-              <br />
-              <Region id="home.hero.titleB" active={active}>
-                {value("home.hero.titleB")}
+              <Region id="ex.hero.title" active={active}>
+                {value("ex.hero.title")}
               </Region>{" "}
-              <Region id="home.hero.accent" active={active}>
-                <span className="ax-gradient-text">{value("home.hero.accent")}</span>
+              <Region id="ex.hero.accent" active={active}>
+                <span className="ax-gradient-text">{value("ex.hero.accent")}</span>
               </Region>
             </h3>
 
-            <Region id="home.hero.body" active={active} block>
+            <Region id="ex.hero.body" active={active} block>
               <span className="text-[9px] leading-relaxed text-[var(--ax-ink-muted)]">
-                {value("home.hero.body")}
+                {value("ex.hero.body")}
               </span>
             </Region>
 
             <div className="mt-1 flex flex-wrap gap-1.5">
-              <Region id="home.hero.primaryCta" active={active}>
+              <Region id="ex.hero.primary" active={active}>
                 <span className="inline-block rounded-full bg-[linear-gradient(110deg,var(--ax-accent),var(--ax-violet))] px-2.5 py-1.5 text-[9px] font-semibold text-white">
-                  {value("home.hero.primaryCta")}
+                  {value("ex.hero.primary")}
                 </span>
               </Region>
-              <Region id="home.hero.secondaryCta" active={active}>
+              <Region id="ex.hero.secondary" active={active}>
                 <span className="inline-block rounded-full border border-[var(--ax-line-strong)] px-2.5 py-1.5 text-[9px] font-semibold text-[var(--ax-ink)]">
-                  {value("home.hero.secondaryCta")}
+                  {value("ex.hero.secondary")}
                 </span>
               </Region>
             </div>

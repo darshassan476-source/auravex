@@ -5,6 +5,7 @@ import path from "node:path";
 import { Readable } from "node:stream";
 import type { GridFSBucketWriteStream } from "mongodb";
 import { PRODUCTS } from "@/data/products";
+import { mergeCatalogue } from "@/lib/catalogue";
 import {
   EMPTY_CMS,
   type CmsState,
@@ -12,6 +13,8 @@ import {
   type MediaItem,
 } from "@/lib/cms";
 import type { LeadStatus, Product } from "@/lib/types";
+import type { EnquiryDetails } from "@/lib/enterprise";
+import { publicRecords } from "./records";
 import {
   allSettings,
   bool,
@@ -80,10 +83,11 @@ export async function listMedia(): Promise<MediaItem[]> {
 export async function publicBundle(): Promise<
   Omit<CmsState, "visits" | "threads" | "bookings">
 > {
-  const [stored, media, updatedAt] = await Promise.all([
+  const [stored, media, updatedAt, records] = await Promise.all([
     allSettings(),
     listMedia(),
     latestUpdate(),
+    publicRecords(),
   ]);
   const pick = <K extends SettingKey>(key: K) =>
     (stored[key] as CmsState[K] | undefined) ?? EMPTY_CMS[key];
@@ -104,6 +108,7 @@ export async function publicBundle(): Promise<
     portalTheme: stored.portalTheme as string | undefined,
     heroImageId: stored.heroImageId as string | undefined,
     remindersEnabled: Boolean(stored.remindersEnabled),
+    ...records,
     media,
     updatedAt,
   };
@@ -119,7 +124,7 @@ export async function findCustomProduct(slug: string): Promise<Product | undefin
 /** Every product the site knows: bundled first, then the portal's own. */
 export async function fullCatalogue(): Promise<Product[]> {
   const list = await getSetting<unknown>("customProducts", []);
-  return [...PRODUCTS, ...(Array.isArray(list) ? (list as Product[]) : [])];
+  return mergeCatalogue(PRODUCTS, Array.isArray(list) ? (list as Product[]) : []);
 }
 
 /** When the site's content last changed; every rendered page carries this stamp. */
@@ -573,6 +578,15 @@ export async function threadsFromRows(rows: Row[]) {
   return rows.map((row) => threadShape(row, byThread.get(String(row.id)) ?? []));
 }
 
+function parseDetails(raw: unknown): EnquiryDetails | undefined {
+  if (typeof raw !== "string" || !raw) return undefined;
+  try {
+    return JSON.parse(raw) as EnquiryDetails;
+  } catch {
+    return undefined;
+  }
+}
+
 function threadShape(row: Row, rawMessages: Row[]) {
   const messages = rawMessages
     .map((m) => ({
@@ -592,6 +606,7 @@ function threadShape(row: Row, rawMessages: Row[]) {
     archived: Number(row.archived) === 1,
     status: String(row.status || "new") as LeadStatus,
     createdAt: String(row.created_at),
+    details: parseDetails(row.details),
     messages,
   };
 }

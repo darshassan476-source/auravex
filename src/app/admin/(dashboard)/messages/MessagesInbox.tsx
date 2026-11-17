@@ -5,6 +5,7 @@ import { useCms } from "@/cms/CmsProvider";
 import { Icon } from "@/components/ui/Icon";
 import type { Thread } from "@/lib/cms";
 import { cn } from "@/lib/utils";
+import { EnquirySummary } from "../_records/EnquirySummary";
 
 type Filter = "all" | "unread" | "archived";
 
@@ -53,7 +54,10 @@ export function MessagesInbox() {
 
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
-  const [activeId, setActiveId] = useState<string | null>(null);
+  // Opened from the Enquiries screen with ?thread=<id>.
+  const [activeId, setActiveId] = useState<string | null>(() =>
+    typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("thread"),
+  );
   const [draft, setDraft] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -249,7 +253,13 @@ export function MessagesInbox() {
                 </div>
               </header>
 
-              {active.subject && (
+              {active.details && (
+                <div className="border-b border-[var(--ax-line)] px-4 py-3">
+                  <EnquirySummary details={active.details} compact />
+                </div>
+              )}
+
+              {active.subject && !active.details && (
                 <div className="border-b border-[var(--ax-line)] px-4 py-2.5">
                   <span className="text-[11.5px] text-[var(--ax-ink-dim)]">
                     Interested in{" "}

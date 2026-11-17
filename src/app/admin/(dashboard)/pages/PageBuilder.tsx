@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 const PAGES: { key: PageKey; path: string }[] = [
   { key: "home", path: "/" },
   { key: "products", path: "/products" },
-  { key: "product-detail", path: "/products/real-estate-os" },
+  { key: "product-detail", path: "/products" },
   { key: "solutions", path: "/solutions" },
   { key: "industries", path: "/industries" },
   { key: "our-work", path: "/our-work" },

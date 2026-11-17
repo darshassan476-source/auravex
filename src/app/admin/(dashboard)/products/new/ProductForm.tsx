@@ -61,7 +61,7 @@ const BLANK: Draft = {
   sector: "",
   summary: "",
   description: "",
-  category: "saas",
+  category: "other",
   status: "development",
   icon: "box",
   accent: ACCENTS[0],
@@ -281,10 +281,10 @@ export function ProductForm() {
                 <>
                   <div className="grid gap-5 sm:grid-cols-2">
                     <Field label="Product name">
-                      <Input value={draft.name} onChange={(v) => set("name", v)} placeholder="Real Estate OS" />
+                      <Input value={draft.name} onChange={(v) => set("name", v)} placeholder="New product name" />
                     </Field>
                     <Field label="URL slug" hint={`/products/${draft.slug || "…"}`}>
-                      <Input value={draft.slug} disabled={builtIn} onChange={(v) => set("slug", slugify(v))} placeholder="real-estate-os" mono />
+                      <Input value={draft.slug} disabled={builtIn} onChange={(v) => set("slug", slugify(v))} placeholder="new-product" mono />
                     </Field>
                   </div>
 

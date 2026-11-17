@@ -3,22 +3,23 @@
  * the components and the CMS registry (`src/cms/content/chrome.ts`) can read it.
  */
 
-/** Position of "Products" in NAV_ITEMS — its children form the drop-down. */
-export const NAV_PRODUCTS_INDEX = 1;
-
 /** The fixed page entries at the end of the search index. */
 export const SEARCH_PAGES = [
-  { label: "About AURAVEX", href: "/about", description: "The team, method and mission", icon: "users" },
-  { label: "Contact", href: "/contact", description: "Request a demo or book a call", icon: "mail" },
-  { label: "Admin Portal", href: "/admin/login", description: "Private management platform", icon: "lock" },
+  { label: "Enterprise Solutions", href: "/products", description: "The Auravex product portfolio", icon: "grid" },
+  { label: "Latest Updates", href: "/updates", description: "Product news and announcements", icon: "megaphone" },
+  { label: "About Auravex", href: "/about", description: "Who we are and how we deliver", icon: "users" },
+  { label: "Discuss Your Requirements", href: "/contact", description: "Configure a solution or request a consultation", icon: "mail" },
 ];
 
 /** Default search-engine keywords; editable as one comma-separated field. */
 export const SEO_KEYWORDS = [
-  "AI software",
-  "enterprise platforms",
-  "real estate technology",
-  "business intelligence",
-  "automation",
-  "Dubai software company",
+  "Enterprise Software Solutions",
+  "AI-Powered Enterprise Software",
+  "Enterprise Document Management",
+  "AI Document Management System",
+  "Enterprise Automation",
+  "Construction Management Software",
+  "Enterprise Business Intelligence",
+  "AI Business Solutions",
+  "Digital Transformation",
 ];

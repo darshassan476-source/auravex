@@ -22,13 +22,13 @@ interface CTASectionProps {
  * wording pass it in and override that.
  */
 export function CTASection({
-  eyebrow = <Text id="cta.eyebrow" />,
-  title = <Text id="cta.title" />,
-  accent = <Text id="cta.accent" />,
-  description = <Text id="cta.body" />,
-  primaryLabel = <Text id="cta.primary" />,
+  eyebrow = <Text id="ex.cta.eyebrow" />,
+  title = <Text id="ex.cta.title" />,
+  accent = <Text id="ex.cta.accent" />,
+  description = <Text id="ex.cta.body" />,
+  primaryLabel = <Text id="ex.cta.primary" />,
   primaryHref = "/contact",
-  secondaryLabel = <Text id="cta.secondary" />,
+  secondaryLabel = <Text id="ex.cta.secondary" />,
   secondaryHref = "/products",
 }: CTASectionProps) {
   return (
@@ -59,7 +59,7 @@ export function CTASection({
               </div>
 
               <p className="mt-3 text-[12.5px] text-[var(--ax-ink-dim)]">
-                <Text id="cta.emailLead" />{" "}
+                <Text id="ex.cta.emailLead" />{" "}
                 <SiteEmailLink className="ax-focus font-medium text-[var(--ax-accent-soft)] transition-colors hover:text-[var(--ax-accent)]" />
               </p>
             </div>

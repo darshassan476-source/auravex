@@ -74,10 +74,11 @@ export function Tag({ children, className }: { children: ReactNode; className?: 
 }
 
 const STATUS_STYLES: Record<ProductStatus, string> = {
-  live: "text-[var(--ax-success)] border-[var(--ax-success)]/30 bg-[var(--ax-success)]/10",
-  beta: "text-[var(--ax-accent-soft)] border-[var(--ax-accent)]/30 bg-[var(--ax-accent)]/10",
+  available: "text-[var(--ax-success)] border-[var(--ax-success)]/30 bg-[var(--ax-success)]/10",
+  preview: "text-[var(--ax-accent-soft)] border-[var(--ax-accent)]/30 bg-[var(--ax-accent)]/10",
   development: "text-[var(--ax-warning)] border-[var(--ax-warning)]/30 bg-[var(--ax-warning)]/10",
-  "coming-soon": "text-[var(--ax-ink-muted)] border-[var(--ax-line-strong)] bg-[rgba(var(--ax-glow),0.06)]",
+  upcoming: "text-[var(--ax-ink-muted)] border-[var(--ax-line-strong)] bg-[rgba(var(--ax-glow),0.06)]",
+  unavailable: "text-[var(--ax-danger)] border-[var(--ax-danger)]/30 bg-[var(--ax-danger)]/10",
 };
 
 export function StatusBadge({
@@ -91,12 +92,12 @@ export function StatusBadge({
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em]",
-        STATUS_STYLES[status],
+        STATUS_STYLES[status] ?? STATUS_STYLES.upcoming,
         className,
       )}
     >
       <span className="relative flex size-1.5">
-        {status === "live" && (
+        {status === "available" && (
           <span className="absolute inline-flex size-full animate-[pulse-ring_2.6s_ease-out_infinite] rounded-full bg-current" />
         )}
         <span className="relative inline-flex size-1.5 rounded-full bg-current" />

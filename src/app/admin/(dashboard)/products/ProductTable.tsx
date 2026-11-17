@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/admin/Primitives";
 import { AX_EASE } from "@/components/fx/Reveal";
 import { Icon } from "@/components/ui/Icon";
 import { StatusBadge } from "@/components/ui/Primitives";
-import { CATEGORY_LABELS, PRODUCT_FILTERS } from "@/data/products";
+import { PRODUCT_FILTERS, categoryLabel } from "@/data/products";
 import type { ProductCategory } from "@/lib/types";
 import { cn, formatCompact } from "@/lib/utils";
 
@@ -211,7 +211,7 @@ export function ProductTable() {
                     </td>
 
                     <td className="px-5 py-3.5 text-[12.5px] text-[var(--ax-ink-muted)]">
-                      {CATEGORY_LABELS[product.category]}
+                      {categoryLabel(product.category)}
                     </td>
 
                     <td className="px-5 py-3.5">

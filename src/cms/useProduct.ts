@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { PRODUCTS } from "@/data/products";
+import { PRODUCTS, normalizeStatus } from "@/data/products";
+import { byOrder, mergeCatalogue } from "@/lib/catalogue";
 import type { MediaItem, ProductOverride } from "@/lib/cms";
 import type { Product, ProductCategory, ProductStatus } from "@/lib/types";
 import { useCms } from "./CmsProvider";
@@ -29,15 +30,16 @@ export function resolveProduct(
   media: MediaItem[],
   custom = false,
 ): ResolvedProduct {
-  if (!patch) return { ...product, custom };
+  if (!patch) return { ...product, status: normalizeStatus(product.status), custom };
   return {
     ...product,
+    ...pickDefined(patch, ENTERPRISE_KEYS),
     name: patch.name ?? product.name,
     tagline: patch.tagline ?? product.tagline,
     summary: patch.summary ?? product.summary,
     description: patch.description ?? product.description,
     accent: patch.accent ?? product.accent,
-    status: (patch.status as ProductStatus) ?? product.status,
+    status: normalizeStatus((patch.status as ProductStatus) ?? product.status),
     metrics: patch.metrics ?? product.metrics,
     sector: patch.sector ?? product.sector,
     category: (patch.category as ProductCategory) ?? product.category,
@@ -69,6 +71,31 @@ export function resolveProduct(
   };
 }
 
+/** Override fields copied across as-is when the portal has set them. */
+const ENTERPRISE_KEYS = [
+  "features",
+  "problems",
+  "modules",
+  "aiCapabilities",
+  "workflows",
+  "deployment",
+  "integrations",
+  "industries",
+  "optionalModules",
+  "aiEnhancements",
+  "voiceAI",
+  "customization",
+  "preview",
+  "order",
+  "demoPublic",
+] as const satisfies readonly (keyof ProductOverride & keyof Product)[];
+
+function pickDefined(patch: ProductOverride, keys: readonly (keyof ProductOverride)[]): Partial<Product> {
+  const out: Record<string, unknown> = {};
+  for (const key of keys) if (patch[key] !== undefined) out[key] = patch[key];
+  return out as Partial<Product>;
+}
+
 /**
  * The screens set on a product, resolved to URLs. `imageIds` is the list the
  * portal edits; `imageId` is what a single-image product (and everything
@@ -89,7 +116,7 @@ function screenSrcs(patch: ProductOverride, media: MediaItem[]): string[] {
 export function useProduct(product: Product): ResolvedProduct {
   const { state, ready } = useCms();
   if (!ready) return product;
-  const custom = state.customProducts.some((c) => c.slug === product.slug);
+  const custom = !PRODUCTS.some((p) => p.slug === product.slug);
   return resolveProduct(
     product,
     state.products[product.slug],
@@ -127,14 +154,12 @@ export function useCatalogue(
   return useMemo(() => {
     const overrides = ready ? state.products : {};
     const custom = ready ? state.customProducts : [];
-    const all = [
-      ...PRODUCTS.map((p) =>
-        resolveProduct(p, overrides[p.slug], state.media, false),
+    const builtIn = new Set(PRODUCTS.map((p) => p.slug));
+    const all = byOrder(
+      mergeCatalogue(PRODUCTS, custom).map((p) =>
+        resolveProduct(p, overrides[p.slug], state.media, !builtIn.has(p.slug)),
       ),
-      ...custom.map((p) =>
-        resolveProduct(p, overrides[p.slug], state.media, true),
-      ),
-    ];
+    );
     return includeHidden ? all : all.filter((p) => !p.hidden);
   }, [ready, state.products, state.customProducts, state.media, includeHidden]);
 }

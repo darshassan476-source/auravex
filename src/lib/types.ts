@@ -6,15 +6,48 @@
  * requires no component changes.
  */
 
-export type ProductStatus = "live" | "beta" | "development" | "coming-soon";
+/**
+ * Where a product stands commercially. Only "available" products count as
+ * active; the rest are listed separately on the Enterprise Solutions page.
+ */
+export type ProductStatus =
+  | "available"
+  | "preview"
+  | "development"
+  | "upcoming"
+  | "unavailable";
 
 export type ProductCategory =
-  | "ai"
-  | "saas"
-  | "web-apps"
-  | "automation"
-  | "developer-tools"
-  | "enterprise";
+  | "sustainability"
+  | "document-management"
+  | "ai-agents"
+  | "enterprise-management"
+  | "business-intelligence"
+  | "construction"
+  | "other";
+
+/** How a product can be deployed for a customer. */
+export type DeploymentOption = "cloud" | "private-cloud" | "on-premises" | "custom";
+
+/** A named piece of a product: a core module, an optional add-on or an AI enhancement. */
+export interface ProductModule {
+  id: string;
+  name: string;
+  description: string;
+}
+
+/** Early-access details for a product that is not generally available yet. */
+export interface ProductPreview {
+  /** Where "View Preview" points, when public access is on. */
+  url?: string;
+  description?: string;
+  /** Media ids of preview screens. */
+  imageIds?: string[];
+  /** When true the preview link is shown publicly; otherwise visitors can request one. */
+  public?: boolean;
+  /** Free text, e.g. "Q1 2027". Shown only when set. */
+  expectedRelease?: string;
+}
 
 export interface MediaAsset {
   id: string;
@@ -83,9 +116,33 @@ export interface Product {
   };
   /** A line shown under "Try it live", e.g. the demo account to use. */
   demoNote?: string;
+  /** False hides the Quick Demo button even when a demo address is set. */
+  demoPublic?: boolean;
   featured: boolean;
   year: string;
   views: number;
+
+  /* ---- Enterprise detail (all optional so older portal records still load) ---- */
+  /** The business problems the product addresses. */
+  problems?: string[];
+  /** Core modules that ship with the product. */
+  modules?: ProductModule[];
+  aiCapabilities?: string[];
+  workflows?: string[];
+  deployment?: DeploymentOption[];
+  integrations?: string[];
+  industries?: string[];
+  /** Add-ons a customer may choose in "Customize Your Solution". */
+  optionalModules?: ProductModule[];
+  /** Optional AI enhancements offered in the configurator. */
+  aiEnhancements?: ProductModule[];
+  /** Whether voice-to-voice AI is offered as an option for this product. */
+  voiceAI?: boolean;
+  /** What can be tailored: branding, workflows, fields, reports… */
+  customization?: string[];
+  preview?: ProductPreview;
+  /** Display order in listings; lower comes first. */
+  order?: number;
 }
 
 export interface Solution {

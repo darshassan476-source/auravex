@@ -6,7 +6,7 @@ import { getSiteBundle } from "@/server/cache";
 import { revealWatcherScript } from "@/components/fx/revealWatcher";
 import { SmoothScroll } from "@/components/fx/SmoothScroll";
 import { SEO_KEYWORDS } from "@/data/chromeCopy";
-import { SITE } from "@/data/site";
+import { SITE, SITE_URL } from "@/data/site";
 import { themeNoFlashScript } from "@/themes/noFlash";
 import { ThemeProvider } from "@/themes/ThemeProvider";
 import "./globals.css";
@@ -24,31 +24,36 @@ export async function generateMetadata(): Promise<Metadata> {
   const tagline = text["site.tagline"] || SITE.tagline;
   const headline = text["site.headline"] || SITE.headline;
   const description = text["site.description"] || SITE.description;
-  const keywords = (text["seo.keywords"] || SEO_KEYWORDS.join(", "))
+  const keywords = (text["ex.seo.keywords"] || SEO_KEYWORDS.join(", "))
     .split(",")
     .map((k) => k.trim())
     .filter(Boolean);
+  const title = `${name} — ${tagline}`;
   return {
-  metadataBase: new URL("https://auravex.com"),
-  title: {
-    default: `${name} — ${tagline}`,
-    template: `%s · ${name}`,
-  },
-  description: description,
-  keywords,
-  authors: [{ name: name }],
-  openGraph: {
-    type: "website",
-    siteName: name,
-    title: `${name} — ${headline}`,
-    description: description,
-    locale: "en_US",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${name} — ${headline}`,
-    description: description,
-  },
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: title,
+      template: `%s | ${name}`,
+    },
+    description,
+    keywords,
+    applicationName: name,
+    authors: [{ name }],
+    alternates: { canonical: "/" },
+    robots: { index: true, follow: true },
+    openGraph: {
+      type: "website",
+      siteName: name,
+      url: "/",
+      title: `${name} — ${headline}`,
+      description,
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${name} — ${headline}`,
+      description,
+    },
   };
 }
 

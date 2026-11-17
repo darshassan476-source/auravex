@@ -15,6 +15,15 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   // Server-only libraries are loaded from node_modules at runtime, not bundled.
   serverExternalPackages: ["web-push", "@anthropic-ai/sdk", "nodemailer", "@ffmpeg-installer/ffmpeg"],
+  // Retired pages: the old solutions list and the case studies now lead to Enterprise Solutions.
+  async redirects() {
+    return [
+      { source: "/solutions", destination: "/products", permanent: true },
+      { source: "/solutions/:path*", destination: "/products", permanent: true },
+      { source: "/our-work", destination: "/products", permanent: true },
+      { source: "/our-work/:path*", destination: "/products", permanent: true },
+    ];
+  },
   ...(backend
     ? {
         async rewrites() {

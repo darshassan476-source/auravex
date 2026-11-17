@@ -48,7 +48,7 @@ export const PRODUCTS_LEGAL_GROUPS: ContentGroup[] = [
       { id: "products.hero.card2", label: "Floating card 2", value: "Built in Collaboration. For a Global Future." },
       { id: "products.hero.card3", label: "Floating card 3", value: "Enterprise Software That Scales." },
       ...listFields("products.filters", "Filter", PRODUCT_FILTERS, [{ key: "label", label: "name" }]),
-      { id: "products.card.caseStudy", label: "Card link — when a case study exists", value: "View Case Study" },
+      { id: "products.empty", label: "Message when there are no products", value: "New products are on the way. Check back soon." },
       { id: "products.card.explore", label: "Card link — otherwise", value: "Explore Product" },
       { id: "products.cta.eyebrow", label: "Closing block — eyebrow", value: "Not on the list?" },
       { id: "products.cta.title", label: "Closing block — heading", value: "Most of our best work started as" },

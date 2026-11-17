@@ -19,8 +19,8 @@ const HIDDEN_ON = ["/contact", "/admin"];
 
 export function MobileCTABar() {
   const pathname = usePathname();
-  const message = useText("mobile.cta.body");
-  const label = useText("mobile.cta.button");
+  const message = useText("ex.mobile.cta.body");
+  const label = useText("ex.mobile.cta.button");
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
