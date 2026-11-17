@@ -12,7 +12,8 @@ import {
   UpdatesButton,
 } from "@/components/sections/HomeSections";
 import { SectionHead } from "@/components/sections/SectionHead";
-import { SolutionCount, SolutionsGrid } from "@/components/sections/SolutionsGrid";
+import { SolutionCount } from "@/components/sections/SolutionsGrid";
+import { SolutionsShowcase } from "@/components/sections/SolutionsShowcase";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Primitives";
 
@@ -41,7 +42,7 @@ export default function HomePage() {
             </Button>
           }
         />
-        <SolutionsGrid className="mt-12" />
+        <SolutionsShowcase className="mt-12" />
       </Section>
 
       {/* 2. Built Around Business Outcomes */}

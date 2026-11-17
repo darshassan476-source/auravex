@@ -1,17 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useProduct } from "@/cms/useProduct";
 import type { Product } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { LaptopFrame } from "./LaptopFrame";
+import { ProductAura } from "./ProductAura";
 import { ProductSchematic } from "./ProductSchematic";
+import { productScreens } from "./ProductShowcase";
+
+const DWELL_MS = 5200;
 
 /**
- * The hero visual for a product: the machine, with this product on its
- * screen — screens uploaded in the portal when there are any, otherwise a
- * schematic drawn from the product's own modules and capabilities. Where
- * there is more than one screen, the visitor can flick through them.
+ * The hero visual for a product: the machine in the product's own light,
+ * with its real screens on it — uploads from the portal first, otherwise the
+ * captures bundled with the site — easing from one to the next.
  */
 export function ProductVisual({
   product: source,
@@ -21,45 +24,55 @@ export function ProductVisual({
   className?: string;
 }) {
   const product = useProduct(source);
-  const shots = product.imageSrcs ?? [];
+  const shots = productScreens(product);
   const [shown, setShown] = useState(0);
-  const index = Math.min(shown, Math.max(0, shots.length - 1));
-  const current = shots[index];
+  const index = shots.length ? shown % shots.length : 0;
+
+  useEffect(() => {
+    if (shots.length < 2) return;
+    const t = window.setTimeout(() => setShown((s) => s + 1), DWELL_MS);
+    return () => window.clearTimeout(t);
+  }, [shown, shots.length]);
 
   return (
-    <div className={cn("flex flex-col gap-4", className)}>
+    <div className={cn("relative flex flex-col gap-5", className)}>
+      <ProductAura slug={product.slug} accent={product.accent} className="-inset-[12%] -z-10" />
       <LaptopFrame>
-        {current ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={current}
-            alt={`${product.name} — screen ${index + 1}`}
-            className="size-full object-cover"
-          />
+        {shots.length ? (
+          <div className="relative size-full">
+            {shots.map((s, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={s.src}
+                src={s.src}
+                alt={s.alt}
+                className={cn(
+                  "absolute inset-0 size-full object-cover object-top transition-opacity duration-1000",
+                  i === index ? "opacity-100" : "opacity-0",
+                )}
+              />
+            ))}
+          </div>
         ) : (
           <ProductSchematic product={product} />
         )}
       </LaptopFrame>
 
       {shots.length > 1 && (
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {shots.map((src, i) => (
+        <div className="flex items-center justify-center gap-2">
+          {shots.map((s, i) => (
             <button
-              key={src}
+              key={s.src}
               type="button"
               onClick={() => setShown(i)}
               aria-label={`Show screen ${i + 1} of ${shots.length}`}
               aria-current={i === index}
-              className={cn(
-                "ax-focus relative h-11 w-[72px] overflow-hidden rounded-lg border transition-all duration-300",
-                i === index
-                  ? "border-[var(--ax-accent)] ax-glow-sm"
-                  : "border-[var(--ax-line)] opacity-70 hover:border-[var(--ax-line-strong)] hover:opacity-100",
-              )}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" className="size-full object-cover" />
-            </button>
+              className="ax-focus h-1.5 rounded-full transition-all duration-500"
+              style={{
+                width: i === index ? 28 : 8,
+                background: i === index ? product.accent : "var(--ax-line-strong)",
+              }}
+            />
           ))}
         </div>
       )}

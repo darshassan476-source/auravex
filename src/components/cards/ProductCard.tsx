@@ -3,21 +3,12 @@
 import Link from "next/link";
 import { useText } from "@/cms/CmsProvider";
 import { useProduct } from "@/cms/useProduct";
-import { AbstractArt, type ArtVariant } from "@/components/showcase/AbstractArt";
+import { ProductShowcase } from "@/components/showcase/ProductShowcase";
 import { categoryLabel } from "@/data/products";
 import type { Product } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Icon } from "../ui/Icon";
 import { StatusBadge } from "../ui/Primitives";
-
-const ART_BY_CATEGORY: Record<string, ArtVariant> = {
-  sustainability: "waves",
-  "document-management": "facade",
-  "ai-agents": "mesh",
-  "enterprise-management": "skyline",
-  "business-intelligence": "mesh",
-  construction: "skyline",
-};
 
 /** The first screen to show for a product: an uploaded one, else a bundled screenshot. */
 export function productImage(product: Product & { imageSrc?: string }): string | undefined {
@@ -49,7 +40,6 @@ export function ProductCard({
   preview?: boolean;
 }) {
   const product = useProduct(source);
-  const image = productImage(product);
   const demo = demoUrl(product);
   const explore = useText("ex.card.explore");
   const demoLabel = useText("ex.card.demo");
@@ -65,24 +55,10 @@ export function ProductCard({
         className,
       )}
     >
-      <div className="relative aspect-[16/9] overflow-hidden border-b border-[var(--ax-line)] bg-[var(--ax-bg)]">
-        {image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={image}
-            alt={`${product.name} — application screen`}
-            loading="lazy"
-            className="size-full object-cover object-top transition-transform duration-[900ms] ease-out group-hover:scale-[1.03]"
-          />
-        ) : (
-          <AbstractArt
-            variant={ART_BY_CATEGORY[product.category] ?? "waves"}
-            accent={product.accent}
-            seed={product.slug}
-          />
-        )}
+      <div className="relative overflow-hidden border-b border-[var(--ax-line)] bg-[var(--ax-bg)]">
+        <ProductShowcase product={product} size="sm" className="transition-transform duration-700 group-hover:scale-[1.02]" />
         {product.status !== "available" && (
-          <StatusBadge status={product.status} className="absolute left-4 top-4 bg-[var(--ax-bg)]/85 backdrop-blur" />
+          <StatusBadge status={product.status} className="absolute left-4 top-4 z-20 bg-[var(--ax-bg)]/85 backdrop-blur" />
         )}
       </div>
 

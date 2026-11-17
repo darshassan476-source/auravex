@@ -43,7 +43,7 @@ const base = {
   voiceAI: VOICE_NOTE,
 };
 
-export const CATALOGUE: Product[] = [
+const RECORDS: Product[] = [
   /* ------------------------------------------------------------------ */
   {
     ...base,
@@ -489,3 +489,40 @@ export const CATALOGUE: Product[] = [
     customization: ["Project and portfolio structure", "Cost codes and programme templates", "Roles and approval rules", "Branding"],
   },
 ];
+
+/**
+ * Screens captured from each product's own live site or demo, cropped to
+ * leave the host's badges out. Figures visible in them are the demos'
+ * fictional data. Screens uploaded in the portal take precedence.
+ */
+const SCREENS: Record<string, [string, string][]> = {
+  "ai-dms": [
+    ["Home workspace with approvals, records and AI insight", "1"],
+    ["The document lifecycle, stage by stage", "2"],
+  ],
+  "aldar-sustainability-platform": [
+    ["Executive command centre", "1"],
+    ["Impact tiles and performance trends", "2"],
+  ],
+  "enterprise-agentos": [["Command Center — the Executive Agent and its specialists", "1"]],
+  "vantage-enterprise": [
+    ["Vantage Enterprise", "1"],
+    ["Analytics, operations, governance and the AI assistant", "2"],
+  ],
+  "enterprise-dashboards": [
+    ["Turn every data source into decisions", "1"],
+    ["The dashboard builder", "2"],
+    ["The assistant proposes changes before anything is applied", "3"],
+  ],
+  "buildsphere-ai": [["Describe a building — get the whole thing", "1"]],
+};
+
+export const CATALOGUE: Product[] = RECORDS.map((p) => ({
+  ...p,
+  gallery: (SCREENS[p.slug] ?? []).map(([alt, n]) => ({
+    id: `${p.slug}-screen-${n}`,
+    type: "image" as const,
+    src: `/products/${p.slug}/${n}.webp`,
+    alt: `${p.name} — ${alt}`,
+  })),
+}));

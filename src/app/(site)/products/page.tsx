@@ -5,7 +5,7 @@ import { Reveal } from "@/components/fx/Reveal";
 import { BlockSlot } from "@/components/sections/BlockSlot";
 import { CTASection } from "@/components/sections/CTASection";
 import { SectionHead } from "@/components/sections/SectionHead";
-import { PipelineSection, SolutionCount, SolutionsGrid } from "@/components/sections/SolutionsGrid";
+import { PipelineSection, SolutionCount, SolutionStages, SolutionsGrid } from "@/components/sections/SolutionsGrid";
 import { HeroBackdrop } from "@/components/showcase/HeroBackdrop";
 import { EyebrowPill } from "@/components/ui/EyebrowPill";
 import { Section } from "@/components/ui/Primitives";
@@ -55,9 +55,7 @@ export default function EnterpriseSolutionsPage() {
 
       <BlockSlot page="products" slot="after-hero" />
 
-      <Section className="pt-4">
-        <SolutionsGrid which="active" />
-      </Section>
+      <SolutionStages />
 
       <PipelineSection>
         <Section>

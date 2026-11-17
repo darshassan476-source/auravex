@@ -48,31 +48,3 @@ export function ProductSchematic({ product }: { product: Product }) {
     </div>
   );
 }
-
-/**
- * The home hero's screen when no image is uploaded: the six solutions as one
- * connected suite. Names and categories only.
- */
-export function SuiteSchematic({ products }: { products: Product[] }) {
-  return (
-    <div className="flex size-full flex-col bg-[var(--ax-bg)] p-[4%]" aria-hidden>
-      <div className="mb-[3%] flex items-center justify-between">
-        <span className="text-[10px] font-semibold tracking-[0.2em] text-[var(--ax-ink)]">AURAVEX</span>
-        <span className="text-[7.5px] uppercase tracking-[0.14em] text-[var(--ax-ink-dim)]">Enterprise Solutions</span>
-      </div>
-      <div className="grid flex-1 grid-cols-3 grid-rows-2 gap-[2.5%]">
-        {products.slice(0, 6).map((p) => (
-          <div key={p.slug} className="flex flex-col justify-between rounded-lg border border-[var(--ax-line)] bg-[var(--ax-bg-elevated)] p-[7%]">
-            <span className="grid size-6 place-items-center rounded-md" style={{ background: `${p.accent}2e`, color: p.accent }}>
-              <Icon name={p.icon} className="size-3.5" strokeWidth={2} />
-            </span>
-            <span>
-              <span className="block text-[9px] font-semibold leading-tight text-[var(--ax-ink)]">{p.name}</span>
-              <span className="mt-0.5 block text-[6.5px] uppercase tracking-[0.08em] text-[var(--ax-ink-dim)]">{p.sector}</span>
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}

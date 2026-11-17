@@ -5,6 +5,7 @@ import { useText } from "@/cms/CmsProvider";
 import { useCatalogue } from "@/cms/useProduct";
 import { ProductCard } from "@/components/cards/ProductCard";
 import { RevealGroup, RevealItem } from "@/components/fx/Reveal";
+import { ProductStage } from "./ProductStage";
 import { isActive } from "@/data/products";
 import { cn } from "@/lib/utils";
 
@@ -61,4 +62,20 @@ export function PipelineSection({ children }: { children: ReactNode }) {
   const { pipeline } = useSolutions();
   if (pipeline.length === 0) return null;
   return <>{children}</>;
+}
+
+/** Every available product, each on a full-width stage of its own. */
+export function SolutionStages() {
+  const { active } = useSolutions();
+  const empty = useText("ex.solutions.empty");
+  if (active.length === 0) {
+    return <p className="py-12 text-center text-[15px] text-[var(--ax-ink-muted)]">{empty}</p>;
+  }
+  return (
+    <div>
+      {active.map((product, i) => (
+        <ProductStage key={product.slug} product={product} index={i} />
+      ))}
+    </div>
+  );
 }

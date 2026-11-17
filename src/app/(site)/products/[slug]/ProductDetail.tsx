@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import { useCms, useText } from "@/cms/CmsProvider";
 import { useProduct } from "@/cms/useProduct";
 import { demoUrl } from "@/components/cards/ProductCard";
 import { EnquiryForm } from "@/components/enquiry/EnquiryForm";
 import { Reveal } from "@/components/fx/Reveal";
 import { HeroBackdrop } from "@/components/showcase/HeroBackdrop";
+import { BrowserFrame } from "@/components/showcase/BrowserFrame";
+import { ProductAura, partnerHue } from "@/components/showcase/ProductAura";
+import { productScreens } from "@/components/showcase/ProductShowcase";
 import { ProductVisual } from "@/components/showcase/ProductVisual";
 import { Button } from "@/components/ui/Button";
 import { EyebrowPill } from "@/components/ui/EyebrowPill";
@@ -74,11 +77,17 @@ export function ProductDetail({ product: source }: { product: Product }) {
   const notReady = product.status === "development" || product.status === "upcoming" || product.status === "preview";
   const previewLink = product.preview?.public && product.preview.url ? product.preview.url : undefined;
 
+  const partner = partnerHue(product.slug, product.accent);
+  const screens = productScreens(product);
+  let n = 0;
+  const next = () => String(++n).padStart(2, "0");
+
   return (
-    <>
+    <AccentContext.Provider value={{ accent: product.accent, partner }}>
       {/* 1–3. Name, category, headline — and the two primary actions */}
       <section className="relative isolate overflow-hidden">
         <HeroBackdrop page="product-detail" background="dark-hero-02" />
+        <ProductAura slug={product.slug} accent={product.accent} intensity={0.55} />
         <div className="ax-container relative pb-14 pt-[122px] md:pb-16 md:pt-[146px]">
           <nav aria-label="Breadcrumb" className="mb-7 flex items-center gap-2 text-[12.5px] text-[var(--ax-ink-dim)]">
             <Link href="/products" className="ax-focus inline-flex items-center gap-1.5 hover:text-[var(--ax-ink-muted)]">
@@ -170,9 +179,12 @@ export function ProductDetail({ product: source }: { product: Product }) {
         </div>
       </section>
 
+      {/* The product itself, screen by screen */}
+      {screens.length > 0 && <ScreenTour screens={screens} address={product.name} name={product.name} />}
+
       {/* 4. Overview (with verified adoption figures, when there are any) */}
-      <Block title={t.overview}>
-        <p className="ax-text-pretty max-w-3xl text-[16px] leading-[1.8] text-[var(--ax-ink-muted)]">{product.description}</p>
+      <Block title={t.overview} n={next()}>
+        <p className="ax-text-pretty max-w-4xl text-[clamp(1.05rem,1.5vw,1.3rem)] leading-[1.75] text-[var(--ax-ink)] opacity-85">{product.description}</p>
         {figures.length > 0 && (
           <dl className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label={t.adoption}>
             {figures.map((f) => (
@@ -189,19 +201,67 @@ export function ProductDetail({ product: source }: { product: Product }) {
       </Block>
 
       {/* 5. Business problems */}
-      <ListBlock title={t.problems} items={product.problems} icon="target" />
+      {product.problems?.length ? <ListBlock title={t.problems} items={product.problems} icon="target" n={next()} /> : null}
 
       {/* 6. Main capabilities */}
       {product.features.length > 0 && (
-        <Block title={t.capabilities}>
+        <Block title={t.capabilities} n={next()}>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {product.features.map((f) => (
-              <div key={f.title} className="ax-glass flex flex-col gap-3 rounded-2xl p-6">
-                <span className="grid size-10 place-items-center rounded-xl" style={{ background: `${product.accent}1f`, color: product.accent }}>
-                  <Icon name={f.icon} className="size-5" strokeWidth={1.8} />
+            {product.features.map((f, i) => (
+              <div
+                key={f.title}
+                className={cn(
+                  "group relative flex flex-col gap-3 overflow-hidden rounded-3xl border border-[var(--ax-line)] bg-[var(--ax-bg-elevated)] p-7 transition-all duration-500 hover:-translate-y-1 hover:border-[var(--ax-line-strong)]",
+                  i === 0 && "md:col-span-2 xl:row-span-2 xl:justify-end",
+                )}
+              >
+                <span
+                  aria-hidden
+                  className={cn(
+                    "pointer-events-none absolute rounded-full blur-[60px] transition-opacity duration-500",
+                    i === 0 ? "-right-10 -top-10 size-72 opacity-40" : "-right-12 -top-12 size-40 opacity-0 group-hover:opacity-40",
+                  )}
+                  style={{ background: i % 2 ? partner : product.accent }}
+                />
+                {i === 0 && screens.length > 0 && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={(screens[1] ?? screens[0]).src}
+                    alt=""
+                    aria-hidden
+                    loading="lazy"
+                    className="pointer-events-none relative -mx-7 -mt-7 mb-2 block w-[calc(100%+3.5rem)] max-w-none object-cover object-top opacity-90 transition-transform duration-700 group-hover:scale-[1.02] xl:max-h-[260px]"
+                    style={{
+                      maskImage: "linear-gradient(180deg, black 45%, transparent)",
+                      WebkitMaskImage: "linear-gradient(180deg, black 45%, transparent)",
+                    }}
+                  />
+                )}
+                <span
+                  className={cn("relative grid place-items-center rounded-2xl text-white", i === 0 ? "size-14" : "size-11")}
+                  style={{
+                    background: `linear-gradient(140deg, ${product.accent}, ${partner})`,
+                    boxShadow: `0 12px 30px -12px ${product.accent}`,
+                  }}
+                >
+                  <Icon name={f.icon} className={i === 0 ? "size-6" : "size-5"} strokeWidth={1.9} />
                 </span>
-                <h3 className="text-[16.5px] font-semibold text-[var(--ax-ink)]">{f.title}</h3>
-                <p className="ax-text-pretty text-[13.5px] leading-relaxed text-[var(--ax-ink-muted)]">{f.description}</p>
+                <h3
+                  className={cn(
+                    "relative font-semibold tracking-[-0.01em] text-[var(--ax-ink)]",
+                    i === 0 ? "mt-2 text-[clamp(1.4rem,2.2vw,1.9rem)]" : "text-[17px]",
+                  )}
+                >
+                  {f.title}
+                </h3>
+                <p
+                  className={cn(
+                    "ax-text-pretty relative leading-relaxed text-[var(--ax-ink-muted)]",
+                    i === 0 ? "max-w-xl text-[15.5px]" : "text-[13.5px]",
+                  )}
+                >
+                  {f.description}
+                </p>
               </div>
             ))}
           </div>
@@ -209,23 +269,29 @@ export function ProductDetail({ product: source }: { product: Product }) {
       )}
 
       {/* 7. Available modules */}
-      <ModuleBlock title={t.modules} modules={product.modules} />
+      {product.modules?.length ? <ModuleBlock title={t.modules} modules={product.modules} n={next()} /> : null}
 
       {/* 8. AI capabilities */}
-      <ListBlock title={t.ai} items={product.aiCapabilities} icon="sparkles" />
+      {product.aiCapabilities?.length ? <AIBlock title={t.ai} items={product.aiCapabilities} slug={product.slug} n={next()} /> : null}
 
       {/* 9–12. Workflows, deployment, integrations, industries */}
       <Block>
-        <div className="grid gap-10 lg:grid-cols-2">
-          <Column title={t.workflows} items={product.workflows} />
-          <Column title={t.deployment} items={product.deployment?.map((d) => DEPLOYMENT_LABELS[d])} />
-          <Column title={t.integrations} items={product.integrations} />
-          <Column title={t.industries} items={product.industries} />
+        <div className="grid gap-4 md:grid-cols-2">
+          <Column title={t.workflows} items={product.workflows} icon="workflow" />
+          <Column title={t.deployment} items={product.deployment?.map((d) => DEPLOYMENT_LABELS[d])} icon="cloud" />
+          <Column title={t.integrations} items={product.integrations} icon="link" />
+          <Column title={t.industries} items={product.industries} icon="building" />
         </div>
       </Block>
 
       {/* 13. Optional additional modules */}
-      <ModuleBlock title={t.optional} modules={[...(product.optionalModules ?? []), ...(product.aiEnhancements ?? [])]} />
+      {product.optionalModules?.length || product.aiEnhancements?.length ? (
+        <ModuleBlock
+          title={t.optional}
+          modules={[...(product.optionalModules ?? []), ...(product.aiEnhancements ?? [])]}
+          n={next()}
+        />
+      ) : null}
 
       {/* 14. Verified customer deployments only */}
       {customers.length > 0 && (
@@ -259,7 +325,7 @@ export function ProductDetail({ product: source }: { product: Product }) {
       )}
 
       {/* 15. Customisation options */}
-      <ListBlock title={t.customization} items={product.customization} icon="settings" />
+      {product.customization?.length ? <ListBlock title={t.customization} items={product.customization} icon="settings" n={next()} /> : null}
 
       {previewImages.length > 0 && notReady && (
         <Block title={t.previewView}>
@@ -312,9 +378,14 @@ export function ProductDetail({ product: source }: { product: Product }) {
       {demo && (
         <section className="pb-20">
           <div className="ax-container">
-            <div className="flex flex-col items-start gap-5 rounded-2xl border border-[var(--ax-line)] p-7 md:flex-row md:items-center md:justify-between md:p-9">
+            <div
+              className="relative flex flex-col items-start gap-5 overflow-hidden rounded-3xl border border-white/10 p-8 md:flex-row md:items-center md:justify-between md:p-12"
+              style={{
+                background: `linear-gradient(120deg, ${product.accent}33, transparent 60%), linear-gradient(300deg, ${partner}26, transparent 60%), var(--ax-bg-elevated)`,
+              }}
+            >
               <div>
-                <p className="text-[18px] font-semibold text-[var(--ax-ink)]">
+                <p className="text-[clamp(1.4rem,2.4vw,2rem)] font-semibold tracking-[-0.02em] text-[var(--ax-ink)]">
                   {t.demo}: {product.name}
                 </p>
                 {product.demoNote && <p className="mt-1.5 text-[13.5px] text-[var(--ax-ink-muted)]">{product.demoNote}</p>}
@@ -326,30 +397,53 @@ export function ProductDetail({ product: source }: { product: Product }) {
           </div>
         </section>
       )}
-    </>
+    </AccentContext.Provider>
   );
 }
 
-function Block({ title, children, className }: { title?: string; children: ReactNode; className?: string }) {
+const AccentContext = createContext({ accent: "#6366f1", partner: "#22d3ee" });
+
+function Block({ title, n, children, className }: { title?: string; n?: string; children: ReactNode; className?: string }) {
+  const { accent } = useContext(AccentContext);
   return (
-    <section className={cn("py-10 md:py-12", className)}>
+    <section className={cn("py-12 md:py-16", className)}>
       <div className="ax-container">
-        {title && <h2 className="mb-7 text-[clamp(1.5rem,2.4vw,2rem)] font-semibold tracking-[-0.015em] text-[var(--ax-ink)]">{title}</h2>}
+        {title && (
+          <div className="mb-9 flex items-baseline gap-4">
+            {n && (
+              <span className="font-mono text-[13px] font-semibold tracking-[0.1em]" style={{ color: accent }}>
+                {n}
+              </span>
+            )}
+            <h2 className="ax-display text-[clamp(1.8rem,3.2vw,2.7rem)] leading-[1.08]">{title}</h2>
+            <span
+              aria-hidden
+              className="ml-2 hidden h-px flex-1 self-center sm:block"
+              style={{ background: `linear-gradient(90deg, ${accent}55, transparent)` }}
+            />
+          </div>
+        )}
         {children}
       </div>
     </section>
   );
 }
 
-function ListBlock({ title, items, icon }: { title: string; items?: string[]; icon: string }) {
+function ListBlock({ title, items, icon, n }: { title: string; items?: string[]; icon: string; n?: string }) {
+  const { accent } = useContext(AccentContext);
   if (!items?.length) return null;
   return (
-    <Block title={title}>
+    <Block title={title} n={n}>
       <ul className="grid gap-3 md:grid-cols-2">
         {items.map((item) => (
-          <li key={item} className="flex gap-3 rounded-xl border border-[var(--ax-line)] p-4 text-[14px] leading-relaxed text-[var(--ax-ink-muted)]">
-            <Icon name={icon} className="mt-0.5 size-4 shrink-0 text-[var(--ax-accent-soft)]" strokeWidth={2} />
-            <span>{item}</span>
+          <li
+            key={item}
+            className="flex gap-4 rounded-2xl border border-[var(--ax-line)] bg-[var(--ax-bg-elevated)] p-5 text-[14.5px] leading-relaxed text-[var(--ax-ink-muted)] transition-colors hover:border-[var(--ax-line-strong)]"
+          >
+            <span className="grid size-8 shrink-0 place-items-center rounded-lg" style={{ background: `${accent}1f`, color: accent }}>
+              <Icon name={icon} className="size-4" strokeWidth={2} />
+            </span>
+            <span className="pt-1">{item}</span>
           </li>
         ))}
       </ul>
@@ -357,15 +451,35 @@ function ListBlock({ title, items, icon }: { title: string; items?: string[]; ic
   );
 }
 
-function ModuleBlock({ title, modules }: { title: string; modules?: { id: string; name: string; description: string }[] }) {
+function ModuleBlock({
+  title,
+  modules,
+  n,
+}: {
+  title: string;
+  modules?: { id: string; name: string; description: string }[];
+  n?: string;
+}) {
+  const { accent, partner } = useContext(AccentContext);
   if (!modules?.length) return null;
   return (
-    <Block title={title}>
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {modules.map((m) => (
-          <div key={m.id + m.name} className="rounded-xl border border-[var(--ax-line)] bg-[var(--ax-bg-elevated)] p-5">
-            <p className="text-[15px] font-semibold text-[var(--ax-ink)]">{m.name}</p>
-            <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--ax-ink-muted)]">{m.description}</p>
+    <Block title={title} n={n}>
+      <div className="grid gap-px overflow-hidden rounded-3xl border border-[var(--ax-line)] bg-[var(--ax-line)] sm:grid-cols-2 xl:grid-cols-3">
+        {modules.map((m, i) => (
+          <div
+            key={m.id + m.name}
+            className="group relative bg-[var(--ax-bg-elevated)] p-6 transition-colors duration-300 hover:bg-[var(--ax-bg)]"
+          >
+            <span
+              aria-hidden
+              className="absolute inset-y-6 left-0 w-[2px] origin-top scale-y-0 transition-transform duration-500 group-hover:scale-y-100"
+              style={{ background: `linear-gradient(${accent}, ${partner})` }}
+            />
+            <span className="font-mono text-[11.5px] font-semibold" style={{ color: accent }}>
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <p className="mt-2 text-[16px] font-semibold text-[var(--ax-ink)]">{m.name}</p>
+            <p className="mt-1.5 text-[13.5px] leading-relaxed text-[var(--ax-ink-muted)]">{m.description}</p>
           </div>
         ))}
       </div>
@@ -373,19 +487,123 @@ function ModuleBlock({ title, modules }: { title: string; modules?: { id: string
   );
 }
 
-function Column({ title, items }: { title: string; items?: string[] }) {
+function AIBlock({ title, items, slug, n }: { title: string; items: string[]; slug: string; n?: string }) {
+  const { accent } = useContext(AccentContext);
+  return (
+    <section className="py-12 md:py-16">
+      <div className="ax-container">
+        <div className="relative isolate overflow-hidden rounded-[32px] border border-white/10 bg-[#060914] p-7 md:p-14">
+          <ProductAura slug={slug} accent={accent} intensity={0.9} className="-z-10" />
+          <div className="flex items-baseline gap-4">
+            {n && (
+              <span className="font-mono text-[13px] font-semibold tracking-[0.1em]" style={{ color: accent }}>
+                {n}
+              </span>
+            )}
+            <h2 className="flex items-center gap-3 text-[clamp(1.8rem,3.2vw,2.7rem)] font-semibold leading-[1.08] tracking-[-0.02em] text-white">
+              <Icon name="sparkles" className="size-7 shrink-0" strokeWidth={1.8} style={{ color: accent }} />
+              {title}
+            </h2>
+          </div>
+          <ul className="mt-10 grid gap-3 md:grid-cols-2">
+            {items.map((item) => (
+              <li
+                key={item}
+                className="flex gap-3.5 rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-[14.5px] leading-relaxed text-white/80 backdrop-blur"
+              >
+                <Icon name="check-circle" className="mt-0.5 size-5 shrink-0" strokeWidth={2} style={{ color: accent }} />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Column({ title, items, icon }: { title: string; items?: string[]; icon: string }) {
+  const { accent } = useContext(AccentContext);
   if (!items?.length) return null;
   return (
-    <div>
-      <h2 className="mb-4 text-[19px] font-semibold text-[var(--ax-ink)]">{title}</h2>
+    <div className="rounded-3xl border border-[var(--ax-line)] bg-[var(--ax-bg-elevated)] p-7">
+      <h2 className="mb-5 flex items-center gap-3 text-[19px] font-semibold text-[var(--ax-ink)]">
+        <span className="grid size-9 place-items-center rounded-xl" style={{ background: `${accent}1f`, color: accent }}>
+          <Icon name={icon} className="size-[18px]" strokeWidth={2} />
+        </span>
+        {title}
+      </h2>
       <ul className="flex flex-col gap-2.5">
         {items.map((item) => (
           <li key={item} className="flex gap-2.5 text-[14px] leading-relaxed text-[var(--ax-ink-muted)]">
-            <Icon name="check" className="mt-1 size-3.5 shrink-0 text-[var(--ax-success)]" strokeWidth={2.4} />
+            <Icon name="check" className="mt-1 size-3.5 shrink-0" strokeWidth={2.6} style={{ color: accent }} />
             {item}
           </li>
         ))}
       </ul>
     </div>
+  );
+}
+
+/** The product's real screens, large, with their captions as tabs. */
+function ScreenTour({
+  screens,
+  address,
+  name,
+}: {
+  screens: { src: string; alt: string }[];
+  address?: string;
+  name: string;
+}) {
+  const { accent, partner } = useContext(AccentContext);
+  const [i, setI] = useState(0);
+  const current = screens[Math.min(i, screens.length - 1)];
+  const caption = (alt: string) => alt.replace(`${name} — `, "");
+  return (
+    <section className="relative overflow-x-clip py-12 md:py-20">
+      <div className="ax-container">
+        {screens.length > 1 && (
+          <div role="tablist" aria-label={`${name} screens`} className="mb-8 flex flex-wrap justify-center gap-2">
+            {screens.map((s, k) => (
+              <button
+                key={s.src}
+                type="button"
+                role="tab"
+                aria-selected={k === i}
+                onClick={() => setI(k)}
+                className="ax-focus rounded-full border px-4 py-2 text-[13px] font-medium transition-all"
+                style={
+                  k === i
+                    ? { borderColor: "transparent", color: "#fff", background: `linear-gradient(110deg, ${accent}, ${partner})` }
+                    : { borderColor: "var(--ax-line-strong)", color: "var(--ax-ink-muted)" }
+                }
+              >
+                {caption(s.alt)}
+              </button>
+            ))}
+          </div>
+        )}
+        <div className="relative mx-auto max-w-6xl">
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -inset-x-10 -bottom-10 top-10 -z-10 rounded-full opacity-40 blur-[90px]"
+            style={{ background: `linear-gradient(90deg, ${accent}, ${partner})` }}
+          />
+          <BrowserFrame address={address} accent={accent}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              key={current.src}
+              src={current.src}
+              alt={current.alt}
+              className="block w-full"
+              style={{ animation: "ax-pop 0.5s ease both" }}
+            />
+          </BrowserFrame>
+          {screens.length === 1 && (
+            <p className="mt-5 text-center text-[13px] text-[var(--ax-ink-dim)]">{caption(current.alt)}</p>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }

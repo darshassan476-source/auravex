@@ -2,12 +2,9 @@
 
 import type { CSSProperties } from "react";
 import { useCms, useText } from "@/cms/CmsProvider";
-import { useCatalogue } from "@/cms/useProduct";
-import { productImage } from "@/components/cards/ProductCard";
-import { SuiteSchematic } from "@/components/showcase/ProductSchematic";
+import { AuravexConsole } from "@/components/showcase/AuravexConsole";
 import { HeroBackdrop } from "@/components/showcase/HeroBackdrop";
 import { LaptopFrame } from "@/components/showcase/LaptopFrame";
-import { isActive } from "@/data/products";
 import { Button } from "../ui/Button";
 import { EyebrowPill } from "../ui/EyebrowPill";
 import { Icon } from "../ui/Icon";
@@ -21,19 +18,16 @@ const rise = (delay: number) => ({
 const PILLAR_ICONS = ["layers", "brain", "settings", "link"] as const;
 
 /**
- * Homepage hero: the positioning statement on the left, a real product screen
- * on the right, and four plain statements of what Auravex does underneath —
+ * Homepage hero: the positioning statement on the left, the Auravex console
+ * (or an image uploaded in the portal) on the laptop at the right, and four plain statements of what Auravex does underneath —
  * no counters, no floating claims.
  */
 export function HomeHero() {
   const { state } = useCms();
-  const catalogue = useCatalogue();
-  const uploaded = state.heroImageId
+  // A hero image uploaded in the portal wins; otherwise the live console.
+  const screen = state.heroImageId
     ? state.media.find((m) => m.id === state.heroImageId)?.src
     : undefined;
-  // An uploaded hero image wins; otherwise the first active product's own screen.
-  const lead = catalogue.filter(isActive).find((p) => productImage(p));
-  const screen = uploaded ?? (lead ? productImage(lead) : undefined);
 
   const eyebrow = useText("ex.hero.eyebrow");
   const title = useText("ex.hero.title");
@@ -93,13 +87,11 @@ export function HomeHero() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={screen}
-                    alt={lead && !uploaded ? `${lead.name} — application screen` : "Auravex enterprise software"}
+                    alt="Auravex enterprise software"
                     className="aspect-[16/10] w-full object-cover object-top"
                   />
                 ) : (
-                  <div className="aspect-[16/10] w-full">
-                    <SuiteSchematic products={catalogue.filter(isActive)} />
-                  </div>
+                  <AuravexConsole />
                 )}
               </LaptopFrame>
             </div>
